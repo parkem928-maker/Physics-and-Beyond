@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Physics and Beyond</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: Bookcamp와 같은 에디토리얼 문법을 쓰는 자매 사이트. 거대한 워드마크, 책 소개, 네 개의 방 타일 */
+:root{
+  --bg:#e8e6e2; --panel:#f3f2ef; --paper:#f7f6f4; --ink:#111111; --muted:#77736d; --line:#c8c5bf;
+  --band:#111111; --bandfg:#f3f2ef; --banddim:#8d8a85; --red:#c8261e;
+  --display:"Archivo","Noto Sans KR",system-ui,sans-serif;
+  --ko:"Noto Sans KR",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--ko);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.gut{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.in{max-width:1180px;margin:0 auto}
+.lbl{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
+.top{background:var(--band);color:var(--bandfg)}
+.top .in{display:flex;gap:18px;align-items:center;justify-content:space-between;min-height:34px;overflow-x:auto;white-space:nowrap}
+.nav .in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-block:18px}
+.brand{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.08em}
+.nav .r{justify-self:end}
+.hero{position:relative;overflow:hidden;padding-bottom:28px;--gs:min(17rem,calc(92vw / (var(--len) * .82)))}
+.hero .in{position:relative;display:flow-root}
+.giant{font-family:var(--display);font-weight:900;font-size:var(--gs);line-height:.82;letter-spacing:-.045em;text-align:center;white-space:nowrap;margin:clamp(24px,9vw,130px) 0 0}
+.side-l,.side-r{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;line-height:2}
+.side-l::after,.side-r::after{content:"";display:block;width:34px;height:1px;background:var(--ink);margin-top:8px}
+.side-r::after{margin-left:auto}
+@media (min-width:900px){.side-l{position:absolute;left:0;top:0}.side-r{text-align:right;margin-top:28px}.giant{margin-top:150px}}
+@media (max-width:899px){.side-l,.side-r{display:none}}
+.intro .in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 48px;align-items:end;padding-block:36px 28px}
+@media (max-width:820px){.intro .in{grid-template-columns:minmax(0,1fr)}}
+.intro h1{font-weight:900;font-size:clamp(30px,4.6vw,52px);line-height:1.12;letter-spacing:-.03em;margin:8px 0 12px;text-wrap:balance}
+.intro p{margin:0;color:#3d3b38;max-width:52ch}
+.lenses{display:grid;gap:10px;border-left:1px solid var(--ink);padding-left:16px;font-size:14px;color:#3d3b38;max-width:48ch}
+.lenses b{color:var(--ink)}
+.list .in{padding-block:10px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:2px;background:var(--ink);border:2px solid var(--ink)}
+.tile{background:var(--paper);padding:26px 22px;display:grid;gap:10px;text-decoration:none;min-height:220px;align-content:space-between}
+.tile.live{background:var(--band);color:var(--bandfg)}
+.tile .n{color:var(--muted)}
+.tile .w{font-family:var(--display);font-weight:900;font-size:clamp(30px,3.4vw,42px);letter-spacing:-.04em;line-height:.95;overflow-wrap:anywhere}
+.tile .k{font-weight:700}
+.tile .go{color:var(--muted)}
+.tile.live .go{color:var(--bandfg)}
+a.tile:hover .go{color:var(--red)}
+.foot{background:var(--band);color:var(--banddim)}
+.foot .in{padding-block:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="top gut"><div class="in lbl"><span>Physics and Beyond · 걸으며 묻다</span><span>Der Teil und das Ganze</span></div></div>
+<header class="nav gut"><div class="in"><span class="lbl">Index</span><span class="brand">PHYSICS &amp; BEYOND</span><span class="r lbl">Heisenberg</span></div></header>
+<section class="hero gut" style="--len:6"><div class="in">
+<div class="side-l">Understanding<br>is an act,<br>not a gift.</div>
+<h2 class="giant" aria-hidden="true">BEYOND</h2>
+<div class="side-r">Munich 1919<br>Copenhagen 1927</div>
+</div></section>
+<section class="intro gut"><div class="in">
+<div><div class="lbl" style="color:var(--muted)">베르너 하이젠베르크 · 『부분과 전체』</div><h1>물리학에서 시작해<br>그 너머로 걷기</h1><p>하이젠베르크는 자기 생각의 역사를 대화로 썼고, 그 대화는 대부분 걸으며 오갑니다. 이 사이트는 독서 캠프 「걸으며 묻다」의 시각화 모음입니다. 물리학의 장면을 손으로 움직여 보며, 이해한다는 것이 무엇인지 묻습니다.</p></div>
+<div class="lenses">
+<div class="lbl" style="color:var(--muted)">1장의 세 문장</div>
+<div><b>A.</b> 지각은 개별적 인상을 '이해할 수 있는 것'으로 바꾸는 활동이다.</div>
+<div><b>B.</b> 아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능하다.</div>
+<div><b>C.</b> 부분적 질서들은 중심으로 가는 길을 찾지 못한다.</div>
+</div>
+</div></section>
+<section class="list gut"><div class="in">
+<div class="lbl" style="margin:30px 0 14px;color:var(--muted)">네 번의 산책 · 검은 칸은 시각화가 있는 방</div>
+<div class="grid">
+<div class="tile"><span class="lbl n">Room 01 · 1장·3장</span><span class="w">FIRST WALK</span><span class="k">첫 번째 산책</span><span class="lbl go">노션 방에서 진행</span></div>
+<a class="tile live" href="invisible-orbit.html"><span class="lbl n">Room 02 · 5장·6장</span><span class="w">INVISIBLE</span><span class="k">보이지 않는 궤도</span><span class="lbl go">Explore →</span></a>
+<div class="tile"><span class="lbl n">Room 03 · 10장</span><span class="w">TRIBUNAL</span><span class="k">칸트의 법정</span><span class="lbl go">노션 방에서 진행</span></div>
+<div class="tile"><span class="lbl n">Room 04 · 1장–마지막 장</span><span class="w">PART &amp; WHOLE</span><span class="k">부분과 전체</span><span class="lbl go">노션 방에서 진행</span></div>
+</div>
+</div></section>
+<footer class="foot gut"><div class="in lbl"><span>걸으며 묻다 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze</span></div></footer>
+</body>
+</html>
