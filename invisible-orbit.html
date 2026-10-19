@@ -143,6 +143,53 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .hrow h1 .se{color:var(--mint)}
 .hrow h1 .it{color:var(--mint);font-size:1.1em}
 
+/* board: 우리의 담벼락 */
+.wall{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.wall{grid-template-columns:minmax(0,1fr)}}
+.wform{background:var(--olive);color:var(--cream);border-radius:30px;padding:22px;display:grid;gap:12px;position:sticky;top:16px}
+@media (max-width:860px){.wform{position:static}}
+.wform h3{margin:0;font-family:var(--sans);font-weight:500;font-size:22px;letter-spacing:-.02em}
+.wform ol{margin:0;padding-left:18px;font-size:14px;line-height:1.6;color:var(--sage)}
+.wform label{font-size:12px;font-weight:700;color:var(--sage);display:grid;gap:4px}
+.wform input,.wform textarea{width:100%;border:0;border-radius:14px;padding:10px 12px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px}
+.wform textarea{min-height:140px;resize:vertical;line-height:1.6}
+.wform .btn{justify-self:start;background:var(--mint);color:var(--forest)}
+.wform .btn[disabled]{opacity:.55;cursor:wait}
+.wform .msg{font-size:13px;min-height:1.2em;color:var(--mint)}
+.wform .msg.err{color:#ffd9b0}
+.wlist{display:grid;gap:12px;min-width:0}
+.wbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.wbar button{border:1px solid var(--olive);background:transparent;color:var(--moss);border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer}
+.wcards{columns:2 260px;column-gap:12px}
+.wcard{break-inside:avoid;margin:0 0 12px;background:var(--paper);border-radius:24px;padding:16px 18px;display:grid;gap:8px;min-width:0}
+.wcard .who{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.wcard .who b{font-family:var(--sans);font-weight:600;font-size:16px}
+.wcard .who time{font-size:12px;color:var(--muted);white-space:nowrap}
+.wcard .bd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px;line-height:1.7}
+.wcard .lk{font-size:13px;color:var(--olive);font-weight:700;overflow-wrap:anywhere}
+.wcard .q{border-top:1px solid var(--line);padding-top:8px;display:grid;gap:6px}
+.wcard .q > button{justify-self:start;border:0;background:var(--sage);color:var(--moss);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:700;cursor:pointer}
+.wcard .reply{background:var(--cream);border-radius:14px;padding:8px 11px;font-size:13.5px;overflow-wrap:anywhere;white-space:pre-wrap}
+.wcard .reply b{font-size:12.5px;margin-right:6px;color:var(--moss)}
+.wcard form{display:grid;gap:6px}
+.wcard form input,.wcard form textarea{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;font-size:14px;background:var(--cream);color:var(--ink);width:100%}
+.wcard form textarea{min-height:60px;resize:vertical}
+.wcard form .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.wcard form .btn{padding:7px 14px;font-size:13px}
+.wcard form .msg{font-size:12px;color:var(--ochre)}
+.wempty{background:var(--paper);border-radius:24px;padding:26px;text-align:center;color:var(--muted);display:grid;gap:6px;justify-items:center}
+.wempty b{color:var(--ink);font-family:var(--sans);font-weight:500;font-size:18px}
+.wcols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1000px){.wcols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.wcols{grid-template-columns:minmax(0,1fr)}}
+.wcol{background:var(--sage);border-radius:28px;padding:14px;display:grid;gap:10px;align-content:start;min-width:0}
+.wcol:nth-child(2){background:var(--sage2)} .wcol:nth-child(4){background:#d3d6a6}
+.wcol h3{margin:4px 6px 0;font-family:var(--sans);font-weight:500;font-size:19px;letter-spacing:-.02em;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.wcol h3 a{font-size:12px;font-weight:700;color:var(--moss);white-space:nowrap}
+.wcol .wcard{margin:0;padding:13px 14px}
+.wcol .wcard .bd{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.wcol .none{font-size:13px;color:var(--moss);padding:4px 6px 8px}
+
 .ptable{display:grid;grid-template-columns:repeat(18,minmax(30px,1fr));gap:4px;overflow-x:auto;padding-bottom:4px}
 .ptable button{aspect-ratio:1;border:0;border-radius:10px;background:var(--sage);color:var(--ink);cursor:pointer;display:grid;place-items:center;align-content:center;line-height:1.05;padding:2px;min-width:30px}
 .ptable button b{font-family:var(--sans);font-weight:600;font-size:14px}
@@ -294,9 +341,15 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
   <p class="caveat">그림의 수치는 이해를 돕기 위한 어림값입니다. 안개상자 물방울의 크기와 간격은 기체와 장치에 따라 다르고, 원자의 크기는 물방울의 수십만분의 1입니다. 오비탈은 수소형 파동함수로 계산했고 화면 크기에 맞춰 늘이거나 줄였습니다. 파동묶음은 ħ = 1인 단위로 계산했습니다.</p>
 </div></section>
 
+<section class="sec gut" id="wall"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>이 방에서 생각한 것을 남기고, 친구 글에는 칭찬보다 질문을 하나 남겨 주세요. 긴 글은 노션에 쓰고 링크를 붙이면 됩니다.</p></div>
+  <div id="board"></div>
+</div></section>
+
 </main>
 <section class="next gut"><div class="in"><a class="big" href="tribunal.html">칸트의 <span class="se">법정</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 03</span></div></section>
 <footer class="foot gut"><div class="in"><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<script src="board-config.js"></script>
 <script>
 const PB=(function(){
 const $=id=>document.getElementById(id);
@@ -343,6 +396,77 @@ function redraw(){for(const f of loops)f(0);}
 addEventListener('resize',()=>{if(reduce)redraw();});
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
 return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+/* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
+const BOARD=(function(){
+const URL_=(window.PB_BOARD_URL||'').trim();
+const ROOMS={r1:'① 첫 번째 산책',r2:'② 보이지 않는 궤도',r3:'③ 칸트의 법정',r4:'④ 부분과 전체'};
+const PAGES={r1:'first-walk.html',r2:'invisible-orbit.html',r3:'tribunal.html',r4:'part-and-whole.html'};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeLink=u=>/^https?:\/\//i.test(u||'')?u:'';
+function ago(t){if(!t)return '';const s=(Date.now()-t)/1000;if(s<60)return '방금';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';const d=new Date(t);return `${d.getMonth()+1}월 ${d.getDate()}일`;}
+let myName='';try{myName=localStorage.getItem('pb-name')||'';}catch(e){}
+function keepName(n){myName=n;try{localStorage.setItem('pb-name',n);}catch(e){}}
+async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했습니다');return j.posts;}
+async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했습니다');return j;}
+
+function cardHTML(p,replies,full){
+  const lk=safeLink(p.link);
+  return `<article class="wcard" data-id="${esc(p.id)}"><div class="who"><b>${esc(p.name)}</b><time>${ago(p.t)}</time></div><p class="bd">${esc(p.body)}</p>`+
+   (lk?`<a class="lk" href="${esc(lk)}" target="_blank" rel="noopener noreferrer">↗ ${esc(lk.replace(/^https?:\/\//,'').slice(0,48))}</a>`:'')+
+   (full?`<div class="q">${replies.map(r=>`<div class="reply"><b>${esc(r.name)}</b>${esc(r.body)}</div>`).join('')}<button type="button" data-ask>질문 남기기${replies.length?' · '+replies.length:''}</button></div>`:(replies.length?`<span class="note">질문 ${replies.length}개</span>`:''))+
+   `</article>`;
+}
+function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);const rep={};posts.filter(p=>p.parent).sort((a,b)=>a.t-b.t).forEach(p=>(rep[p.parent]=rep[p.parent]||[]).push(p));return {top,rep};}
+
+/* 한 방의 담벼락 */
+function room(el,room,prompt){
+  el.innerHTML=`<div class="wall">
+   <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
+    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
+    <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
+    <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
+    <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
+   <div class="wlist"><div class="wbar"><span class="count">불러오는 중…</span><button type="button" class="refresh">새로 고침</button></div><div class="wcards"></div></div></div>`;
+  const f=el.querySelector('form'),msg=f.querySelector('.msg'),cards=el.querySelector('.wcards'),count=el.querySelector('.count');
+  const F=f.elements;F['name'].value=myName;
+  let posts=[];
+  function render(){const {top,rep}=split(posts);count.textContent=`글 ${top.length}개`;
+    cards.innerHTML=top.length?top.map(p=>cardHTML(p,rep[p.id]||[],true)).join(''):'';
+    if(!top.length)cards.innerHTML=`<div class="wempty"><b>아직 올라온 글이 없습니다</b><span>왼쪽에 첫 번째 생각을 남겨 주세요.</span></div>`;}
+  async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 나타납니다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
+    try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했습니다. 잠시 뒤 새로 고침을 눌러 주세요.';}}
+  el.querySelector('.refresh').addEventListener('click',refresh);
+  f.addEventListener('submit',async e=>{e.preventDefault();const d={room,name:F['name'].value.trim(),body:F['body'].value.trim(),link:F['link'].value.trim()};
+    if(!d.name){msg.className='msg err';msg.textContent='이름을 적어 주세요.';F['name'].focus();return;}
+    if(!d.body){msg.className='msg err';msg.textContent='내용을 적어 주세요.';F['body'].focus();return;}
+    if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 합니다.';F['link'].focus();return;}
+    const b=f.querySelector('.btn');b.disabled=true;msg.className='msg';msg.textContent='올리는 중…';
+    try{const r=await send(d);keepName(d.name);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸습니다.';}
+    catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 주세요.';}
+    b.disabled=false;});
+  cards.addEventListener('click',e=>{const ask=e.target.closest('[data-ask]');if(!ask)return;const card=ask.closest('.wcard');if(card.querySelector('form'))return;
+    const fm=document.createElement('form');fm.innerHTML=`<input name="name" maxlength="20" placeholder="내 이름" value="${esc(myName)}"><textarea name="body" maxlength="600" placeholder="칭찬보다 질문 하나를 남겨 주세요."></textarea><div class="row"><button class="btn" type="submit">질문 올리기</button><span class="msg"></span></div>`;
+    ask.before(fm);const E=fm.elements;E['body'].focus();
+    fm.addEventListener('submit',async ev=>{ev.preventDefault();const m=fm.querySelector('.msg');const d={room,name:E['name'].value.trim(),body:E['body'].value.trim(),parent:card.dataset.id};
+      if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어 주세요.';return;}
+      fm.querySelector('.btn').disabled=true;m.textContent='올리는 중…';
+      try{const r=await send(d);keepName(d.name);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:'',parent:d.parent});render();}
+      catch(err){m.textContent=err.message;fm.querySelector('.btn').disabled=false;}});});
+  refresh();setInterval(()=>{if(document.visibilityState==='visible'&&URL_&&!el.querySelector('.wcard form')&&!f.contains(document.activeElement))refresh();},45000);
+}
+
+/* 첫 화면: 네 방을 한눈에 */
+function overview(el){
+  const cols=Object.keys(ROOMS);
+  el.innerHTML=`<div class="wcols">${cols.map(r=>`<section class="wcol" data-room="${r}"><h3>${ROOMS[r]}<a href="${PAGES[r]}#wall">쓰러 가기 →</a></h3><div class="none">불러오는 중…</div></section>`).join('')}</div>`;
+  if(!URL_){el.querySelectorAll('.none').forEach(n=>n.textContent='담벼락 연결 준비 중');return;}
+  load('all').then(posts=>{cols.forEach(r=>{const {top,rep}=split(posts.filter(p=>p.room===r));const box=el.querySelector(`[data-room="${r}"]`);
+    box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없습니다.</div>');});})
+   .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했습니다.'));
+}
+return {room,overview,connected:!!URL_};
 })();
 
 </script>
@@ -566,6 +690,8 @@ onFrame(t=>{
   setH('ro3',`<dt>빛의 파장 (상대값)</dt><dd>${lam.toFixed(2)}</dd><dt>위치의 흐림 Δx</dt><dd>${lam.toFixed(2)}</dd><dt>반동의 범위 Δp</dt><dd>${(1/lam).toFixed(2)}</dd><dt>곱 Δx · Δp</dt><dd class="hot">1.00</dd>`);
 });
 })();
+
+BOARD.room(document.getElementById('board'),'r2',["내 판정 (가)/(나)/(다)와 한 줄 근거", "1927년의 하이젠베르크와 내 판정 비교: 누구의 판단이 더 나은가", "눈금 B: 선입견을 없앴는가, 바꿨는가"]);
 
 </script>
 </body>
