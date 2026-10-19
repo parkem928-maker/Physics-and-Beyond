@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>부분과 전체</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;600&display=swap">
+<style>
+/* Layout: 크림 바탕 위에 둥근 숲색 히어로(민트 거대 글자 + 그 앞을 가로지르는 움직이는 물체), 세이지·올리브 3색 카드, 아치 프레임, 네 갈래 별 장식 */
+:root{
+  --cream:#f3efe3; --paper:#fbf9f3; --sage:#dfe2bf; --sage2:#c4cb94; --olive:#5b6a37; --moss:#3e4a26;
+  --forest:#142614; --forest2:#1f3420; --mint:#e0f5c6; --mintdim:#a9c29a; --ink:#1c2316; --muted:#6b6f5b; --line:#d6d3c0; --ochre:#b0873a;
+  --sans:"Epilogue","Noto Sans KR",system-ui,sans-serif;
+  --ko:"Noto Sans KR",system-ui,sans-serif;
+  --it:"Instrument Serif","Noto Serif KR",Georgia,serif;
+  --sko:"Noto Serif KR","Instrument Serif",Georgia,serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--ko);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ochre);outline-offset:3px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1180px;margin:0 auto}
+.it{font-family:var(--it);font-style:italic;font-weight:400;letter-spacing:0}
+.se{font-family:var(--sko);font-weight:500;color:var(--olive)}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+
+/* hero */
+.hero{background:var(--forest);color:var(--mint);border-radius:0 0 44px 44px;padding-block:14px 44px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% -10%;height:70%;background:radial-gradient(closest-side,rgba(224,245,198,.10),transparent);pointer-events:none}
+.bar{display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 7px 7px 18px;position:relative;z-index:3}
+.logo{font-family:var(--sans);font-weight:600;font-size:16px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.logo .it{color:var(--olive);font-size:19px}
+.bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.bar nav::-webkit-scrollbar{display:none}
+.bar nav a{font-size:13px;text-decoration:none;padding:6px 12px;border-radius:999px;white-space:nowrap;color:var(--muted)}
+.bar nav a[aria-current]{background:var(--sage);color:var(--ink);font-weight:700}
+.bar nav a:hover{color:var(--ink)}
+@media (max-width:760px){.bar{flex-wrap:wrap;border-radius:26px;padding:10px 12px}.bar nav{margin-left:0;width:100%}}
+.stage{position:relative;margin-top:26px}
+.giant{font-family:var(--sans);font-weight:500;letter-spacing:-.055em;line-height:.86;text-align:center;white-space:nowrap;margin:0;color:var(--mint);
+  font-size:min(200px,calc(94vw / (var(--len) * .6)));padding-block:clamp(40px,7vw,90px)}
+.obj{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,62vw);aspect-ratio:1;max-width:100%;z-index:2}
+.obj.grab{cursor:grab;touch-action:none}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;position:relative;z-index:3}
+@media (max-width:760px){.hrow{grid-template-columns:minmax(0,1fr)}}
+.hrow p{margin:0;color:var(--mintdim);max-width:46ch;justify-self:end}
+@media (max-width:760px){.hrow p{justify-self:start}}
+.hrow .tag{display:inline-block;border:1px solid var(--mintdim);color:var(--mint);border-radius:999px;padding:3px 12px;font-size:12px;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--olive);color:var(--cream)}
+.btn.mint{background:var(--mint);color:var(--forest)}
+.btn.ghost{background:transparent;border:1px solid currentColor;color:inherit}
+.btn:hover{filter:brightness(1.08)}
+
+/* section heads */
+.sec{padding-block:72px 0}
+.head{text-align:center;display:grid;justify-items:center;gap:10px;margin-bottom:30px}
+.head h2{font-family:var(--sans);font-weight:500;font-size:clamp(28px,4.2vw,46px);letter-spacing:-.035em;line-height:1.15;margin:0;text-wrap:balance}
+.head h2 .it{color:var(--olive);font-size:1.12em}
+.head p{margin:0;max-width:60ch;color:var(--muted);text-wrap:pretty}
+.spark{width:22px;height:22px;color:var(--olive)}
+
+/* lab: a visualization block */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;background:var(--paper);border-radius:36px;padding:20px;align-items:start}
+.lab + .lab{margin-top:22px}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr);border-radius:28px;padding:14px}}
+.board{border-radius:26px;background:var(--cream);overflow:hidden;min-width:0;position:relative}
+.board.dark{background:var(--forest)}
+.board.sage{background:var(--sage)}
+.board canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;max-width:100%}
+.board canvas.tall{aspect-ratio:1/1}
+.board canvas.grab{cursor:grab;touch-action:none}
+.text{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;padding:8px 6px 6px}
+.kick{justify-self:start;background:var(--sage);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;color:var(--moss)}
+.kick.warn{background:var(--ochre);color:var(--paper)}
+.text h3{font-family:var(--sans);font-weight:500;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.03em;line-height:1.25;margin:0;text-wrap:balance}
+.text h3 .it{color:var(--olive);font-size:1.12em}
+.text p{margin:0;max-width:62ch}
+.formula{font-family:var(--it);font-style:italic;font-size:clamp(24px,3vw,32px);text-align:center;background:var(--sage);border-radius:999px;padding:6px 18px}
+.ctl{display:grid;gap:2px}
+.ctl label,.lab .lbl{font-size:12px;font-weight:700;color:var(--muted)}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive);margin-top:-7.5px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--olive);background:transparent;color:var(--moss);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--olive);color:var(--cream);font-weight:700}
+.chips.sm button{padding:3px 10px;font-size:12px}
+.ro{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;background:var(--forest);color:var(--mint);border-radius:20px;padding:13px 18px;font-size:13px;font-variant-numeric:tabular-nums}
+.ro dt{color:var(--mintdim)} .ro dd{margin:0;text-align:right;font-family:var(--sans)} .ro dd.k{font-family:var(--ko)}
+.ro dd.hot{color:#fff;font-weight:700}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
+.check input{accent-color:var(--olive);width:16px;height:16px}
+.note{font-size:13px;color:var(--muted)}
+.lens{display:flex;gap:10px;align-items:flex-start;background:var(--sage);border-radius:20px;padding:12px 16px;font-size:14px}
+.lens b{font-family:var(--sans);font-size:20px;line-height:1.2;color:var(--olive)}
+
+/* tri-tone cards */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.step{border-radius:28px;padding:24px 22px;min-height:240px;display:grid;gap:12px;align-content:space-between;text-decoration:none;min-width:0}
+.step.o{background:var(--olive);color:var(--cream)} .step.s{background:var(--sage2);color:var(--ink)} .step.c{background:var(--sage);color:var(--ink)} .step.p{background:var(--paper);color:var(--ink)}
+.step .no{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.14em;opacity:.75}
+.step h3{font-family:var(--sans);font-weight:500;font-size:24px;letter-spacing:-.03em;line-height:1.2;margin:0}
+.step p{margin:0;font-size:14px;opacity:.9}
+.step .go{justify-self:end;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-size:18px}
+.step.o .go{background:var(--cream)}
+a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
+
+/* arch card */
+.arch{background:var(--sage);border-radius:999px 999px 30px 30px;padding:46px 26px 28px;text-align:center;display:grid;gap:10px;justify-items:center;min-width:0}
+.arch .role{font-size:12px;font-weight:700;background:var(--paper);border-radius:999px;padding:3px 12px;color:var(--moss)}
+.arch .letter{font-family:var(--it);font-style:italic;font-size:54px;line-height:1;color:var(--olive)}
+.arch p{margin:0;font-size:15px}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.verdict{grid-template-columns:minmax(0,1fr)}}
+.verdict section{background:var(--paper);border-radius:28px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
+.verdict h4{margin:0;font-family:var(--sans);font-weight:500;font-size:20px;letter-spacing:-.02em}
+.verdict p{margin:0;font-size:14.5px}
+.verdict .see{font-size:12px;font-weight:700;color:var(--olive)}
+.ask{background:var(--olive);color:var(--cream);border-radius:28px;padding:24px 26px;margin-top:14px;display:grid;gap:8px}
+.ask p{margin:0;max-width:75ch}
+.caveat{font-size:13px;color:var(--muted);max-width:85ch;margin:26px auto 0;text-align:center}
+
+/* next + footer */
+.next{margin-top:80px}
+.next .in{background:var(--sage);border-radius:40px;padding:34px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.next a.big{font-family:var(--sans);font-weight:500;font-size:clamp(30px,5vw,56px);letter-spacing:-.04em;text-decoration:none;line-height:1}
+.next a.big .it{color:var(--olive)}
+.foot{margin-top:24px;background:var(--forest);color:var(--mintdim);border-radius:44px 44px 0 0}
+.foot .in{padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.hrow h1{font-family:var(--sans);font-weight:500;font-size:clamp(30px,4.4vw,50px);letter-spacing:-.035em;line-height:1.12;color:var(--cream);margin:0 0 16px;text-wrap:balance}
+.hrow h1 .se{color:var(--mint)}
+.hrow h1 .it{color:var(--mint);font-size:1.1em}
+
+.chcard{background:var(--cream);border-radius:22px;padding:16px 18px;display:grid;gap:6px;min-height:150px}
+.chcard .no{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--muted)}
+.chcard h4{margin:0;font-family:var(--sans);font-weight:500;font-size:22px;letter-spacing:-.02em;line-height:1.3}
+.chcard .th{display:flex;gap:6px;flex-wrap:wrap}
+.chcard .th span{font-size:12px;font-weight:700;background:var(--sage);border-radius:999px;padding:2px 10px;color:var(--moss)}
+.chcard p{margin:0;font-size:14.5px}
+.chnav{display:flex;gap:8px;flex-wrap:wrap}
+.board canvas#cvr{cursor:pointer}
+#cvm{aspect-ratio:4/3.4}
+
+</style>
+</head>
+<body>
+<header class="hero gut"><div class="in">
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html" aria-current="page">부분과 전체</a></nav></div>
+<div class="stage" style="--len:12"><p class="giant" aria-hidden="true">Part &amp; Whole</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
+<div class="hrow"><div><span class="tag">Room 04 · 1장에서 20장까지</span><h1>부분과 <span class="se">전체</span></h1><div class="btns"><a class="btn mint" href="#ring">책의 원</a><a class="btn ghost" href="#memory">기억의 거리</a></div></div><p>지붕 위의 『티마이오스』로 시작한 책은 소립자와 플라톤 철학으로 끝납니다. 스무 개의 대화를 하나의 원으로 놓고, 중심이 발견된 것인지 구성된 것인지 묻습니다.</p></div>
+</div></header>
+<main>
+<section class="sec gut" id="ring"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>책의 <span class="se">원</span></h2><p>스무 개의 대화를 한 바퀴로 놓았습니다. 갈래를 고르면 '중심 질서'라는 물음이 책 속에서 어떤 길로 돌아오는지 보입니다.</p></div>
+  <div class="lab">
+    <div class="board sage"><canvas id="cvr" class="tall" aria-label="스무 개 장을 원으로 배치한 그림. 장을 누르면 아래에 설명이 나온다"></canvas></div>
+    <div class="text">
+      <span class="kick">01 · 정거장 A · B</span>
+      <h3>처음과 끝은 <span class="se">이어져</span> 있을까</h3>
+      <div class="chips" id="thchips" role="group" aria-label="갈래 고르기">
+        <button type="button" aria-pressed="true">모든 장</button><button type="button" aria-pressed="false">물리학</button><button type="button" aria-pressed="false">철학 · 종교</button><button type="button" aria-pressed="false">정치 · 책임</button>
+      </div>
+      <label class="check"><input type="checkbox" id="loop" checked> 1장과 20장 잇기 (티마이오스 → 플라톤)</label>
+      <div class="chcard" id="chcard" aria-live="polite"></div>
+      <div class="chnav"><button type="button" class="btn ghost" id="prev" style="color:var(--olive)">← 앞 장</button><button type="button" class="btn ghost" id="nextch" style="color:var(--olive)">다음 장 →</button></div>
+      <p class="note">장 제목은 원서를 바탕으로 옮긴 것이라 번역본의 표기와 다를 수 있습니다. 갈래 분류는 캠프를 위해 나눈 것입니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="memory"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>기억의 <span class="se">거리</span></h2><p>정거장 C · 회고록이라는 부분과 전체</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cvm" aria-label="각 장의 사건 연도와 1969년 출간 사이의 거리"></canvas></div>
+    <div class="text">
+      <span class="kick">02 · 재구성</span>
+      <h3>이 대화들은 <span class="se">몇 년 뒤에</span> 쓰였나</h3>
+      <p>올리브색 막대는 각 장의 대화가 오간 해, 점선은 그 대화가 책으로 나온 1969년까지 흐른 시간입니다. 1장의 지붕 위 장면은 반세기 가까이 지나서 쓰였습니다. 위의 원에서 장을 고르면 여기에도 표시됩니다.</p>
+      <dl class="ro" id="rom"></dl>
+      <div class="lens"><b>C</b><span>1장이 책 전체의 씨앗처럼 보이는 것은, 결말을 아는 저자가 씨앗을 거꾸로 심었기 때문일 수도 있습니다. 그렇다면 이 책의 중심은 발견된 것일까요, 구성된 것일까요?</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="dialogue"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>나의 <span class="se">대화</span></h2><p>정거장 D</p></div>
+  <div class="steps">
+    <div class="step o" id="firstpick"><span class="no">첫날 고른 문장</span><h3 id="fp-h">아직 고르지 않았습니다</h3><p id="fp-p">첫 번째 산책에서 문장 하나를 고르면 여기에 나타납니다.</p><a class="go" href="first-walk.html#pick" aria-label="첫 번째 산책에서 문장 고르기">↗</a></div>
+    <div class="step c"><span class="no">두 목소리</span><h3>걸으며 나누는 대화</h3><p>"결국 이해했다"와 "계산만 했지 이해한 건 아니다", 또는 첫날의 나와 마지막 날의 나. 장소를 하나 정해 10~20턴의 대화문을 씁니다.</p></div>
+    <div class="step s"><span class="no">해설 두 문장</span><h3>이 대화도 재구성이다</h3><p>"이 대화에서 나는 누구 편인가." "무엇을 나중에 덧붙였는가." 내 대화는 중심을 찾았나요, 중심 없이 부분들이 함께 있는 상태를 인정했나요?</p></div>
+  </div>
+</div></section>
+
+</main>
+<section class="next gut"><div class="in"><a class="big" href="index.html"><span class="se">처음</span>으로 ↺</a><span class="eyebrow" style="color:var(--muted)">Index</span></div></section>
+<footer class="foot gut"><div class="in"><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<script>
+const PB=(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
+function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
+const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
+const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
+function gauss(){let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random());}
+function chips(id,cb){const bs=[...document.querySelectorAll('#'+id+' button')];bs.forEach((b,i)=>b.addEventListener('click',()=>{bs.forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));cb(i,b);}));return bs;}
+/* 3D */
+const PHI=(1+Math.sqrt(5))/2;
+function solid(name){
+  let v=[];const p=PHI,q=1/PHI;
+  if(name==='tetra')v=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  if(name==='cube'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);}
+  if(name==='octa')v=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  if(name==='icosa'){for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a,b*p]);v.push([a,b*p,0]);v.push([a*p,0,b]);}}
+  if(name==='dodeca'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a*q,b*p]);v.push([a*q,b*p,0]);v.push([a*p,0,b*q]);}}
+  const n=Math.hypot(...v[0]);v=v.map(x=>x.map(c=>c/n));
+  let dmin=1e9;for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)dmin=Math.min(dmin,Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2]));
+  const e=[];for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)if(Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2])<dmin*1.01)e.push([i,j]);
+  return {v,e};
+}
+function rot(p,ax,ay){let [x,y,z]=p;let c=Math.cos(ay),s=Math.sin(ay);[x,z]=[x*c+z*s,-x*s+z*c];c=Math.cos(ax);s=Math.sin(ax);[y,z]=[y*c-z*s,y*s+z*c];return [x,y,z];}
+function drawSolid(g,S,cx,cy,R,ax,ay,col,lw,dots){
+  const P=S.v.map(p=>rot(p,ax,ay));
+  const order=S.e.map(([i,j])=>({i,j,z:(P[i][2]+P[j][2])/2})).sort((a,b)=>a.z-b.z);
+  for(const o of order){const a=P[o.i],b=P[o.j];const f=(o.z+1)/2;g.globalAlpha=.25+.75*f;g.strokeStyle=col;g.lineWidth=lw*(.6+.6*f);g.beginPath();g.moveTo(cx+a[0]*R,cy-a[1]*R);g.lineTo(cx+b[0]*R,cy-b[1]*R);g.stroke();}
+  if(dots){for(const a of P){const f=(a[2]+1)/2;g.globalAlpha=.35+.65*f;g.fillStyle=col;g.beginPath();g.arc(cx+a[0]*R,cy-a[1]*R,dots*(.6+.6*f),0,7);g.fill();}}
+  g.globalAlpha=1;
+}
+/* drag to rotate */
+function dragger(cv,state){let down=null;
+  cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,ax:state.ax,ay:state.ay};cv.setPointerCapture(e.pointerId);state.hold=true;});
+  cv.addEventListener('pointermove',e=>{if(!down)return;state.ay=down.ay+(e.clientX-down.x)*0.01;state.ax=down.ax+(e.clientY-down.y)*0.01;state.dirty=true;});
+  const up=()=>{down=null;state.hold=false;};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);}
+/* loop */
+const loops=[];let running=false;
+function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
+function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops)f(0);}
+addEventListener('resize',()=>{if(reduce)redraw();});
+if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
+return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+</script>
+<script>
+(function(){
+const {$,reduce,C,fit,ko,ep,chips,onFrame}=PB;
+const _h={};function setH(id,html){if(_h[id]!==html){_h[id]=html;$(id).innerHTML=html;}}
+const CH=[
+ [1,'원자론과의 첫 만남',1919,1920,'PR','교과서의 원자 그림을 믿지 못한 소년이 플라톤의 『티마이오스』를 만난다. 가장 작은 것은 모양일까?'],
+ [2,'물리학을 공부하기로 결심하다',1920,1920,'P','무엇을 배울지 정하는 일은 어떤 질문을 붙잡을지 정하는 일이다.'],
+ [3,'현대 물리학에서 \'이해\'라는 개념',1920,1922,'PR','보어와의 산책. 그림으로 그릴 수 없는 것을 이해한다는 것은 무슨 뜻인가?'],
+ [4,'정치와 역사에 대한 가르침',1922,1924,'S','혼란한 시대의 젊은이는 정치와 역사에서 무엇을 배우는가?'],
+ [5,'양자역학, 그리고 아인슈타인과의 대화',1925,1926,'PR','관찰할 수 있는 것만으로 이론을 세울 수 있는가, 이론이 관찰을 정하는가?'],
+ [6,'새로운 땅으로의 출발',1926,1927,'P','코펜하겐의 밤, 불확정성 원리와 상보성이 태어난다.'],
+ [7,'과학과 종교의 관계에 대한 첫 대화',1927,1927,'R','과학의 언어와 종교의 언어는 같은 세계를 말하는가?'],
+ [8,'원자물리학과 실용주의적 사고방식',1929,1929,'R','쓸모 있으면 참인가? 이해와 유용성 사이의 거리.'],
+ [9,'생물학, 물리학, 화학의 관계에 대한 대화',1930,1932,'PR','부분 학문들은 하나의 중심으로 모일 수 있는가?'],
+ [10,'양자역학과 칸트 철학',1930,1932,'R','칸트의 법정. 인과율은 버려질 수 있는가?'],
+ [11,'언어에 대한 토론',1933,1933,'R','원자의 세계를 말할 언어는 어디서 오는가?'],
+ [12,'혁명과 대학 생활',1933,1933,'S','나치가 권력을 잡은 해, 대학과 연구자는 어디에 서야 하는가?'],
+ [13,'원자 기술의 가능성과 소립자에 대한 토론',1935,1937,'P','핵의 힘이 손에 닿기 시작할 때 물리학은 무엇을 물어야 하는가?'],
+ [14,'정치적 파국 앞에서 개인의 행동',1937,1941,'S','전체의 질서가 무너질 때 개인은 무엇을 지켜야 하는가?'],
+ [15,'새로운 시작으로 가는 길',1941,1945,'S','전쟁의 끝에서 무엇을 다시 세울 것인가?'],
+ [16,'연구자의 책임',1945,1950,'S','원자폭탄 이후, 과학자는 무엇에 책임을 지는가?'],
+ [17,'실증주의, 형이상학, 종교',1952,1952,'R','말할 수 있는 것만 말해야 하는가?'],
+ [18,'정치적 논쟁과 과학적 논쟁',1956,1957,'S','두 종류의 논쟁은 어떻게 다르고 어떻게 닮았나?'],
+ [19,'통일장 이론',1957,1958,'P','모든 입자를 하나의 방정식으로 묶을 수 있을까? 중심을 찾는 물리학.'],
+ [20,'소립자와 플라톤 철학',1961,1965,'PR','가장 작은 것은 결국 수학적 대칭이다. 1장의 지붕 위로 돌아오는 원.']];
+const TH={P:'물리학',R:'철학 · 종교',S:'정치 · 책임'};const THK=[null,'P','R','S'];
+let thread=0,cur=0;const PUB=1969;
+
+/* 히어로: 스무 개 점의 원 */
+onFrame(t=>{const cv=$('hero-obj'),{g,w,h}=fit(cv);g.clearRect(0,0,w,h);const cx=w/2,cy=h/2,R=Math.min(w,h)*.38,rot=reduce?0:t/9000;
+  g.strokeStyle='rgba(224,245,198,.35)';g.lineWidth=1.2;g.beginPath();g.arc(cx,cy,R,0,7);g.stroke();
+  const P=i=>[cx+R*Math.cos(-Math.PI/2+i/20*2*Math.PI+rot),cy+R*Math.sin(-Math.PI/2+i/20*2*Math.PI+rot)];
+  const a=P(0),b=P(19);g.strokeStyle=C.mint;g.lineWidth=2;g.beginPath();g.moveTo(...a);g.quadraticCurveTo(cx,cy,...b);g.stroke();
+  for(let i=0;i<20;i++){const [x,y]=P(i);g.fillStyle=C.mint;g.beginPath();g.arc(x,y,i===0||i===19?8:4.5,0,7);g.fill();}});
+
+/* 01 책의 원 */
+function geo(w,h){const cx=w/2,cy=h/2,R=Math.min(w,h)*.38;return {cx,cy,R,pos:i=>[cx+R*Math.cos(-Math.PI/2+i/20*2*Math.PI),cy+R*Math.sin(-Math.PI/2+i/20*2*Math.PI)]};}
+function inThread(i){return !thread||CH[i][4].includes(THK[thread]);}
+function card(){const c=CH[cur];setH('chcard',`<span class="no">${c[0]}장 · ${c[2]}${c[3]!==c[2]?'–'+c[3]:''}</span><h4>${c[1]}</h4><div class="th">${[...c[4]].map(k=>`<span>${TH[k]}</span>`).join('')}</div><p>${c[5]}</p>`);mread();}
+chips('thchips',i=>{thread=i;});
+$('prev').addEventListener('click',()=>{cur=(cur+19)%20;card();});$('nextch').addEventListener('click',()=>{cur=(cur+1)%20;card();});
+$('cvr').addEventListener('click',e=>{const r=$('cvr').getBoundingClientRect(),G=geo(r.width,r.height);let best=-1,bd=1e9;
+  for(let i=0;i<20;i++){const [x,y]=G.pos(i),d=Math.hypot(e.clientX-r.left-x,e.clientY-r.top-y);if(d<bd){bd=d;best=i;}}if(bd<34){cur=best;card();}});
+onFrame(t=>{const {g,w,h}=fit($('cvr'));g.clearRect(0,0,w,h);const G=geo(w,h);
+  g.strokeStyle=C.sage2;g.lineWidth=1.4;g.beginPath();g.arc(G.cx,G.cy,G.R,0,7);g.stroke();
+  if($('loop').checked){const a=G.pos(0),b=G.pos(19);g.strokeStyle=C.ochre;g.lineWidth=3;g.beginPath();g.moveTo(...a);g.quadraticCurveTo(G.cx,G.cy,...b);g.stroke();
+    g.fillStyle=C.ochre;g.font=ko(12,700);g.textAlign='center';g.fillText('티마이오스 → 플라톤',G.cx,G.cy-G.R*.42);}
+  if(thread){const idx=CH.map((c,i)=>i).filter(inThread);g.strokeStyle=C.olive;g.lineWidth=1.8;g.beginPath();idx.forEach((i,k)=>{const [x,y]=G.pos(i);k?g.lineTo(x,y):g.moveTo(x,y);});g.stroke();}
+  // 장 노드
+  for(let i=0;i<20;i++){const [x,y]=G.pos(i),on=inThread(i),sel=i===cur,r=sel?17:13;
+    g.fillStyle=sel?C.forest:on?C.olive:C.paper;g.strokeStyle=on?C.olive:C.sage2;g.lineWidth=1.5;g.beginPath();g.arc(x,y,r,0,7);g.fill();g.stroke();
+    g.fillStyle=sel?C.mint:on?C.cream:C.muted;g.font=ep(sel?13:12,600);g.textAlign='center';g.fillText(i+1,x,y+4);}
+  // 가운데 글
+  const c=CH[cur];g.fillStyle=C.moss;g.textAlign='center';g.font=ep(12,600);g.fillText(c[2]+(c[3]!==c[2]?'–'+c[3]:''),G.cx,G.cy+G.R*.08);
+  g.font=ko(Math.max(13,Math.min(16,w/34)),700);g.fillStyle=C.ink;const words=c[1];g.fillText(words.length>14?words.slice(0,14)+'…':words,G.cx,G.cy+G.R*.08+22);
+});
+card();
+
+/* 02 기억의 거리 */
+function mread(){const c=CH[cur],avg=CH.reduce((s,c)=>s+(PUB-c[3]),0)/20;
+  setH('rom',`<dt>고른 장</dt><dd class="k">${c[0]}장 · ${c[1]}</dd><dt>대화가 오간 해</dt><dd>${c[2]}${c[3]!==c[2]?'–'+c[3]:''}</dd><dt>책으로 나오기까지</dt><dd class="hot">약 ${PUB-c[3]}년</dd><dt>스무 장의 평균</dt><dd>${avg.toFixed(0)}년</dd>`);}
+onFrame(()=>{const {g,w,h}=fit($('cvm'));g.clearRect(0,0,w,h);const pad=16,lx=pad+26,rx=w-pad-8,y0=pad+20,y1=h-pad-24,row=(y1-y0)/20;
+  const X=y=>lx+(y-1915)/(1972-1915)*(rx-lx);
+  g.font=ep(11,500);g.fillStyle=C.muted;g.textAlign='center';for(const y of[1920,1930,1940,1950,1960,1969]){g.strokeStyle=y===PUB?C.ochre:C.line;g.lineWidth=y===PUB?1.6:1;g.beginPath();g.moveTo(X(y),y0-6);g.lineTo(X(y),y1);g.stroke();g.fillStyle=y===PUB?C.ochre:C.muted;g.fillText(y===PUB?'1969 출간':y,X(y),y1+16);}
+  CH.forEach((c,i)=>{const y=y0+i*row+row/2,sel=i===cur,on=inThread(i);
+    g.strokeStyle=sel?C.ochre:'rgba(107,111,91,.45)';g.setLineDash([3,4]);g.lineWidth=sel?1.6:1;g.beginPath();g.moveTo(X(c[3]+1),y);g.lineTo(X(PUB),y);g.stroke();g.setLineDash([]);
+    g.fillStyle=sel?C.forest:on?C.olive:C.sage2;const bw=Math.max(5,X(c[3]+1)-X(c[2]));g.beginPath();g.roundRect?g.roundRect(X(c[2]),y-row*.32,bw,row*.64,4):g.rect(X(c[2]),y-row*.32,bw,row*.64);g.fill();
+    g.fillStyle=sel?C.ink:C.muted;g.font=ep(sel?12:11,sel?700:500);g.textAlign='right';g.fillText(c[0],lx-8,y+4);});
+});
+/* 첫날 고른 문장 */
+const S={A:['문장 A','지각은 개별적 인상을 \'이해할 수 있는 것\'으로 바꾸는 활동이다. 캠프를 지나며 \'바꾸는 틀\'은 고정된 것이었나요, 고쳐진 것이었나요?'],
+ B:['문장 B','아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능할 거야. 하이젠베르크는 선입견을 없앴나요, 바꿨나요? 나는요?'],
+ C:['문장 C','부분적 질서들은 중심으로 가는 길을 찾지 못한다. 이 책의 원에서 중심은 발견되었나요, 구성되었나요?']};
+let k=null;try{k=localStorage.getItem('pb-first-sentence');}catch(e){}
+if(k&&S[k]){$('fp-h').textContent=S[k][0];$('fp-p').textContent=S[k][1];}
+})();
+
+</script>
+</body>
+</html>

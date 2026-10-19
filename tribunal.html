@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>칸트의 법정</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;600&display=swap">
+<style>
+/* Layout: 크림 바탕 위에 둥근 숲색 히어로(민트 거대 글자 + 그 앞을 가로지르는 움직이는 물체), 세이지·올리브 3색 카드, 아치 프레임, 네 갈래 별 장식 */
+:root{
+  --cream:#f3efe3; --paper:#fbf9f3; --sage:#dfe2bf; --sage2:#c4cb94; --olive:#5b6a37; --moss:#3e4a26;
+  --forest:#142614; --forest2:#1f3420; --mint:#e0f5c6; --mintdim:#a9c29a; --ink:#1c2316; --muted:#6b6f5b; --line:#d6d3c0; --ochre:#b0873a;
+  --sans:"Epilogue","Noto Sans KR",system-ui,sans-serif;
+  --ko:"Noto Sans KR",system-ui,sans-serif;
+  --it:"Instrument Serif","Noto Serif KR",Georgia,serif;
+  --sko:"Noto Serif KR","Instrument Serif",Georgia,serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--ko);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ochre);outline-offset:3px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1180px;margin:0 auto}
+.it{font-family:var(--it);font-style:italic;font-weight:400;letter-spacing:0}
+.se{font-family:var(--sko);font-weight:500;color:var(--olive)}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+
+/* hero */
+.hero{background:var(--forest);color:var(--mint);border-radius:0 0 44px 44px;padding-block:14px 44px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% -10%;height:70%;background:radial-gradient(closest-side,rgba(224,245,198,.10),transparent);pointer-events:none}
+.bar{display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 7px 7px 18px;position:relative;z-index:3}
+.logo{font-family:var(--sans);font-weight:600;font-size:16px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.logo .it{color:var(--olive);font-size:19px}
+.bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.bar nav::-webkit-scrollbar{display:none}
+.bar nav a{font-size:13px;text-decoration:none;padding:6px 12px;border-radius:999px;white-space:nowrap;color:var(--muted)}
+.bar nav a[aria-current]{background:var(--sage);color:var(--ink);font-weight:700}
+.bar nav a:hover{color:var(--ink)}
+@media (max-width:760px){.bar{flex-wrap:wrap;border-radius:26px;padding:10px 12px}.bar nav{margin-left:0;width:100%}}
+.stage{position:relative;margin-top:26px}
+.giant{font-family:var(--sans);font-weight:500;letter-spacing:-.055em;line-height:.86;text-align:center;white-space:nowrap;margin:0;color:var(--mint);
+  font-size:min(200px,calc(94vw / (var(--len) * .6)));padding-block:clamp(40px,7vw,90px)}
+.obj{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,62vw);aspect-ratio:1;max-width:100%;z-index:2}
+.obj.grab{cursor:grab;touch-action:none}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;position:relative;z-index:3}
+@media (max-width:760px){.hrow{grid-template-columns:minmax(0,1fr)}}
+.hrow p{margin:0;color:var(--mintdim);max-width:46ch;justify-self:end}
+@media (max-width:760px){.hrow p{justify-self:start}}
+.hrow .tag{display:inline-block;border:1px solid var(--mintdim);color:var(--mint);border-radius:999px;padding:3px 12px;font-size:12px;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--olive);color:var(--cream)}
+.btn.mint{background:var(--mint);color:var(--forest)}
+.btn.ghost{background:transparent;border:1px solid currentColor;color:inherit}
+.btn:hover{filter:brightness(1.08)}
+
+/* section heads */
+.sec{padding-block:72px 0}
+.head{text-align:center;display:grid;justify-items:center;gap:10px;margin-bottom:30px}
+.head h2{font-family:var(--sans);font-weight:500;font-size:clamp(28px,4.2vw,46px);letter-spacing:-.035em;line-height:1.15;margin:0;text-wrap:balance}
+.head h2 .it{color:var(--olive);font-size:1.12em}
+.head p{margin:0;max-width:60ch;color:var(--muted);text-wrap:pretty}
+.spark{width:22px;height:22px;color:var(--olive)}
+
+/* lab: a visualization block */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;background:var(--paper);border-radius:36px;padding:20px;align-items:start}
+.lab + .lab{margin-top:22px}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr);border-radius:28px;padding:14px}}
+.board{border-radius:26px;background:var(--cream);overflow:hidden;min-width:0;position:relative}
+.board.dark{background:var(--forest)}
+.board.sage{background:var(--sage)}
+.board canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;max-width:100%}
+.board canvas.tall{aspect-ratio:1/1}
+.board canvas.grab{cursor:grab;touch-action:none}
+.text{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;padding:8px 6px 6px}
+.kick{justify-self:start;background:var(--sage);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;color:var(--moss)}
+.kick.warn{background:var(--ochre);color:var(--paper)}
+.text h3{font-family:var(--sans);font-weight:500;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.03em;line-height:1.25;margin:0;text-wrap:balance}
+.text h3 .it{color:var(--olive);font-size:1.12em}
+.text p{margin:0;max-width:62ch}
+.formula{font-family:var(--it);font-style:italic;font-size:clamp(24px,3vw,32px);text-align:center;background:var(--sage);border-radius:999px;padding:6px 18px}
+.ctl{display:grid;gap:2px}
+.ctl label,.lab .lbl{font-size:12px;font-weight:700;color:var(--muted)}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive);margin-top:-7.5px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--olive);background:transparent;color:var(--moss);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--olive);color:var(--cream);font-weight:700}
+.chips.sm button{padding:3px 10px;font-size:12px}
+.ro{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;background:var(--forest);color:var(--mint);border-radius:20px;padding:13px 18px;font-size:13px;font-variant-numeric:tabular-nums}
+.ro dt{color:var(--mintdim)} .ro dd{margin:0;text-align:right;font-family:var(--sans)} .ro dd.k{font-family:var(--ko)}
+.ro dd.hot{color:#fff;font-weight:700}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
+.check input{accent-color:var(--olive);width:16px;height:16px}
+.note{font-size:13px;color:var(--muted)}
+.lens{display:flex;gap:10px;align-items:flex-start;background:var(--sage);border-radius:20px;padding:12px 16px;font-size:14px}
+.lens b{font-family:var(--sans);font-size:20px;line-height:1.2;color:var(--olive)}
+
+/* tri-tone cards */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.step{border-radius:28px;padding:24px 22px;min-height:240px;display:grid;gap:12px;align-content:space-between;text-decoration:none;min-width:0}
+.step.o{background:var(--olive);color:var(--cream)} .step.s{background:var(--sage2);color:var(--ink)} .step.c{background:var(--sage);color:var(--ink)} .step.p{background:var(--paper);color:var(--ink)}
+.step .no{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.14em;opacity:.75}
+.step h3{font-family:var(--sans);font-weight:500;font-size:24px;letter-spacing:-.03em;line-height:1.2;margin:0}
+.step p{margin:0;font-size:14px;opacity:.9}
+.step .go{justify-self:end;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-size:18px}
+.step.o .go{background:var(--cream)}
+a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
+
+/* arch card */
+.arch{background:var(--sage);border-radius:999px 999px 30px 30px;padding:46px 26px 28px;text-align:center;display:grid;gap:10px;justify-items:center;min-width:0}
+.arch .role{font-size:12px;font-weight:700;background:var(--paper);border-radius:999px;padding:3px 12px;color:var(--moss)}
+.arch .letter{font-family:var(--it);font-style:italic;font-size:54px;line-height:1;color:var(--olive)}
+.arch p{margin:0;font-size:15px}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.verdict{grid-template-columns:minmax(0,1fr)}}
+.verdict section{background:var(--paper);border-radius:28px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
+.verdict h4{margin:0;font-family:var(--sans);font-weight:500;font-size:20px;letter-spacing:-.02em}
+.verdict p{margin:0;font-size:14.5px}
+.verdict .see{font-size:12px;font-weight:700;color:var(--olive)}
+.ask{background:var(--olive);color:var(--cream);border-radius:28px;padding:24px 26px;margin-top:14px;display:grid;gap:8px}
+.ask p{margin:0;max-width:75ch}
+.caveat{font-size:13px;color:var(--muted);max-width:85ch;margin:26px auto 0;text-align:center}
+
+/* next + footer */
+.next{margin-top:80px}
+.next .in{background:var(--sage);border-radius:40px;padding:34px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.next a.big{font-family:var(--sans);font-weight:500;font-size:clamp(30px,5vw,56px);letter-spacing:-.04em;text-decoration:none;line-height:1}
+.next a.big .it{color:var(--olive)}
+.foot{margin-top:24px;background:var(--forest);color:var(--mintdim);border-radius:44px 44px 0 0}
+.foot .in{padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.hrow h1{font-family:var(--sans);font-weight:500;font-size:clamp(30px,4.4vw,50px);letter-spacing:-.035em;line-height:1.12;color:var(--cream);margin:0 0 16px;text-wrap:balance}
+.hrow h1 .se{color:var(--mint)}
+.hrow h1 .it{color:var(--mint);font-size:1.1em}
+
+.tray{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;background:var(--cream);border-radius:20px;padding:10px}
+.card{border:1px solid var(--olive);background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;text-align:left}
+.card[aria-pressed="true"]{background:var(--forest);color:var(--mint);border-color:var(--forest)}
+.card.issue{border-style:dashed;border-color:var(--ochre)}
+.quad{display:grid}
+.axis-x{grid-column:2;display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.axis-y{grid-row:2;display:grid;grid-template-rows:1fr 1fr;gap:8px;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.axis-y span{display:grid;place-items:center}
+.cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cell{min-height:150px;border-radius:24px;border:0;padding:12px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.cell:nth-child(1){background:var(--sage)} .cell:nth-child(2){background:var(--sage2)} .cell:nth-child(3){background:var(--sage2)} .cell:nth-child(4){background:#b3ba7f}
+.cell .hint{width:100%;font-size:12px;color:var(--moss);font-weight:700}
+.cell.armed{outline:2px dashed var(--olive);outline-offset:3px}
+@media (max-width:560px){.cell{min-height:120px;padding:8px}.card{font-size:13px;padding:6px 11px}}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
+.notes-grid section{background:var(--cream);border-radius:20px;padding:14px 16px;display:grid;gap:4px}
+.notes-grid h4{margin:0;font-size:15px}
+.notes-grid .where{font-size:12px;font-weight:700;color:var(--olive)}
+.notes-grid .where.mine{color:var(--muted)}
+.notes-grid p{margin:0;font-size:14px}
+
+</style>
+</head>
+<body>
+<header class="hero gut"><div class="in">
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html" aria-current="page">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="stage" style="--len:8"><p class="giant" aria-hidden="true">Tribunal</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
+<div class="hrow"><div><span class="tag">Room 03 · 10장</span><h1>칸트의 <span class="se">법정</span></h1><div class="btns"><a class="btn mint" href="#spin">하나는 모르고, 천은 안다</a><a class="btn ghost" href="#sort">두 단어 분류판</a></div></div><p>1930년대 초 라이프치히. 칸트주의 철학자 그레테 헤르만이 물리학자들을 찾아옵니다. 양자역학이 인과율을 버렸다는 말을 그대로 둘 수 없었기 때문입니다. 두 단어를 갈라 보면 법정의 쟁점이 보입니다.</p></div>
+</div></header>
+<main>
+<section class="sec gut"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>법정의 <span class="se">두 편</span></h2><p>10장 · 1930–1932</p></div>
+  <div class="steps">
+    <div class="step o"><span class="no">칸트 편 · 그레테 헤르만</span><h3>인과율은 버릴 수 없다</h3><p>칸트에게 인과성은 세계에서 찾아내는 사실이 아니라, 우리가 무엇이든 경험할 수 있기 위한 조건입니다. 그렇다면 어떤 실험도 인과율을 반박할 수 없어 보입니다.</p></div>
+    <div class="step c"><span class="no">물리학자 편 · 하이젠베르크와 바이츠제커</span><h3>선험도 고쳐질 수 있다</h3><p>경험의 조건이라고 해서 영원히 고정된 것은 아닙니다. 칸트가 선험적이라 여긴 유클리드 공간도 일반상대성이론에서 고쳐졌습니다.</p></div>
+    <div class="step s"><span class="no">쟁점</span><h3>무엇이 무너졌나</h3><p>두 단어를 갈라야 합니다. <b>인과율</b>은 사건이 법칙을 따라 이어진다는 것, <b>예측 가능성</b>은 다음 결과를 미리 알 수 있다는 것입니다.</p></div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="spin"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>하나는 모르고, <span class="se">천은 안다</span></h2><p>전자 하나하나와 전자 천 개</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cvp" aria-label="전자를 하나씩 보내 위 또는 아래로 나오는 결과를 쌓는다"></canvas></div>
+    <div class="text">
+      <span class="kick">01 · 측정 실험</span>
+      <h3>개별 결과는 <span class="se">알 수 없고</span>, 비율은 정확하다</h3>
+      <p>모든 전자를 똑같은 상태(위쪽 스핀)로 준비해, 자석 장치에 하나씩 보냅니다. 전자는 '위' 아니면 '아래'로만 나옵니다. 장치를 기울이면 결과가 섞이기 시작합니다.</p>
+      <div class="ctl"><label for="theta">장치의 기울기 θ</label><input type="range" id="theta" min="0" max="180" step="15" value="60"><div class="ticks"><span>0°</span><span>90°</span><span>180°</span></div></div>
+      <div class="btns"><button type="button" class="btn" id="s1">전자 1개</button><button type="button" class="btn" id="s100">100개</button><button type="button" class="btn" id="s1000">1000개</button><button type="button" class="btn ghost" id="sreset" style="color:var(--olive)">처음부터</button></div>
+      <dl class="ro" id="rop"></dl>
+      <p>다음 전자가 어느 쪽으로 나올지는 아무리 정밀하게 준비해도 말할 수 없습니다. 그런데 많이 보내면 '위'의 비율은 곡선 cos²(θ/2)에 정확히 내려앉습니다. 이 곡선을 정하는 파동함수는 슈뢰딩거 방정식에 따라 한 치도 어긋나지 않게 변합니다.</p>
+      <div class="lens"><b>?</b><span>그렇다면 무너진 것은 인과율일까요, 예측 가능성일까요? 헤르만은 측정이 끝난 뒤에는 그 결과에 이른 과정을 거슬러 원인으로 설명할 수 있다고 보았습니다.</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="sort"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>두 단어 <span class="se">분류판</span></h2><p>카드를 누른 다음 칸을 눌러 옮기세요. 다 옮겼으면 해설을 엽니다.</p></div>
+  <div class="lab" style="grid-template-columns:minmax(0,1fr)">
+    <div class="text">
+      <div class="tray" id="tray" role="group" aria-label="분류할 카드"></div>
+      <div class="quad" id="quad">
+        <div class="cells" id="cells"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn" id="explain">해설 보기</button><button type="button" class="btn ghost" id="sortreset" style="color:var(--olive)">처음부터</button></div>
+      <div id="notes" class="notes-grid" hidden></div>
+    </div>
+  </div>
+  <div class="ask"><p><b>변론문을 쓰기 전에</b> 내가 맡은 편의 주장을 이 분류판의 말로 바꿔 보세요. 칸트 편이라면 '원자 하나의 붕괴'는 어느 칸에 있어야 할까요? 물리학자 편이라면요? 그리고 1장의 문장 A, 곧 지각이 인상을 이해할 수 있는 것으로 '바꾼다'는 생각이 어느 편에 더 유리한 증거인지 한 줄로 적어 보세요.</p></div>
+  <p class="caveat">헤르만은 1935년, 당대 최고의 수학자 폰 노이만이 양자역학에 대해 내놓은 '숨은 변수 불가능성' 증명에 논리적 허점이 있음을 지적했습니다. 이 지적은 오래 잊혔다가 30년 뒤 물리학자 벨의 비판과 함께 다시 드러났습니다.</p>
+</div></section>
+
+</main>
+<section class="next gut"><div class="in"><a class="big" href="part-and-whole.html">부분과 <span class="se">전체</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 04</span></div></section>
+<footer class="foot gut"><div class="in"><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<script>
+const PB=(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
+function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
+const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
+const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
+function gauss(){let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random());}
+function chips(id,cb){const bs=[...document.querySelectorAll('#'+id+' button')];bs.forEach((b,i)=>b.addEventListener('click',()=>{bs.forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));cb(i,b);}));return bs;}
+/* 3D */
+const PHI=(1+Math.sqrt(5))/2;
+function solid(name){
+  let v=[];const p=PHI,q=1/PHI;
+  if(name==='tetra')v=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  if(name==='cube'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);}
+  if(name==='octa')v=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  if(name==='icosa'){for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a,b*p]);v.push([a,b*p,0]);v.push([a*p,0,b]);}}
+  if(name==='dodeca'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a*q,b*p]);v.push([a*q,b*p,0]);v.push([a*p,0,b*q]);}}
+  const n=Math.hypot(...v[0]);v=v.map(x=>x.map(c=>c/n));
+  let dmin=1e9;for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)dmin=Math.min(dmin,Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2]));
+  const e=[];for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)if(Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2])<dmin*1.01)e.push([i,j]);
+  return {v,e};
+}
+function rot(p,ax,ay){let [x,y,z]=p;let c=Math.cos(ay),s=Math.sin(ay);[x,z]=[x*c+z*s,-x*s+z*c];c=Math.cos(ax);s=Math.sin(ax);[y,z]=[y*c-z*s,y*s+z*c];return [x,y,z];}
+function drawSolid(g,S,cx,cy,R,ax,ay,col,lw,dots){
+  const P=S.v.map(p=>rot(p,ax,ay));
+  const order=S.e.map(([i,j])=>({i,j,z:(P[i][2]+P[j][2])/2})).sort((a,b)=>a.z-b.z);
+  for(const o of order){const a=P[o.i],b=P[o.j];const f=(o.z+1)/2;g.globalAlpha=.25+.75*f;g.strokeStyle=col;g.lineWidth=lw*(.6+.6*f);g.beginPath();g.moveTo(cx+a[0]*R,cy-a[1]*R);g.lineTo(cx+b[0]*R,cy-b[1]*R);g.stroke();}
+  if(dots){for(const a of P){const f=(a[2]+1)/2;g.globalAlpha=.35+.65*f;g.fillStyle=col;g.beginPath();g.arc(cx+a[0]*R,cy-a[1]*R,dots*(.6+.6*f),0,7);g.fill();}}
+  g.globalAlpha=1;
+}
+/* drag to rotate */
+function dragger(cv,state){let down=null;
+  cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,ax:state.ax,ay:state.ay};cv.setPointerCapture(e.pointerId);state.hold=true;});
+  cv.addEventListener('pointermove',e=>{if(!down)return;state.ay=down.ay+(e.clientX-down.x)*0.01;state.ax=down.ax+(e.clientY-down.y)*0.01;state.dirty=true;});
+  const up=()=>{down=null;state.hold=false;};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);}
+/* loop */
+const loops=[];let running=false;
+function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
+function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops)f(0);}
+addEventListener('resize',()=>{if(reduce)redraw();});
+if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
+return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+</script>
+<script>
+(function(){
+const {$,reduce,C,fit,ko,ep,chips,onFrame}=PB;
+const _h={};function setH(id,html){if(_h[id]!==html){_h[id]=html;$(id).innerHTML=html;}}
+
+/* 히어로: 저울 */
+onFrame(t=>{const cv=$('hero-obj'),{g,w,h}=fit(cv);g.clearRect(0,0,w,h);
+  const cx=w/2,top=h*.26,L=Math.min(w,h)*.36,a=reduce?.12:Math.sin(t/1400)*.16;
+  g.strokeStyle=C.mint;g.fillStyle=C.mint;g.lineWidth=3;g.lineCap='round';
+  g.beginPath();g.moveTo(cx,top);g.lineTo(cx,h*.82);g.stroke();g.beginPath();g.moveTo(cx-L*.35,h*.82);g.lineTo(cx+L*.35,h*.82);g.stroke();
+  g.beginPath();g.arc(cx,top,6,0,7);g.fill();
+  const lx=cx-L*Math.cos(a),ly=top-L*Math.sin(a),rx=cx+L*Math.cos(a),ry=top+L*Math.sin(a);
+  g.beginPath();g.moveTo(lx,ly);g.lineTo(rx,ry);g.stroke();
+  [[lx,ly,'인과율'],[rx,ry,'예측 가능성']].forEach(([x,y,t2])=>{g.lineWidth=1.5;g.beginPath();g.moveTo(x,y);g.lineTo(x-L*.22,y+L*.42);g.moveTo(x,y);g.lineTo(x+L*.22,y+L*.42);g.stroke();
+    g.lineWidth=3;g.beginPath();g.moveTo(x-L*.3,y+L*.42);g.quadraticCurveTo(x,y+L*.62,x+L*.3,y+L*.42);g.stroke();
+    g.font=ko(Math.max(12,L*.09),700);g.textAlign='center';g.fillText(t2,x,y+L*.78);});
+});
+
+/* 01 측정 실험 */
+let seq=[];const tally={};
+const th=()=>+$('theta').value;
+const pUp=d=>Math.cos(d*Math.PI/360)**2;
+function send(k){const d=th(),p=pUp(d);tally[d]=tally[d]||{n:0,up:0};for(let i=0;i<k;i++){const up=Math.random()<p;seq.push(up);tally[d].n++;if(up)tally[d].up++;}if(seq.length>400)seq=seq.slice(-400);read();}
+function read(){const d=th(),T=tally[d]||{n:0,up:0},p=pUp(d);
+  setH('rop',`<dt>장치의 기울기</dt><dd>${d}°</dd><dt>이 기울기에서 보낸 전자</dt><dd>${T.n.toLocaleString()}개</dd><dt>'위'로 나온 비율</dt><dd>${T.n?(100*T.up/T.n).toFixed(1)+' %':'—'}</dd><dt>이론 cos²(θ/2)</dt><dd>${(100*p).toFixed(1)} %</dd><dt>다음 전자</dt><dd class="k hot">${p>.999?'반드시 위':p<.001?'반드시 아래':'위일 확률 '+(100*p).toFixed(0)+'%, 어느 쪽일지는 모름'}</dd>`);}
+$('s1').addEventListener('click',()=>send(1));$('s100').addEventListener('click',()=>send(100));$('s1000').addEventListener('click',()=>send(1000));
+$('sreset').addEventListener('click',()=>{seq=[];for(const k in tally)delete tally[k];read();});
+$('theta').addEventListener('input',()=>{seq=[];read();});
+send(30);
+onFrame(()=>{const {g,w,h}=fit($('cvp'));g.clearRect(0,0,w,h);const pad=18;
+  // 위: 결과 줄
+  const sh=h*.28,last=seq.slice(-60),cw=(w-2*pad)/60;
+  g.font=ko(12);g.fillStyle=C.muted;g.textAlign='left';g.fillText('최근 결과 (오른쪽이 최신)',pad,pad+4);
+  g.fillText('위',pad,pad+30);g.fillText('아래',pad,pad+30+sh*.45);
+  last.forEach((up,i)=>{const x=pad+36+i*((w-2*pad-36)/60),y=up?pad+26:pad+26+sh*.45;g.fillStyle=up?C.moss:C.ochre;g.beginPath();g.arc(x+cw*.4,y,Math.min(5,cw*.38),0,7);g.fill();});
+  // 아래: 그래프
+  const gx=pad+28,gy=sh+pad+24,gw=w-gx-pad,gh=h-gy-50;const X=d=>gx+d/180*gw,Y=p=>gy+(1-p)*gh;
+  g.strokeStyle=C.line;g.lineWidth=1;for(const p of[0,.5,1]){g.beginPath();g.moveTo(gx,Y(p));g.lineTo(gx+gw,Y(p));g.stroke();g.fillStyle=C.muted;g.textAlign='right';g.fillText((p*100)+'%',gx-6,Y(p)+4);}
+  g.textAlign='center';for(const d of[0,45,90,135,180])g.fillText(d+'°',X(d),gy+gh+17);
+  g.strokeStyle=C.olive;g.lineWidth=2.2;g.beginPath();for(let d=0;d<=180;d+=2){const x=X(d),y=Y(pUp(d));d?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
+  const d0=th();g.strokeStyle=C.ochre;g.setLineDash([4,4]);g.lineWidth=1.2;g.beginPath();g.moveTo(X(d0),gy);g.lineTo(X(d0),gy+gh);g.stroke();g.setLineDash([]);
+  for(const k in tally){const T=tally[k];if(!T.n)continue;const r=Math.min(9,2.5+Math.log10(T.n+1)*2.2);g.fillStyle=C.forest;g.beginPath();g.arc(X(+k),Y(T.up/T.n),r,0,7);g.fill();}
+  g.textAlign='left';g.fillStyle=C.muted;g.fillText('선: 이론  ·  점: 내가 잰 비율 (클수록 많이 보냄)',gx,h-8);
+});
+
+/* 02 분류판 */
+const CARDS=[
+ {k:'행성의 공전 (뉴턴 역학)',ans:0,note:'법칙이 정해 주고, 일식 날짜를 수백 년 앞까지 계산할 수 있습니다. 칸트가 생각한 인과율의 모범입니다.'},
+ {k:'한 달 뒤의 날씨',ans:2,note:'대기는 결정론적인 법칙을 따르지만, 처음 상태의 아주 작은 차이가 커져서 사실상 예측할 수 없습니다(혼돈). 인과율과 예측 가능성이 갈라지는 고전적인 예입니다.'},
+ {k:'던진 주사위의 눈',ans:2,note:'원리로는 뉴턴 역학을 따르지만 처음 조건을 다 알 수 없어서 확률로 다룹니다. 여기서 확률은 우리의 무지를 뜻합니다.'},
+ {k:'파동함수의 시간 변화',ans:0,note:'슈뢰딩거 방정식에 따라 완전히 정해집니다. 양자역학에도 법칙이 정해 주는 부분이 있습니다.'},
+ {k:'원자 1조 개 중 절반이 붕괴하는 시간',ans:0,note:'반감기는 매우 정확하게 예측됩니다. 수많은 개별 사건이 모이면 통계 법칙이 됩니다.'},
+ {k:'원자 하나가 붕괴하는 순간',ans:3,issue:true,note:'법정의 쟁점입니다. 표준적인 양자역학(코펜하겐 해석)은 이 순간을 정하는 원인이 없다고 봅니다. 주사위처럼 숨은 원인을 우리가 모를 뿐이라고 보는 입장도 있었고, 바로 그 \'숨은 변수\'가 가능한지가 헤르만이 파고든 문제였습니다.'}];
+const CELLS=['법칙이 정한다 · 미리 알 수 있다','정하는 법칙이 없다 · 미리 알 수 있다','법칙이 정한다 · 미리 알 수 없다','정하는 법칙이 없다 · 미리 알 수 없다'];
+const HINT=['','이런 경우가 있을까요?','',''];
+let place=CARDS.map(()=>-1),picked=-1;
+function draw(){const tray=$('tray'),cells=$('cells');tray.innerHTML='';cells.innerHTML='';
+  const mk=i=>{const b=document.createElement('button');b.type='button';b.className='card'+(CARDS[i].issue?' issue':'');b.textContent=CARDS[i].k;b.setAttribute('aria-pressed',picked===i?'true':'false');
+    b.addEventListener('click',e=>{e.stopPropagation();picked=picked===i?-1:i;draw();});return b;};
+  CARDS.forEach((c,i)=>{if(place[i]<0)tray.appendChild(mk(i));});
+  if(!tray.children.length){const s=document.createElement('span');s.className='note';s.textContent='모두 옮겼습니다. 해설을 열어 보세요.';tray.appendChild(s);}
+  CELLS.forEach((nm,q)=>{const c=document.createElement('div');c.className='cell'+(picked>=0?' armed':'');c.setAttribute('role','button');c.tabIndex=0;c.setAttribute('aria-label',nm+' 칸에 놓기');
+    c.innerHTML=`<span class="hint">${nm}${HINT[q]?' · '+HINT[q]:''}</span>`;CARDS.forEach((cd,i)=>{if(place[i]===q)c.appendChild(mk(i));});
+    const drop=()=>{if(picked<0)return;place[picked]=q;picked=-1;draw();};c.addEventListener('click',drop);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();drop();}});cells.appendChild(c);});
+}
+$('explain').addEventListener('click',()=>{const n=$('notes');n.hidden=!n.hidden;$('explain').textContent=n.hidden?'해설 보기':'해설 닫기';
+  n.innerHTML=CARDS.map((c,i)=>`<section><h4>${c.k}</h4><span class="where">${c.issue?'쟁점 · 보통은 '+CELLS[c.ans]+'로 보지만 열린 문제':'보통의 분류 · '+CELLS[c.ans]}</span><span class="where mine">내 분류 · ${place[i]<0?'아직 안 옮김':CELLS[place[i]]}</span><p>${c.note}</p></section>`).join('');});
+$('sortreset').addEventListener('click',()=>{place=CARDS.map(()=>-1);picked=-1;$('notes').hidden=true;$('explain').textContent='해설 보기';draw();});
+draw();
+})();
+
+</script>
+</body>
+</html>

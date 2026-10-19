@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>첫 번째 산책</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;600&display=swap">
+<style>
+/* Layout: 크림 바탕 위에 둥근 숲색 히어로(민트 거대 글자 + 그 앞을 가로지르는 움직이는 물체), 세이지·올리브 3색 카드, 아치 프레임, 네 갈래 별 장식 */
+:root{
+  --cream:#f3efe3; --paper:#fbf9f3; --sage:#dfe2bf; --sage2:#c4cb94; --olive:#5b6a37; --moss:#3e4a26;
+  --forest:#142614; --forest2:#1f3420; --mint:#e0f5c6; --mintdim:#a9c29a; --ink:#1c2316; --muted:#6b6f5b; --line:#d6d3c0; --ochre:#b0873a;
+  --sans:"Epilogue","Noto Sans KR",system-ui,sans-serif;
+  --ko:"Noto Sans KR",system-ui,sans-serif;
+  --it:"Instrument Serif","Noto Serif KR",Georgia,serif;
+  --sko:"Noto Serif KR","Instrument Serif",Georgia,serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--ko);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ochre);outline-offset:3px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1180px;margin:0 auto}
+.it{font-family:var(--it);font-style:italic;font-weight:400;letter-spacing:0}
+.se{font-family:var(--sko);font-weight:500;color:var(--olive)}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+
+/* hero */
+.hero{background:var(--forest);color:var(--mint);border-radius:0 0 44px 44px;padding-block:14px 44px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% -10%;height:70%;background:radial-gradient(closest-side,rgba(224,245,198,.10),transparent);pointer-events:none}
+.bar{display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 7px 7px 18px;position:relative;z-index:3}
+.logo{font-family:var(--sans);font-weight:600;font-size:16px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.logo .it{color:var(--olive);font-size:19px}
+.bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.bar nav::-webkit-scrollbar{display:none}
+.bar nav a{font-size:13px;text-decoration:none;padding:6px 12px;border-radius:999px;white-space:nowrap;color:var(--muted)}
+.bar nav a[aria-current]{background:var(--sage);color:var(--ink);font-weight:700}
+.bar nav a:hover{color:var(--ink)}
+@media (max-width:760px){.bar{flex-wrap:wrap;border-radius:26px;padding:10px 12px}.bar nav{margin-left:0;width:100%}}
+.stage{position:relative;margin-top:26px}
+.giant{font-family:var(--sans);font-weight:500;letter-spacing:-.055em;line-height:.86;text-align:center;white-space:nowrap;margin:0;color:var(--mint);
+  font-size:min(200px,calc(94vw / (var(--len) * .6)));padding-block:clamp(40px,7vw,90px)}
+.obj{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,62vw);aspect-ratio:1;max-width:100%;z-index:2}
+.obj.grab{cursor:grab;touch-action:none}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;position:relative;z-index:3}
+@media (max-width:760px){.hrow{grid-template-columns:minmax(0,1fr)}}
+.hrow p{margin:0;color:var(--mintdim);max-width:46ch;justify-self:end}
+@media (max-width:760px){.hrow p{justify-self:start}}
+.hrow .tag{display:inline-block;border:1px solid var(--mintdim);color:var(--mint);border-radius:999px;padding:3px 12px;font-size:12px;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--olive);color:var(--cream)}
+.btn.mint{background:var(--mint);color:var(--forest)}
+.btn.ghost{background:transparent;border:1px solid currentColor;color:inherit}
+.btn:hover{filter:brightness(1.08)}
+
+/* section heads */
+.sec{padding-block:72px 0}
+.head{text-align:center;display:grid;justify-items:center;gap:10px;margin-bottom:30px}
+.head h2{font-family:var(--sans);font-weight:500;font-size:clamp(28px,4.2vw,46px);letter-spacing:-.035em;line-height:1.15;margin:0;text-wrap:balance}
+.head h2 .it{color:var(--olive);font-size:1.12em}
+.head p{margin:0;max-width:60ch;color:var(--muted);text-wrap:pretty}
+.spark{width:22px;height:22px;color:var(--olive)}
+
+/* lab: a visualization block */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;background:var(--paper);border-radius:36px;padding:20px;align-items:start}
+.lab + .lab{margin-top:22px}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr);border-radius:28px;padding:14px}}
+.board{border-radius:26px;background:var(--cream);overflow:hidden;min-width:0;position:relative}
+.board.dark{background:var(--forest)}
+.board.sage{background:var(--sage)}
+.board canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;max-width:100%}
+.board canvas.tall{aspect-ratio:1/1}
+.board canvas.grab{cursor:grab;touch-action:none}
+.text{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;padding:8px 6px 6px}
+.kick{justify-self:start;background:var(--sage);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;color:var(--moss)}
+.kick.warn{background:var(--ochre);color:var(--paper)}
+.text h3{font-family:var(--sans);font-weight:500;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.03em;line-height:1.25;margin:0;text-wrap:balance}
+.text h3 .it{color:var(--olive);font-size:1.12em}
+.text p{margin:0;max-width:62ch}
+.formula{font-family:var(--it);font-style:italic;font-size:clamp(24px,3vw,32px);text-align:center;background:var(--sage);border-radius:999px;padding:6px 18px}
+.ctl{display:grid;gap:2px}
+.ctl label,.lab .lbl{font-size:12px;font-weight:700;color:var(--muted)}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive);margin-top:-7.5px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--olive);background:transparent;color:var(--moss);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--olive);color:var(--cream);font-weight:700}
+.chips.sm button{padding:3px 10px;font-size:12px}
+.ro{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;background:var(--forest);color:var(--mint);border-radius:20px;padding:13px 18px;font-size:13px;font-variant-numeric:tabular-nums}
+.ro dt{color:var(--mintdim)} .ro dd{margin:0;text-align:right;font-family:var(--sans)} .ro dd.k{font-family:var(--ko)}
+.ro dd.hot{color:#fff;font-weight:700}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
+.check input{accent-color:var(--olive);width:16px;height:16px}
+.note{font-size:13px;color:var(--muted)}
+.lens{display:flex;gap:10px;align-items:flex-start;background:var(--sage);border-radius:20px;padding:12px 16px;font-size:14px}
+.lens b{font-family:var(--sans);font-size:20px;line-height:1.2;color:var(--olive)}
+
+/* tri-tone cards */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.step{border-radius:28px;padding:24px 22px;min-height:240px;display:grid;gap:12px;align-content:space-between;text-decoration:none;min-width:0}
+.step.o{background:var(--olive);color:var(--cream)} .step.s{background:var(--sage2);color:var(--ink)} .step.c{background:var(--sage);color:var(--ink)} .step.p{background:var(--paper);color:var(--ink)}
+.step .no{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.14em;opacity:.75}
+.step h3{font-family:var(--sans);font-weight:500;font-size:24px;letter-spacing:-.03em;line-height:1.2;margin:0}
+.step p{margin:0;font-size:14px;opacity:.9}
+.step .go{justify-self:end;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-size:18px}
+.step.o .go{background:var(--cream)}
+a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
+
+/* arch card */
+.arch{background:var(--sage);border-radius:999px 999px 30px 30px;padding:46px 26px 28px;text-align:center;display:grid;gap:10px;justify-items:center;min-width:0}
+.arch .role{font-size:12px;font-weight:700;background:var(--paper);border-radius:999px;padding:3px 12px;color:var(--moss)}
+.arch .letter{font-family:var(--it);font-style:italic;font-size:54px;line-height:1;color:var(--olive)}
+.arch p{margin:0;font-size:15px}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.verdict{grid-template-columns:minmax(0,1fr)}}
+.verdict section{background:var(--paper);border-radius:28px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
+.verdict h4{margin:0;font-family:var(--sans);font-weight:500;font-size:20px;letter-spacing:-.02em}
+.verdict p{margin:0;font-size:14.5px}
+.verdict .see{font-size:12px;font-weight:700;color:var(--olive)}
+.ask{background:var(--olive);color:var(--cream);border-radius:28px;padding:24px 26px;margin-top:14px;display:grid;gap:8px}
+.ask p{margin:0;max-width:75ch}
+.caveat{font-size:13px;color:var(--muted);max-width:85ch;margin:26px auto 0;text-align:center}
+
+/* next + footer */
+.next{margin-top:80px}
+.next .in{background:var(--sage);border-radius:40px;padding:34px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.next a.big{font-family:var(--sans);font-weight:500;font-size:clamp(30px,5vw,56px);letter-spacing:-.04em;text-decoration:none;line-height:1}
+.next a.big .it{color:var(--olive)}
+.foot{margin-top:24px;background:var(--forest);color:var(--mintdim);border-radius:44px 44px 0 0}
+.foot .in{padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.hrow h1{font-family:var(--sans);font-weight:500;font-size:clamp(30px,4.4vw,50px);letter-spacing:-.035em;line-height:1.12;color:var(--cream);margin:0 0 16px;text-wrap:balance}
+.hrow h1 .se{color:var(--mint)}
+.hrow h1 .it{color:var(--mint);font-size:1.1em}
+
+.arches .arch{border:0;cursor:pointer;color:var(--ink);font:inherit;line-height:1.6;transition:transform .2s}
+.arches .arch:hover{transform:translateY(-3px)}
+.arches .arch[aria-pressed="true"]{background:var(--olive);color:var(--cream)}
+.arches .arch[aria-pressed="true"] .letter{color:var(--mint)}
+.arches .arch[aria-pressed="true"] .role{background:var(--mint);color:var(--forest)}
+
+</style>
+</head>
+<body>
+<header class="hero gut"><div class="in">
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html" aria-current="page">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="stage" style="--len:10"><p class="giant" aria-hidden="true">First walk</p><canvas class="obj grab" id="hero-obj" aria-hidden="true"></canvas></div>
+<div class="hrow"><div><span class="tag">Room 01 · 1장 · 3장</span><h1>첫 번째 <span class="se">산책</span></h1><div class="btns"><a class="btn mint" href="#timaeus">지붕 위의 티마이오스</a><a class="btn ghost" href="#frames">같은 점, 다른 틀</a></div></div><p>1919년 뮌헨, 열여덟 살의 하이젠베르크는 교과서의 원자 그림을 믿지 못했습니다. 지붕 위에서 플라톤의 『티마이오스』를 읽으며, 가장 작은 것은 수학의 형식일지 모른다는 생각에 사로잡힙니다.</p></div>
+</div></header>
+<main>
+<section class="sec gut" id="pick"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>1장의 <span class="se">세 문장</span></h2>
+    <p>가장 마음에 걸리는 문장 하나를 고르세요. 고른 문장은 이 기기에 기억되었다가, 마지막 방 「부분과 전체」에서 다시 꺼내집니다.</p></div>
+  <div class="steps arches" id="arches" role="group" aria-label="가장 마음에 걸리는 문장 고르기">
+    <button type="button" class="arch" data-k="A" aria-pressed="false"><span class="role">물리학과 철학을 잇는 안경</span><span class="letter">A</span><p>지각은 개별적 인상을 '이해할 수 있는 것'으로 바꾸는 활동이다.</p></button>
+    <button type="button" class="arch" data-k="B" aria-pressed="false"><span class="role">안경을 쓴 사람을 재는 눈금</span><span class="letter">B</span><p>아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능할 거야.</p></button>
+    <button type="button" class="arch" data-k="C" aria-pressed="false"><span class="role">책 전체를 보는 안경</span><span class="letter">C</span><p>부분적 질서들은 중심으로 가는 길을 찾지 못한다.</p></button>
+  </div>
+  <p class="caveat" id="pickmsg">아직 고르지 않았습니다.</p>
+</div></section>
+
+<section class="sec gut" id="timaeus"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>지붕 위의 <span class="se">티마이오스</span></h2><p>정거장 A · 1장</p></div>
+  <div class="lab">
+    <div class="board sage"><canvas id="cvs" class="tall grab" aria-label="플라톤의 정다면체. 끌어서 돌려 볼 수 있다"></canvas></div>
+    <div class="text">
+      <span class="kick">01 · 플라톤의 원자</span>
+      <h3>가장 작은 것은 <span class="se">모양</span>일까</h3>
+      <p>혁명과 시가전이 지나간 1919년의 뮌헨, 하이젠베르크는 지붕 위에서 『티마이오스』를 읽습니다. 플라톤은 불·공기·물·흙의 가장 작은 조각을 정다면체로 보았습니다. 소년은 이 생각이 엉뚱하다고 느끼면서도, 물질의 바탕에 수학의 형식이 있다는 발상에 오래 사로잡힙니다.</p>
+      <div class="chips" id="schips" role="group" aria-label="정다면체 고르기">
+        <button type="button" aria-pressed="true">정사면체</button><button type="button" aria-pressed="false">정팔면체</button><button type="button" aria-pressed="false">정이십면체</button><button type="button" aria-pressed="false">정육면체</button><button type="button" aria-pressed="false">정십이면체</button>
+      </div>
+      <dl class="ro" id="ros"></dl>
+      <p class="note">정다면체는 이 다섯 개뿐입니다. 꼭짓점 − 모서리 + 면은 언제나 2입니다(오일러의 공식). 끌어서 돌려 보세요.</p>
+      <div class="lens"><b>B</b><span>플라톤의 원소론은 틀렸습니다. 그런데 '자연의 밑바닥에는 수학적 형식이 있다'는 믿음은 하이젠베르크를 평생 이끌었고, 책의 마지막 장에서 소립자와 함께 돌아옵니다. 이것은 선입견일까요, 아닐까요?</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="frames"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>같은 점, <span class="se">다른 틀</span></h2><p>정거장 B · 문장 A</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cvf" aria-label="관측된 점들 위에 서로 다른 틀을 씌워 본다"></canvas></div>
+    <div class="text">
+      <span class="kick">02 · 인상을 이해로 바꾸기</span>
+      <h3>틀은 점들 <span class="se">속에</span> 있지 않다</h3>
+      <p>어떤 행성의 위치를 스물두 번 잰 점들입니다. 이 점들만 보고는 아무것도 '이해'하지 못합니다. 틀을 하나 골라 점들 위에 씌워 보세요. 그다음 아직 보여 주지 않은 여덟 번의 관측을 드러내, 어느 틀이 그 점들이 있을 자리를 맞혔는지 확인합니다.</p>
+      <div class="chips" id="fchips" role="group" aria-label="틀 고르기">
+        <button type="button" aria-pressed="true">틀 없음</button><button type="button" aria-pressed="false">직선</button><button type="button" aria-pressed="false">별자리처럼 잇기</button><button type="button" aria-pressed="false">원</button><button type="button" aria-pressed="false">타원</button>
+      </div>
+      <div class="btns"><button type="button" class="btn" id="reveal">숨긴 관측 8개 드러내기</button><button type="button" class="btn ghost" id="renew" style="color:var(--olive)">새로 관측하기</button></div>
+      <dl class="ro" id="rof"></dl>
+      <p>원과 타원은 『코스모스』에서 케플러가 씨름한 바로 그 두 틀입니다. 점은 같은데, 어떤 틀을 쓰느냐에 따라 보이는 것과 맞힐 수 있는 것이 달라집니다. 틀은 내가 만든 것일까요, 받은 것일까요?</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="bohr"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>보어와의 <span class="se">산책</span></h2><p>정거장 D · 3장</p></div>
+  <div class="steps">
+    <div class="step o"><span class="no">그림</span><h3>그릴 수 있다</h3><p>원자를 작은 태양계로 그릴 수 있습니다. 그런데 그 그림은 누가 본 것일까요?</p></div>
+    <div class="step s"><span class="no">계산</span><h3>계산할 수 있다</h3><p>숫자는 맞게 나옵니다. 계산을 따라갈 수 있다는 것과 무슨 일이 일어나는지 아는 것은 같을까요?</p></div>
+    <div class="step c"><span class="no">예측</span><h3>예측할 수 있다</h3><p>다음 관측을 맞힙니다. 위의 '같은 점, 다른 틀'에서 가장 잘 맞힌 틀은 무엇이었나요?</p></div>
+  </div>
+  <div class="ask"><p><b>보어의 대답</b> 괴팅겐의 산길에서 보어는, 원자의 세계에서 언어는 무엇을 그대로 그리는 데 쓰이지 못하고 시처럼 비유로만 쓰일 수 있다고 말합니다. 내가 '안다고 생각했던' 과학 개념 하나를 골라, 그 이해가 그림·계산·예측 중 어디에 기대고 있었는지 내 카드에 적어 보세요.</p></div>
+</div></section>
+
+</main>
+<section class="next gut"><div class="in"><a class="big" href="invisible-orbit.html">보이지 않는 <span class="se">궤도</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 02</span></div></section>
+<footer class="foot gut"><div class="in"><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<script>
+const PB=(function(){
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
+function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
+const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
+const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
+function gauss(){let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random());}
+function chips(id,cb){const bs=[...document.querySelectorAll('#'+id+' button')];bs.forEach((b,i)=>b.addEventListener('click',()=>{bs.forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));cb(i,b);}));return bs;}
+/* 3D */
+const PHI=(1+Math.sqrt(5))/2;
+function solid(name){
+  let v=[];const p=PHI,q=1/PHI;
+  if(name==='tetra')v=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  if(name==='cube'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);}
+  if(name==='octa')v=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  if(name==='icosa'){for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a,b*p]);v.push([a,b*p,0]);v.push([a*p,0,b]);}}
+  if(name==='dodeca'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a*q,b*p]);v.push([a*q,b*p,0]);v.push([a*p,0,b*q]);}}
+  const n=Math.hypot(...v[0]);v=v.map(x=>x.map(c=>c/n));
+  let dmin=1e9;for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)dmin=Math.min(dmin,Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2]));
+  const e=[];for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)if(Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2])<dmin*1.01)e.push([i,j]);
+  return {v,e};
+}
+function rot(p,ax,ay){let [x,y,z]=p;let c=Math.cos(ay),s=Math.sin(ay);[x,z]=[x*c+z*s,-x*s+z*c];c=Math.cos(ax);s=Math.sin(ax);[y,z]=[y*c-z*s,y*s+z*c];return [x,y,z];}
+function drawSolid(g,S,cx,cy,R,ax,ay,col,lw,dots){
+  const P=S.v.map(p=>rot(p,ax,ay));
+  const order=S.e.map(([i,j])=>({i,j,z:(P[i][2]+P[j][2])/2})).sort((a,b)=>a.z-b.z);
+  for(const o of order){const a=P[o.i],b=P[o.j];const f=(o.z+1)/2;g.globalAlpha=.25+.75*f;g.strokeStyle=col;g.lineWidth=lw*(.6+.6*f);g.beginPath();g.moveTo(cx+a[0]*R,cy-a[1]*R);g.lineTo(cx+b[0]*R,cy-b[1]*R);g.stroke();}
+  if(dots){for(const a of P){const f=(a[2]+1)/2;g.globalAlpha=.35+.65*f;g.fillStyle=col;g.beginPath();g.arc(cx+a[0]*R,cy-a[1]*R,dots*(.6+.6*f),0,7);g.fill();}}
+  g.globalAlpha=1;
+}
+/* drag to rotate */
+function dragger(cv,state){let down=null;
+  cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,ax:state.ax,ay:state.ay};cv.setPointerCapture(e.pointerId);state.hold=true;});
+  cv.addEventListener('pointermove',e=>{if(!down)return;state.ay=down.ay+(e.clientX-down.x)*0.01;state.ax=down.ax+(e.clientY-down.y)*0.01;state.dirty=true;});
+  const up=()=>{down=null;state.hold=false;};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);}
+/* loop */
+const loops=[];let running=false;
+function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
+function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops)f(0);}
+addEventListener('resize',()=>{if(reduce)redraw();});
+if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
+return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+</script>
+<script>
+(function(){
+const {$,reduce,C,fit,ko,ep,gauss,chips,solid,drawSolid,dragger,onFrame}=PB;
+const _h={};function setH(id,html){if(_h[id]!==html){_h[id]=html;$(id).innerHTML=html;}}
+
+/* 히어로: 정육면체 */
+{const cv=$('hero-obj'),S=solid('cube'),st={ax:.5,ay:.3,hold:false};dragger(cv,st);
+ onFrame(()=>{const {g,w,h}=fit(cv);g.clearRect(0,0,w,h);if(!st.hold&&!reduce){st.ay+=.006;st.ax+=.0025;}drawSolid(g,S,w/2,h/2,Math.min(w,h)*.36,st.ax,st.ay,C.mint,2,3.5);});}
+
+/* 세 문장 고르기 (이 기기에만 기억) */
+const KEY='pb-first-sentence';
+const arches=[...document.querySelectorAll('#arches .arch')];
+function showPick(k){arches.forEach(a=>a.setAttribute('aria-pressed',a.dataset.k===k?'true':'false'));
+  $('pickmsg').textContent=k?`문장 ${k}를 골랐습니다. 마지막 방에서 다시 만납니다.`:'아직 고르지 않았습니다.';}
+let saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
+showPick(saved);
+arches.forEach(a=>a.addEventListener('click',()=>{try{localStorage.setItem(KEY,a.dataset.k);}catch(e){}showPick(a.dataset.k);}));
+
+/* 01 정다면체 */
+const SOL=[
+ {k:'tetra',nm:'정사면체',face:'정삼각형 4개',el:'불',why:'가장 뾰족하고 가벼워, 닿는 것을 찌르고 가른다'},
+ {k:'octa',nm:'정팔면체',face:'정삼각형 8개',el:'공기',why:'불과 물 사이의 원소'},
+ {k:'icosa',nm:'정이십면체',face:'정삼각형 20개',el:'물',why:'삼각형 면이 가장 많아 공에 가장 가깝다'},
+ {k:'cube',nm:'정육면체',face:'정사각형 6개',el:'흙',why:'네모난 면으로 가장 안정되게 놓인다'},
+ {k:'dodeca',nm:'정십이면체',face:'정오각형 12개',el:'우주 전체',why:'신이 하늘 전체의 무늬를 그리는 데 썼다'}];
+const SS=SOL.map(s=>solid(s.k));let si=0;const sv={ax:.4,ay:.2,hold:false};dragger($('cvs'),sv);
+function sRead(){const s=SOL[si],S=SS[si],V=S.v.length,E=S.e.length,F=E-V+2;
+  setH('ros',`<dt>입체</dt><dd class="k">${s.nm}</dd><dt>면</dt><dd class="k">${s.face}</dd><dt>꼭짓점 · 모서리 · 면</dt><dd>${V} · ${E} · ${F}</dd><dt>V − E + F</dt><dd>${V-E+F}</dd><dt>플라톤의 원소</dt><dd class="k hot">${s.el}</dd><dt>플라톤의 이유</dt><dd class="k">${s.why}</dd>`);}
+chips('schips',i=>{si=i;sRead();});sRead();
+onFrame(()=>{const {g,w,h}=fit($('cvs'));g.clearRect(0,0,w,h);if(!sv.hold&&!reduce){sv.ay+=.007;sv.ax+=.002;}
+  drawSolid(g,SS[si],w/2,h/2,Math.min(w,h)*.36,sv.ax,sv.ay,C.moss,2.2,4);
+  g.font=ko(13,700);g.fillStyle=C.moss;g.textAlign='left';g.fillText(SOL[si].el,18,28);g.font=ko(12);g.fillStyle=C.muted;g.fillText(SOL[si].nm,18,46);});
+
+/* 02 같은 점, 다른 틀 */
+let vis=[],hid=[],frame=0,shown=false;
+const kep=(M,e)=>{let E=M;for(let i=0;i<12;i++)E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));return E;};
+function observe(){const e=.45,a=1,b=a*Math.sqrt(1-e*e),pts=[];
+  for(let i=0;i<30;i++){const E=kep(Math.random()*2*Math.PI,e);pts.push({x:a*Math.cos(E)+a*e+gauss()*.025,y:b*Math.sin(E)+gauss()*.025});}
+  for(let i=pts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pts[i],pts[j]]=[pts[j],pts[i]];}
+  vis=pts.slice(0,22);hid=pts.slice(22);shown=false;$('reveal').textContent='숨긴 관측 8개 드러내기';fitAll();}
+function solve(A,b){const n=b.length;A=A.map((r,i)=>[...r,b[i]]);for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;[A[c],A[p]]=[A[p],A[c]];
+  for(let r=0;r<n;r++){if(r===c)continue;const f=A[r][c]/A[c][c];for(let k=c;k<=n;k++)A[r][k]-=f*A[c][k];}}return A.map((r,i)=>r[n]/r[i]);}
+function lsq(rows,ys){const n=rows[0].length,A=Array.from({length:n},()=>Array(n).fill(0)),b=Array(n).fill(0);
+  rows.forEach((r,k)=>{for(let i=0;i<n;i++){b[i]+=r[i]*ys[k];for(let j=0;j<n;j++)A[i][j]+=r[i]*r[j];}});return solve(A,b);}
+let FIT={};
+function fitAll(){
+  const cx=vis.reduce((s,p)=>s+p.x,0)/vis.length,cy=vis.reduce((s,p)=>s+p.y,0)/vis.length;
+  // 직선 (주성분)
+  let sxx=0,syy=0,sxy=0;vis.forEach(p=>{sxx+=(p.x-cx)**2;syy+=(p.y-cy)**2;sxy+=(p.x-cx)*(p.y-cy);});
+  const th=.5*Math.atan2(2*sxy,sxx-syy);FIT.line={cx,cy,ux:Math.cos(th),uy:Math.sin(th)};
+  // 별자리: 중심을 도는 각도 순서
+  FIT.poly=[...vis].sort((p,q)=>Math.atan2(p.y-cy,p.x-cx)-Math.atan2(q.y-cy,q.x-cx));
+  // 원 (Kasa)
+  const c=lsq(vis.map(p=>[p.x,p.y,1]),vis.map(p=>-(p.x*p.x+p.y*p.y)));const ox=-c[0]/2,oy=-c[1]/2;FIT.circle={ox,oy,r:Math.sqrt(ox*ox+oy*oy-c[2])};
+  // 타원: Ax²+Bxy+Cy²+Dx+Ey=1
+  const q=lsq(vis.map(p=>[p.x*p.x,p.x*p.y,p.y*p.y,p.x,p.y]),vis.map(()=>1));
+  const [A,B,Cc,D,E]=q;const det=4*A*Cc-B*B;const ex=(B*E-2*Cc*D)/det,ey=(B*D-2*A*E)/det;FIT.ell={A,B,C:Cc,D,E,ex,ey,ok:det>0};
+}
+function segDist(p,a,b){const vx=b.x-a.x,vy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*vx+(p.y-a.y)*vy)/(vx*vx+vy*vy)));return Math.hypot(p.x-a.x-t*vx,p.y-a.y-t*vy);}
+function ellR(u){const {A,B,C:Cc,D,E,ex,ey}=FIT.ell;// F(ex+r u)=1 를 r에 대해 풀기
+  const a=A*u[0]*u[0]+B*u[0]*u[1]+Cc*u[1]*u[1],b=2*A*ex*u[0]+B*(ex*u[1]+ey*u[0])+2*Cc*ey*u[1]+D*u[0]+E*u[1],c=A*ex*ex+B*ex*ey+Cc*ey*ey+D*ex+E*ey-1;
+  const d=b*b-4*a*c;return d<0?null:(-b+Math.sqrt(d))/(2*a);}
+function dist(p,f){
+  if(f===1){const L=FIT.line;return Math.abs((p.x-L.cx)*L.uy-(p.y-L.cy)*L.ux);}
+  if(f===2){let m=1e9;const P=FIT.poly;for(let i=0;i<P.length;i++)m=Math.min(m,segDist(p,P[i],P[(i+1)%P.length]));return m;}
+  if(f===3){const c=FIT.circle;return Math.abs(Math.hypot(p.x-c.ox,p.y-c.oy)-c.r);}
+  if(f===4){const {A,B,C:Cc,D,E}=FIT.ell;const F=A*p.x*p.x+B*p.x*p.y+Cc*p.y*p.y+D*p.x+E*p.y-1,gx=2*A*p.x+B*p.y+D,gy=B*p.x+2*Cc*p.y+E;return Math.abs(F)/Math.hypot(gx,gy);}
+  return null;}
+const SAY=['점들만 있습니다. 아무것도 말할 수 없습니다.','점들이 대략 한 줄로 늘어서 있다고 봅니다.','본 점들을 그대로 잇습니다. 본 것은 다 설명하지만 새로운 것은 모릅니다.','완전한 원이라고 봅니다. 2천 년 동안 쓰인 틀입니다.','타원이라고 봅니다. 케플러가 찾은 틀입니다.'];
+function fRead(){const err=frame&&shown?hid.reduce((s,p)=>s+dist(p,frame),0)/hid.length:null;
+  const errs=[1,2,3,4].map(f=>hid.reduce((s,p)=>s+dist(p,f),0)/hid.length);
+  setH('rof',`<dt>틀이 하는 말</dt><dd class="k">${SAY[frame]}</dd><dt>숨긴 관측까지 평균 거리</dt><dd class="hot">${frame===0?'예측 없음':shown?(err*100).toFixed(1)+' %':'드러내면 보입니다'}</dd>`+
+   (shown?`<dt>다른 틀과 비교</dt><dd class="k">직선 ${(errs[0]*100).toFixed(0)} · 별자리 ${(errs[1]*100).toFixed(1)} · 원 ${(errs[2]*100).toFixed(1)} · 타원 ${(errs[3]*100).toFixed(1)} %</dd>`:'')+
+   `<dt>단위</dt><dd class="k">궤도 긴반지름에 대한 비율</dd>`);}
+chips('fchips',i=>{frame=i;fRead();});
+$('reveal').addEventListener('click',()=>{shown=!shown;$('reveal').textContent=shown?'다시 숨기기':'숨긴 관측 8개 드러내기';fRead();});
+$('renew').addEventListener('click',()=>{observe();fRead();});
+observe();fRead();
+onFrame(()=>{const {g,w,h}=fit($('cvf'));g.clearRect(0,0,w,h);
+  const all=[...vis,...hid];const xmin=Math.min(...all.map(p=>p.x)),xmax=Math.max(...all.map(p=>p.x)),ymin=Math.min(...all.map(p=>p.y)),ymax=Math.max(...all.map(p=>p.y));
+  const s=Math.min((w-60)/(xmax-xmin),(h-60)/(ymax-ymin)),mx=(xmin+xmax)/2,my=(ymin+ymax)/2;
+  const X=x=>w/2+(x-mx)*s,Y=y=>h/2-(y-my)*s;
+  g.lineWidth=2;g.strokeStyle=C.olive;
+  if(frame===1){const L=FIT.line,k=3;g.beginPath();g.moveTo(X(L.cx-L.ux*k),Y(L.cy-L.uy*k));g.lineTo(X(L.cx+L.ux*k),Y(L.cy+L.uy*k));g.stroke();}
+  if(frame===2){g.beginPath();FIT.poly.forEach((p,i)=>i?g.lineTo(X(p.x),Y(p.y)):g.moveTo(X(p.x),Y(p.y)));g.closePath();g.stroke();}
+  if(frame===3){const c=FIT.circle;g.beginPath();g.arc(X(c.ox),Y(c.oy),c.r*s,0,7);g.stroke();}
+  if(frame===4&&FIT.ell.ok){g.beginPath();let first=true;for(let i=0;i<=240;i++){const t=i/240*2*Math.PI,u=[Math.cos(t),Math.sin(t)],r=ellR(u);if(r==null){first=true;continue;}const x=X(FIT.ell.ex+r*u[0]),y=Y(FIT.ell.ey+r*u[1]);first?g.moveTo(x,y):g.lineTo(x,y);first=false;}g.closePath();g.stroke();}
+  g.fillStyle=C.forest;for(const p of vis){g.beginPath();g.arc(X(p.x),Y(p.y),3.6,0,7);g.fill();}
+  if(shown){g.strokeStyle=C.ochre;g.lineWidth=2;for(const p of hid){g.beginPath();g.arc(X(p.x),Y(p.y),6,0,7);g.stroke();}}
+  g.font=ko(12);g.fillStyle=C.muted;g.textAlign='left';g.fillText('● 본 관측 22개',16,h-16);if(shown){g.fillStyle=C.ochre;g.fillText('○ 숨겨 둔 관측 8개',120,h-16);}
+});
+})();
+
+</script>
+</body>
+</html>

@@ -5,386 +5,568 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>보이지 않는 궤도</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;600&display=swap">
 <style>
-/* Layout: 코스모스 시각화와 같은 패션 에디토리얼 문법. 거대한 라틴 워드마크, 검은 띠에 목차, 회색 면에 판정. 안개상자만 검은 보드 */
+/* Layout: 크림 바탕 위에 둥근 숲색 히어로(민트 거대 글자 + 그 앞을 가로지르는 움직이는 물체), 세이지·올리브 3색 카드, 아치 프레임, 네 갈래 별 장식 */
 :root{
-  --bg:#e8e6e2; --panel:#f3f2ef; --paper:#f7f6f4; --ink:#111111; --muted:#77736d; --line:#c8c5bf;
-  --band:#111111; --bandfg:#f3f2ef; --banddim:#8d8a85; --red:#c8261e; --edbg:#d9d7d3; --body2:#2c2a27;
-  --display:"Archivo","Noto Sans KR",system-ui,sans-serif;
+  --cream:#f3efe3; --paper:#fbf9f3; --sage:#dfe2bf; --sage2:#c4cb94; --olive:#5b6a37; --moss:#3e4a26;
+  --forest:#142614; --forest2:#1f3420; --mint:#e0f5c6; --mintdim:#a9c29a; --ink:#1c2316; --muted:#6b6f5b; --line:#d6d3c0; --ochre:#b0873a;
+  --sans:"Epilogue","Noto Sans KR",system-ui,sans-serif;
   --ko:"Noto Sans KR",system-ui,sans-serif;
+  --it:"Instrument Serif","Noto Serif KR",Georgia,serif;
+  --sko:"Noto Serif KR","Instrument Serif",Georgia,serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--ko);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+body{background:var(--cream);color:var(--ink);font-family:var(--ko);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.gut{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ochre);outline-offset:3px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .in{max-width:1180px;margin:0 auto}
-.lbl{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
-.top{background:var(--band);color:var(--bandfg)}
-.top .in{display:flex;gap:18px;align-items:center;justify-content:space-between;min-height:34px;overflow-x:auto;white-space:nowrap}
-.top a{text-decoration:none;color:var(--banddim)}
-.nav .in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-block:18px}
-.brand{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.08em;text-decoration:none}
-.nav .r{justify-self:end}
-.nav .r a{text-decoration:none;border-bottom:1px solid currentColor}
-.hero{position:relative;overflow:hidden;padding-bottom:28px;--gs:min(17rem,calc(92vw / (var(--len) * .82)))}
-.hero .in{position:relative;display:flow-root}
-.giant{font-family:var(--display);font-weight:900;font-size:var(--gs);line-height:.82;letter-spacing:-.045em;text-align:center;white-space:nowrap;margin:clamp(24px,9vw,130px) 0 0}
-.side-l,.side-r{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;line-height:2}
-.side-l::after,.side-r::after{content:"";display:block;width:34px;height:1px;background:var(--ink);margin-top:8px}
-.side-r::after{margin-left:auto}
-@media (min-width:900px){.side-l{position:absolute;left:0;top:0;z-index:2}.side-r{text-align:right;margin-top:28px}.giant{margin-top:150px}}
-@media (max-width:899px){.side-l,.side-r{display:none}}
-.title .in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 48px;align-items:end;padding-block:36px 28px}
-@media (max-width:820px){.title .in{grid-template-columns:minmax(0,1fr)}}
-.title h1{font-weight:900;font-size:clamp(30px,4.6vw,52px);line-height:1.12;letter-spacing:-.03em;margin:8px 0 12px;text-wrap:balance}
-.title p{margin:0;color:#3d3b38;max-width:52ch}
-.title .quote{border-left:1px solid var(--ink);padding-left:16px;color:#3d3b38;font-size:14px;max-width:46ch}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0}
-input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
-input[type=range]::-moz-range-track{height:1px;background:var(--ink)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--ink);margin-top:-6.5px;border:0}
-input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--ink);border:0;border-radius:0}
-.ticks{display:flex;justify-content:space-between;font-family:var(--display);font-size:10px;letter-spacing:.14em;color:var(--muted)}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-.band{background:var(--band);color:var(--bandfg)}
-.band .in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-block:34px}
-.band .col{padding:0 24px;border-left:1px solid #2a2a2a;display:grid;gap:10px;align-content:start;min-width:0}
-.band .col:first-child{border-left:0;padding-left:0}
-@media (max-width:900px){.band .in{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 0}.band .col:nth-child(3){border-left:0;padding-left:0}}
-@media (max-width:520px){.band .in{grid-template-columns:minmax(0,1fr)}.band .col{border-left:0;padding:0;border-top:1px solid #2a2a2a;padding-top:20px}.band .col:first-child{border-top:0;padding-top:0}}
-.band .n{color:var(--banddim)}
-.band h3{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.02em;margin:0;text-transform:uppercase}
-.band p{margin:0;color:var(--banddim)}
-.band a.go{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--bandfg);justify-self:start;color:var(--bandfg)}
-.lawwrap .in{padding-block:20px 60px}
-.law{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:start;border-top:1px solid var(--ink);padding-top:30px;margin-top:40px}
-@media (max-width:780px){.law{grid-template-columns:minmax(0,1fr)}}
-.board{background:var(--panel);padding:10px;min-width:0;box-shadow:0 30px 50px -40px rgba(0,0,0,.5)}
-.board.dark{background:var(--ink)}
+.it{font-family:var(--it);font-style:italic;font-weight:400;letter-spacing:0}
+.se{font-family:var(--sko);font-weight:500;color:var(--olive)}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+
+/* hero */
+.hero{background:var(--forest);color:var(--mint);border-radius:0 0 44px 44px;padding-block:14px 44px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% -10%;height:70%;background:radial-gradient(closest-side,rgba(224,245,198,.10),transparent);pointer-events:none}
+.bar{display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 7px 7px 18px;position:relative;z-index:3}
+.logo{font-family:var(--sans);font-weight:600;font-size:16px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.logo .it{color:var(--olive);font-size:19px}
+.bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.bar nav::-webkit-scrollbar{display:none}
+.bar nav a{font-size:13px;text-decoration:none;padding:6px 12px;border-radius:999px;white-space:nowrap;color:var(--muted)}
+.bar nav a[aria-current]{background:var(--sage);color:var(--ink);font-weight:700}
+.bar nav a:hover{color:var(--ink)}
+@media (max-width:760px){.bar{flex-wrap:wrap;border-radius:26px;padding:10px 12px}.bar nav{margin-left:0;width:100%}}
+.stage{position:relative;margin-top:26px}
+.giant{font-family:var(--sans);font-weight:500;letter-spacing:-.055em;line-height:.86;text-align:center;white-space:nowrap;margin:0;color:var(--mint);
+  font-size:min(200px,calc(94vw / (var(--len) * .6)));padding-block:clamp(40px,7vw,90px)}
+.obj{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,62vw);aspect-ratio:1;max-width:100%;z-index:2}
+.obj.grab{cursor:grab;touch-action:none}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;position:relative;z-index:3}
+@media (max-width:760px){.hrow{grid-template-columns:minmax(0,1fr)}}
+.hrow p{margin:0;color:var(--mintdim);max-width:46ch;justify-self:end}
+@media (max-width:760px){.hrow p{justify-self:start}}
+.hrow .tag{display:inline-block;border:1px solid var(--mintdim);color:var(--mint);border-radius:999px;padding:3px 12px;font-size:12px;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--olive);color:var(--cream)}
+.btn.mint{background:var(--mint);color:var(--forest)}
+.btn.ghost{background:transparent;border:1px solid currentColor;color:inherit}
+.btn:hover{filter:brightness(1.08)}
+
+/* section heads */
+.sec{padding-block:72px 0}
+.head{text-align:center;display:grid;justify-items:center;gap:10px;margin-bottom:30px}
+.head h2{font-family:var(--sans);font-weight:500;font-size:clamp(28px,4.2vw,46px);letter-spacing:-.035em;line-height:1.15;margin:0;text-wrap:balance}
+.head h2 .it{color:var(--olive);font-size:1.12em}
+.head p{margin:0;max-width:60ch;color:var(--muted);text-wrap:pretty}
+.spark{width:22px;height:22px;color:var(--olive)}
+
+/* lab: a visualization block */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;background:var(--paper);border-radius:36px;padding:20px;align-items:start}
+.lab + .lab{margin-top:22px}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr);border-radius:28px;padding:14px}}
+.board{border-radius:26px;background:var(--cream);overflow:hidden;min-width:0;position:relative}
+.board.dark{background:var(--forest)}
+.board.sage{background:var(--sage)}
 .board canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;max-width:100%}
-.text{display:grid;gap:14px;min-width:0}
-.no{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
-.text h2{font-weight:900;font-size:clamp(24px,3vw,34px);letter-spacing:-.03em;line-height:1.2;margin:0;text-wrap:balance}
-.text p{margin:0;max-width:62ch;color:var(--body2)}
-.formula{font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.01em;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:12px 0}
-.ctl{display:grid;gap:4px}
-.label{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.readout{font-variant-numeric:tabular-nums;display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px;margin:0;background:var(--ink);color:var(--bandfg);padding:12px 16px}
-.readout dt{color:var(--banddim)} .readout dd{margin:0;text-align:right;font-family:var(--display)}
-.readout dd.k{font-family:var(--ko)}
-.readout dd.hot{color:#ff8a80;font-weight:700}
+.board canvas.tall{aspect-ratio:1/1}
+.board canvas.grab{cursor:grab;touch-action:none}
+.text{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;padding:8px 6px 6px}
+.kick{justify-self:start;background:var(--sage);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;color:var(--moss)}
+.kick.warn{background:var(--ochre);color:var(--paper)}
+.text h3{font-family:var(--sans);font-weight:500;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.03em;line-height:1.25;margin:0;text-wrap:balance}
+.text h3 .it{color:var(--olive);font-size:1.12em}
+.text p{margin:0;max-width:62ch}
+.formula{font-family:var(--it);font-style:italic;font-size:clamp(24px,3vw,32px);text-align:center;background:var(--sage);border-radius:999px;padding:6px 18px}
+.ctl{display:grid;gap:2px}
+.ctl label,.lab .lbl{font-size:12px;font-weight:700;color:var(--muted)}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:var(--sage2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive);margin-top:-7.5px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--olive);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--olive)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{font-family:var(--ko);font-size:13px;color:var(--ink);background:transparent;border:1px solid var(--ink);padding:6px 12px;cursor:pointer}
-.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bandfg);font-weight:700}
-.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-.btn{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;background:var(--ink);color:var(--bandfg);border:0;padding:13px 22px;cursor:pointer}
+.chips button{border:1px solid var(--olive);background:transparent;color:var(--moss);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--olive);color:var(--cream);font-weight:700}
+.chips.sm button{padding:3px 10px;font-size:12px}
+.ro{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;background:var(--forest);color:var(--mint);border-radius:20px;padding:13px 18px;font-size:13px;font-variant-numeric:tabular-nums}
+.ro dt{color:var(--mintdim)} .ro dd{margin:0;text-align:right;font-family:var(--sans)} .ro dd.k{font-family:var(--ko)}
+.ro dd.hot{color:#fff;font-weight:700}
 .check{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
-.check input{accent-color:var(--red);width:15px;height:15px}
-.tag{display:inline-block;font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.14em;padding:3px 9px;border:1px solid var(--ink);justify-self:start}
-.tag.red{background:var(--red);border-color:var(--red);color:#fff}
-.note{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
-.ed{background:var(--edbg)}
-.ed .in{padding-block:64px}
-.ed h2.sec{font-weight:900;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.03em;margin:8px 0 28px;text-wrap:balance}
-.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
-@media (max-width:900px){.notes{grid-template-columns:minmax(0,1fr)}}
-.notes section{min-width:0;border-top:1px solid var(--ink);padding-top:18px}
-.notes h3{font-weight:900;font-size:22px;letter-spacing:-.02em;line-height:1.3;margin:0 0 10px}
-.notes p{margin:0 0 10px;color:var(--body2)}
-.notes .see{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.ask{margin-top:44px;border-top:1px solid var(--ink);padding-top:22px;display:grid;gap:8px;max-width:72ch}
-.ask p{margin:0}
-.caveat{font-size:13px;color:var(--muted);max-width:80ch;margin:30px 0 0}
-.foot{background:var(--band);color:var(--banddim)}
-.foot .in{padding-block:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.check input{accent-color:var(--olive);width:16px;height:16px}
+.note{font-size:13px;color:var(--muted)}
+.lens{display:flex;gap:10px;align-items:flex-start;background:var(--sage);border-radius:20px;padding:12px 16px;font-size:14px}
+.lens b{font-family:var(--sans);font-size:20px;line-height:1.2;color:var(--olive)}
+
+/* tri-tone cards */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.step{border-radius:28px;padding:24px 22px;min-height:240px;display:grid;gap:12px;align-content:space-between;text-decoration:none;min-width:0}
+.step.o{background:var(--olive);color:var(--cream)} .step.s{background:var(--sage2);color:var(--ink)} .step.c{background:var(--sage);color:var(--ink)} .step.p{background:var(--paper);color:var(--ink)}
+.step .no{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.14em;opacity:.75}
+.step h3{font-family:var(--sans);font-weight:500;font-size:24px;letter-spacing:-.03em;line-height:1.2;margin:0}
+.step p{margin:0;font-size:14px;opacity:.9}
+.step .go{justify-self:end;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-size:18px}
+.step.o .go{background:var(--cream)}
+a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
+
+/* arch card */
+.arch{background:var(--sage);border-radius:999px 999px 30px 30px;padding:46px 26px 28px;text-align:center;display:grid;gap:10px;justify-items:center;min-width:0}
+.arch .role{font-size:12px;font-weight:700;background:var(--paper);border-radius:999px;padding:3px 12px;color:var(--moss)}
+.arch .letter{font-family:var(--it);font-style:italic;font-size:54px;line-height:1;color:var(--olive)}
+.arch p{margin:0;font-size:15px}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.verdict{grid-template-columns:minmax(0,1fr)}}
+.verdict section{background:var(--paper);border-radius:28px;padding:22px;display:grid;gap:8px;align-content:start;min-width:0}
+.verdict h4{margin:0;font-family:var(--sans);font-weight:500;font-size:20px;letter-spacing:-.02em}
+.verdict p{margin:0;font-size:14.5px}
+.verdict .see{font-size:12px;font-weight:700;color:var(--olive)}
+.ask{background:var(--olive);color:var(--cream);border-radius:28px;padding:24px 26px;margin-top:14px;display:grid;gap:8px}
+.ask p{margin:0;max-width:75ch}
+.caveat{font-size:13px;color:var(--muted);max-width:85ch;margin:26px auto 0;text-align:center}
+
+/* next + footer */
+.next{margin-top:80px}
+.next .in{background:var(--sage);border-radius:40px;padding:34px clamp(20px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.next a.big{font-family:var(--sans);font-weight:500;font-size:clamp(30px,5vw,56px);letter-spacing:-.04em;text-decoration:none;line-height:1}
+.next a.big .it{color:var(--olive)}
+.foot{margin-top:24px;background:var(--forest);color:var(--mintdim);border-radius:44px 44px 0 0}
+.foot .in{padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.hrow h1{font-family:var(--sans);font-weight:500;font-size:clamp(30px,4.4vw,50px);letter-spacing:-.035em;line-height:1.12;color:var(--cream);margin:0 0 16px;text-wrap:balance}
+.hrow h1 .se{color:var(--mint)}
+.hrow h1 .it{color:var(--mint);font-size:1.1em}
+
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(30px,1fr));gap:4px;overflow-x:auto;padding-bottom:4px}
+.ptable button{aspect-ratio:1;border:0;border-radius:10px;background:var(--sage);color:var(--ink);cursor:pointer;display:grid;place-items:center;align-content:center;line-height:1.05;padding:2px;min-width:30px}
+.ptable button b{font-family:var(--sans);font-weight:600;font-size:14px}
+.ptable button small{font-size:9px;color:var(--muted)}
+.ptable button.blk-p{background:var(--sage2)} .ptable button.blk-d{background:#d3d6a6}
+.ptable button[aria-pressed="true"]{background:var(--forest);color:var(--mint)}
+.ptable button[aria-pressed="true"] small{color:var(--mintdim)}
+.cfg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px 24px;align-items:start;margin-top:14px}
+@media (max-width:860px){.cfg{grid-template-columns:minmax(0,1fr)}}
+.cfgline{font-family:var(--sans);font-size:clamp(18px,2.2vw,24px);letter-spacing:-.01em;margin-top:2px}
+.cfgline .el{font-family:var(--sko);color:var(--olive);margin-right:8px}
+.boxes{display:flex;flex-wrap:wrap;gap:8px}
+.boxes button{border:1px solid var(--line);background:var(--cream);border-radius:14px;padding:6px 8px;display:grid;gap:3px;justify-items:center;cursor:pointer}
+.boxes button[aria-pressed="true"]{border-color:var(--olive);background:var(--sage);box-shadow:0 0 0 1px var(--olive)}
+.boxes .nm{font-family:var(--sans);font-size:12px;font-weight:600}
+.boxes .bx{display:flex;gap:2px}
+.boxes .bx i{width:22px;height:24px;border:1px solid var(--olive);border-radius:5px;font-style:normal;font-size:12px;display:grid;place-items:center;letter-spacing:-2px;background:var(--paper)}
+
+.ptnote{display:none;margin:0 0 6px}
+@media (max-width:640px){.ptnote{display:block}}
+
 </style>
 </head>
 <body>
-<div class="top gut"><div class="in lbl"><span><a href="index.html" style="color:inherit">Physics and Beyond</a> · 『부분과 전체』 5·6장</span><span>4 models</span></div></div>
-<header class="nav gut"><div class="in"><span class="lbl">Room 02</span><a class="brand" href="index.html">HEISENBERG</a><span class="r lbl"><a href="index.html">Index</a></span></div></header>
-<section class="hero gut" style="--len:9"><div class="in">
-<div class="side-l">The track<br>is not<br>the orbit.</div>
-<h2 class="giant" aria-hidden="true">INVISIBLE</h2>
-<div class="side-r">Berlin 1926<br>Copenhagen 1927</div>
-</div></section>
-<section class="title gut"><div class="in">
-<div><div class="lbl" style="color:var(--muted)">Der Teil und das Ganze · Ch. 5–6</div><h1>보이지 않는 궤도</h1><p>케플러는 행성의 궤도를 찾았고, 하이젠베르크는 전자의 궤도를 버렸습니다. 네 개의 그림을 움직여 보며 우리가 무엇을 '보았다'고 말해 왔는지 다시 물어봅니다. 계산은 하지 않아도 됩니다. 무엇이 변하고 무엇이 변하지 않는지만 보면 됩니다.</p></div>
-<div class="quote">1장의 문장 A를 들고 들어가세요. 지각은 흩어진 인상을 '이해할 수 있는 것'으로 바꾸는 활동입니다. 이 방에서는 그 '바꾸는 일'이 어디서 일어나는지 직접 보게 됩니다.</div>
-</div></section>
-<section class="band gut"><div class="in">
-<div class="col"><span class="lbl n">00 — Bridge</span><h3>Orbit → Cloud</h3><p>케플러에서 확률 구름까지</p><a class="go" href="#m0">보러 가기 →</a></div>
-<div class="col"><span class="lbl n">01 — 정거장 B</span><h3>Track</h3><p>안개상자의 선을 확대하기</p><a class="go" href="#m1">보러 가기 →</a></div>
-<div class="col"><span class="lbl n">02 — 정거장 C</span><h3>Wave packet</h3><p>좁히면 퍼지는 두 그래프</p><a class="go" href="#m2">보러 가기 →</a></div>
-<div class="col"><span class="lbl n">03 — 정거장 C</span><h3>Microscope</h3><p>1927년 하이젠베르크의 설명</p><a class="go" href="#m3">보러 가기 →</a></div>
-</div></section>
-
-<div class="lawwrap gut"><div class="in">
-
-<section class="law" id="m0" aria-labelledby="h0">
-  <div class="board"><canvas id="cv0" aria-label="케플러의 타원, 보어의 원자 궤도, 양자역학의 확률 구름"></canvas></div>
-  <div class="text">
-    <div class="no">00 · 코스모스에서 넘어오는 다리</div>
-    <h2 id="h0">궤도라는 그림은 어디까지 갈 수 있었나</h2>
-    <p>『코스모스』에서 케플러는 튀코가 잰 화성의 위치들을 이어 타원을 찾았습니다. 1913년 보어는 이 행성 그림을 원자에 빌려 와, 전자가 정해진 원 궤도만 돈다고 가정했습니다. 그 가정으로 수소가 내는 빛의 색깔을 맞혔습니다. 그러나 궤도 자체는 아무도 본 적이 없었습니다.</p>
-    <div class="chips" id="bchips" role="group" aria-label="모형 고르기">
-      <button type="button" aria-pressed="true">케플러 1609</button>
-      <button type="button" aria-pressed="false">보어 1913</button>
-      <button type="button" aria-pressed="false">양자역학 1926</button>
+<header class="hero gut"><div class="in">
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html" aria-current="page">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="stage" style="--len:9"><p class="giant" aria-hidden="true">Invisible</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
+<div class="hrow"><div><span class="tag">Room 02 · 5장 · 6장</span><h1>보이지 않는 <span class="se">궤도</span></h1><div class="btns"><a class="btn mint" href="#orbital">확률 구름 실험실</a><a class="btn ghost" href="#bridge">케플러에서 시작</a></div></div><p>케플러는 행성의 궤도를 찾았고, 하이젠베르크는 전자의 궤도를 버렸습니다. 구름과 물방울과 파동을 움직여 보며, 우리가 무엇을 '보았다'고 말해 왔는지 다시 묻습니다.</p></div>
+</div></header>
+<main>
+<section class="sec gut" id="bridge"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>케플러에서 <span class="se">구름</span>까지</h2>
+    <p>코스모스에서 넘어오는 다리입니다. 궤도라는 그림이 어디까지 갈 수 있었는지 세 장면으로 봅니다.</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cv0" aria-label="케플러의 타원, 보어의 원자 궤도, 양자역학의 확률 구름"></canvas></div>
+    <div class="text">
+      <span class="kick">00 · 다리</span>
+      <h3>궤도라는 그림은 <span class="se">어디까지</span> 갈 수 있었나</h3>
+      <p>케플러는 튀코가 잰 화성의 위치들을 이어 타원을 찾았습니다. 1913년 보어는 이 행성 그림을 원자에 빌려 와, 전자가 정해진 원 궤도만 돈다고 가정했습니다. 그 가정으로 수소가 내는 빛의 색깔을 맞혔지만, 궤도 자체는 아무도 본 적이 없었습니다.</p>
+      <div class="chips" id="bchips" role="group" aria-label="모형 고르기">
+        <button type="button" aria-pressed="true">케플러 1609</button>
+        <button type="button" aria-pressed="false">보어 1913</button>
+        <button type="button" aria-pressed="false">양자역학 1926</button>
+      </div>
+      <dl class="ro" id="rob"></dl>
+      <p class="note">세 번째 그림의 점 하나하나는 '위치를 한 번 재면 나올 수 있는 곳'입니다. 점과 점을 잇는 길은 어디에도 없습니다. 바로 아래 실험실에서 다른 모양의 구름도 볼 수 있습니다.</p>
     </div>
-    <dl class="readout" id="rob"></dl>
-    <p>세 번째 그림의 점 하나하나는 '전자의 위치를 한 번 재면 나올 수 있는 곳'입니다. 점이 쌓일수록 모양이 드러나지만, 점과 점을 잇는 길은 어디에도 없습니다. 빨간 점선은 같은 에너지(n=2)에서 보어가 그렸던 원입니다.</p>
-  </div>
-</section>
-
-<section class="law" id="m1" aria-labelledby="h1">
-  <div class="board dark"><canvas id="cv1" aria-label="안개상자 궤적을 확대하면 물방울 알갱이로 갈라진다"></canvas></div>
-  <div class="text">
-    <div class="no">01 · 정거장 B · 6장</div>
-    <h2 id="h1">우리는 궤도를 본 게 아니라 물방울을 보았다</h2>
-    <p>안개상자 속을 전자가 지나가면 지나간 자리의 공기가 전기를 띠고, 거기에 물방울이 맺힙니다. 멀리서 보면 매끈한 한 줄입니다. 막대를 오른쪽으로 밀어 확대해 보세요.</p>
-    <div class="ctl">
-      <label class="label" for="zoom">확대</label>
-      <input type="range" id="zoom" min="0" max="1" step="0.001" value="0">
-      <div class="ticks"><span>사진 한 장</span><span>물방울 하나</span></div>
-    </div>
-    <label class="check"><input type="checkbox" id="drawline"> 우리가 그은 선 보이기</label>
-    <dl class="readout" id="ro1"></dl>
-    <p>선은 사진 속에 있지 않습니다. 띄엄띄엄한 물방울을 우리가 이은 것입니다. 1장의 문장 A가 말한 '바꾸는 일'이 바로 여기서 일어납니다. 하이젠베르크는 코펜하겐의 밤 산책에서 이것을 깨닫고, 물음을 바꿨습니다. "전자의 궤도는 어디인가" 대신 "대략 이 위치와 대략 이 속도를 함께 말할 수 있는 한계는 어디인가".</p>
-  </div>
-</section>
-
-<section class="law" id="m2" aria-labelledby="h2">
-  <div class="board"><canvas id="cv2" aria-label="위치 분포와 운동량 분포: 하나를 좁히면 다른 하나가 퍼진다"></canvas></div>
-  <div class="text">
-    <div class="no">02 · 정거장 C · 설명 (다)</div>
-    <h2 id="h2">좁히면 퍼진다</h2>
-    <p>양자역학에서 전자의 상태는 하나의 파동으로 적힙니다. 위쪽은 그 파동에서 읽은 위치의 퍼짐, 아래쪽은 같은 파동에서 읽은 운동량의 퍼짐입니다. 위치를 좁게 모으면 아래 그래프가 넓게 퍼집니다. 측정 도구도, 빛도 등장하지 않는데 그렇습니다.</p>
-    <div class="formula">Δx · Δp ≥ ħ / 2</div>
-    <div class="ctl">
-      <label class="label" for="sx">위치를 얼마나 좁게 모을까</label>
-      <input type="range" id="sx" min="0.3" max="3" step="0.01" value="1.2">
-      <div class="ticks"><span>좁게</span><span>넓게</span></div>
-    </div>
-    <div class="chips" id="pchips" role="group" aria-label="파동 모양">
-      <button type="button" aria-pressed="true">봉우리 하나</button>
-      <button type="button" aria-pressed="false">봉우리 둘</button>
-    </div>
-    <dl class="readout" id="ro2"></dl>
-    <div class="row"><button type="button" class="btn" id="play">소리로 듣기</button><span class="note" style="border:0;padding:0">같은 구조를 귀로 들어 봅니다.</span></div>
-    <p>소리도 파동이라 같은 일이 생깁니다. 아주 짧게 '틱' 하는 소리는 높이를 알아듣기 어렵고, 높이가 또렷하려면 소리가 길어야 합니다. 시간을 좁히면 음높이가 퍼집니다. 봉우리를 둘로 바꾸면 곱이 바닥보다 커집니다. 바닥은 '늘 이 값'이 아니라 '이보다 작아질 수 없는 값'입니다.</p>
-  </div>
-</section>
-
-<section class="law" id="m3" aria-labelledby="h3">
-  <div class="board"><canvas id="cv3" aria-label="감마선 현미경: 빛의 파장이 짧을수록 위치는 선명하고 반동은 크다"></canvas></div>
-  <div class="text">
-    <div class="no">03 · 정거장 C · 설명 (나)</div>
-    <span class="tag red">1927년 하이젠베르크의 설명 · 보어가 문제 삼은 것</span>
-    <h2 id="h3">선명하게 보려면 세게 쳐야 한다</h2>
-    <p>하이젠베르크가 처음 내놓은 설명입니다. 전자를 현미경으로 보려면 빛을 쬐어야 합니다. 파장이 짧은 빛일수록 위치가 선명하게 보이지만, 그 빛은 전자를 더 세게 튕겨 냅니다. 튕겨 나간 방향은 렌즈 안 어디로 빛이 들어왔느냐에 달려 있어 미리 알 수 없습니다.</p>
-    <div class="ctl">
-      <label class="label" for="lam">빛의 파장</label>
-      <input type="range" id="lam" min="0.25" max="1" step="0.01" value="0.6">
-      <div class="ticks"><span>짧게 (감마선)</span><span>길게</span></div>
-    </div>
-    <dl class="readout" id="ro3"></dl>
-    <p>이 그림은 설명 (나), 곧 '재는 행위가 대상을 건드린다'를 보여 줍니다. 보어는 이 설명에 렌즈의 크기와 빛의 파동성이 빠져 있다고 지적했습니다. 더 근본적으로는 '위치'와 '운동량'이라는 두 개념을 한 실험에서 동시에 온전히 쓸 수 없다는 것이 문제라고 보았습니다. 이것이 상보성입니다. 6장에서 두 사람이 무엇을 두고 다퉜는지 찾아 읽어 보세요.</p>
-  </div>
-</section>
-
-<p class="caveat">그림의 수치는 이해를 돕기 위한 어림값입니다. 안개상자 물방울의 크기와 간격은 기체와 장치에 따라 다르고, 실제 원자의 크기는 물방울의 수십만분의 1입니다. 파동묶음은 ħ = 1인 단위로 계산했습니다. 현미경 그림은 1927년 사고실험을 단순하게 그린 것입니다.</p>
-</div></div>
-
-<section class="ed gut"><div class="in">
-  <div class="lbl" style="color:var(--muted)">판정 · 내 카드에 남길 것</div>
-  <h2 class="sec">불확정성은 무엇에 대한 말인가</h2>
-  <div class="notes">
-    <section><div class="see">(가) 도구</div><h3>측정 도구가 정밀하지 못해서</h3><p>더 좋은 도구를 만들면 언젠가 바닥이 사라질까요? 그림 02에는 도구가 하나도 나오지 않는데도 바닥이 있었습니다.</p><p class="see">이 설명을 보여 주는 그림: 없음</p></section>
-    <section><div class="see">(나) 교란</div><h3>재는 행위가 대상을 건드려서</h3><p>그림 03이 이 설명입니다. 그렇다면 건드리기 전에는 전자가 정확한 위치와 속도를 '갖고' 있었다고 어떻게 알 수 있을까요?</p><p class="see">이 설명을 보여 주는 그림: 03</p></section>
-    <section><div class="see">(다) 대상</div><h3>대상이 두 값을 동시에 갖지 않아서</h3><p>그림 02가 이 설명입니다. '값을 갖지 않는다'는 말은 '우리가 모른다'는 말과 어떻게 다를까요?</p><p class="see">이 설명을 보여 주는 그림: 02, 그리고 00의 구름</p></section>
-  </div>
-  <div class="ask">
-    <p class="see lbl" style="color:var(--muted)">질문</p>
-    <p>세 설명 중 가장 설득력 있는 것을 고르고, 근거를 한 줄로 쓰세요. 그리고 1927년의 하이젠베르크는 어느 쪽에 서 있었는지, 그 판단이 지금의 내 판단보다 나았는지 생각해 보세요.</p>
-    <p>마지막으로 1장의 문장 B를 꺼냅니다. 하이젠베르크가 한 일은 선입견을 '없앤' 것인가요, 낡은 선입견을 '바꾼' 것인가요?</p>
   </div>
 </div></section>
 
-<footer class="foot gut"><div class="in lbl"><span>걸으며 묻다 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze</span></div></footer>
+<section class="sec gut" id="orbital"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>확률 구름 <span class="se">실험실</span></h2>
+    <p>원소를 고르면 그 원자의 전자가 어떤 오비탈에 들어 있는지 보이고, 오비탈을 누르면 구름이 나타납니다. 도감 모드에서는 s, p, d, f 오비탈을 종류별로 꺼내 볼 수 있습니다.</p></div>
+  <div class="lab" style="grid-template-columns:minmax(0,1fr)">
+    <div class="text" style="gap:12px">
+      <div class="chips" id="omode" role="group" aria-label="보는 방식">
+        <button type="button" aria-pressed="true">원소로 보기</button>
+        <button type="button" aria-pressed="false">오비탈 도감</button>
+      </div>
+      <div id="elpane">
+        <p class="note ptnote">표가 잘리면 옆으로 밀어 보세요.</p>
+        <div class="ptable" id="ptable" role="group" aria-label="원소 고르기 (수소부터 크립톤까지)"></div>
+        <div class="cfg"><div><span class="lbl">전자 배치</span><div id="cfgline" class="cfgline"></div></div><div class="boxes" id="boxes" role="group" aria-label="부분껍질 고르기"></div></div>
+      </div>
+      <div id="dexpane" hidden>
+        <div class="ctl"><span class="lbl">주양자수 n</span><div class="chips sm" id="nchips"></div></div>
+        <div class="ctl" style="margin-top:8px"><span class="lbl">모양 l</span><div class="chips sm" id="lchips"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lab">
+    <div class="board"><canvas id="cvo" class="tall grab" aria-label="선택한 오비탈의 확률 구름. 끌어서 돌려 볼 수 있다"></canvas></div>
+    <div class="text">
+      <span class="kick">01 · 오비탈</span>
+      <h3 id="otitle">오비탈</h3>
+      <div class="ctl"><span class="lbl">방향</span><div class="chips sm" id="mchips"></div></div>
+      <label class="check"><input type="checkbox" id="phase" checked> 파동의 부호(+, −)를 색으로 보기</label>
+      <div class="btns"><button type="button" class="btn" id="remeasure">처음부터 다시 재기</button></div>
+      <dl class="ro" id="roo"></dl>
+      <p>점이 하나씩 쌓이는 것은 같은 상태의 원자에서 전자의 위치를 한 번씩 잰 결과를 모은 것입니다. 구름에는 점이 거의 찍히지 않는 면(마디)이 있습니다. 전자는 마디 양쪽에 다 나타나는데, 마디를 '지나가는' 길은 그릴 수 없습니다.</p>
+      <div class="lens"><b>A</b><span>수소 말고 다른 원자의 오비탈은 수소의 모양을 빌려 쓴 근사입니다. 전자가 여럿이면 정확한 모양은 이렇게 깔끔하지 않습니다. 이 그림 자체가 흩어진 측정을 '이해할 수 있는 것'으로 바꾸는 하나의 틀입니다.</span></div>
+    </div>
+  </div>
+</div></section>
 
+<section class="sec gut" id="track"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>안개상자의 <span class="se">선</span></h2><p>정거장 B · 6장</p></div>
+  <div class="lab">
+    <div class="board dark"><canvas id="cv1" aria-label="안개상자 궤적을 확대하면 물방울 알갱이로 갈라진다"></canvas></div>
+    <div class="text">
+      <span class="kick">02 · 정거장 B</span>
+      <h3>우리는 궤도가 아니라 <span class="se">물방울</span>을 보았다</h3>
+      <p>안개상자 속을 전자가 지나가면 그 자리의 공기가 전기를 띠고, 거기에 물방울이 맺힙니다. 멀리서 보면 매끈한 한 줄입니다. 막대를 밀어 확대해 보세요.</p>
+      <div class="ctl"><label for="zoom">확대</label><input type="range" id="zoom" min="0" max="1" step="0.001" value="0"><div class="ticks"><span>사진 한 장</span><span>물방울 하나</span></div></div>
+      <label class="check"><input type="checkbox" id="drawline"> 우리가 그은 선 보이기</label>
+      <dl class="ro" id="ro1"></dl>
+      <p>선은 사진 속에 있지 않습니다. 띄엄띄엄한 물방울을 우리가 이은 것입니다. 하이젠베르크는 코펜하겐의 밤 산책에서 물음을 바꿨습니다. "전자의 궤도는 어디인가"가 아니라 "대략의 위치와 대략의 속도를 함께 말할 수 있는 한계는 어디인가"였습니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="packet"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>좁히면 <span class="se">퍼진다</span></h2><p>정거장 C · 설명 (다)</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cv2" aria-label="위치 분포와 운동량 분포: 하나를 좁히면 다른 하나가 퍼진다"></canvas></div>
+    <div class="text">
+      <span class="kick">03 · 정거장 C</span>
+      <h3>위치를 모으면 <span class="se">운동량</span>이 퍼진다</h3>
+      <p>양자역학에서 전자의 상태는 하나의 파동으로 적힙니다. 위쪽은 그 파동에서 읽은 위치의 퍼짐, 아래쪽은 같은 파동에서 읽은 운동량의 퍼짐입니다. 측정 도구도 빛도 등장하지 않는데, 하나를 좁히면 다른 하나가 퍼집니다.</p>
+      <div class="formula">Δx · Δp ≥ ħ / 2</div>
+      <div class="ctl"><label for="sx">위치를 얼마나 좁게 모을까</label><input type="range" id="sx" min="0.3" max="3" step="0.01" value="1.2"><div class="ticks"><span>좁게</span><span>넓게</span></div></div>
+      <div class="chips" id="pchips" role="group" aria-label="파동 모양"><button type="button" aria-pressed="true">봉우리 하나</button><button type="button" aria-pressed="false">봉우리 둘</button></div>
+      <dl class="ro" id="ro2"></dl>
+      <div class="btns"><button type="button" class="btn" id="play">소리로 듣기</button></div>
+      <p>소리도 파동이라 같은 일이 생깁니다. 아주 짧은 '틱' 소리는 높이를 알아듣기 어렵고, 높이가 또렷하려면 소리가 길어야 합니다. 봉우리를 둘로 바꾸면 곱이 바닥보다 커집니다. ħ/2는 늘 나오는 값이 아니라, 그 아래로는 내려갈 수 없는 바닥입니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="micro"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>선명하게 보려면 <span class="se">세게</span></h2><p>정거장 C · 설명 (나)</p></div>
+  <div class="lab">
+    <div class="board"><canvas id="cv3" aria-label="감마선 현미경: 파장이 짧을수록 위치는 선명하고 반동은 크다"></canvas></div>
+    <div class="text">
+      <span class="kick warn">1927년 하이젠베르크의 설명 · 보어가 문제 삼은 것</span>
+      <h3>선명하게 보려면 <span class="se">세게</span> 쳐야 한다</h3>
+      <p>전자를 현미경으로 보려면 빛을 쬐어야 합니다. 파장이 짧은 빛일수록 위치가 선명하게 보이지만, 그 빛은 전자를 더 세게 튕겨 냅니다. 튕겨 나간 방향은 렌즈 안 어디로 빛이 들어왔느냐에 달려 있어 미리 알 수 없습니다.</p>
+      <div class="ctl"><label for="lam">빛의 파장</label><input type="range" id="lam" min="0.25" max="1" step="0.01" value="0.6"><div class="ticks"><span>짧게 (감마선)</span><span>길게</span></div></div>
+      <dl class="ro" id="ro3"></dl>
+      <p>이 그림은 설명 (나), 곧 '재는 행위가 대상을 건드린다'를 보여 줍니다. 보어는 이 설명에 렌즈의 크기와 빛의 파동성이 빠져 있다고 지적했습니다. 더 근본적으로는 '위치'와 '운동량'이라는 두 개념을 한 실험에서 동시에 온전히 쓸 수 없다는 것이 문제라고 보았습니다. 이것이 상보성입니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec gut" id="verdict"><div class="in">
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg>
+    <h2>불확정성은 <span class="se">무엇에 대한</span> 말인가</h2><p>판정 · 내 카드에 남길 것</p></div>
+  <div class="verdict">
+    <section><span class="see">(가) 도구</span><h4>측정 도구가 정밀하지 못해서</h4><p>더 좋은 도구를 만들면 언젠가 바닥이 사라질까요? 03번 그림에는 도구가 하나도 나오지 않는데도 바닥이 있었습니다.</p><span class="see">이 설명을 보여 주는 그림: 없음</span></section>
+    <section><span class="see">(나) 교란</span><h4>재는 행위가 대상을 건드려서</h4><p>04번 그림이 이 설명입니다. 그렇다면 건드리기 전에는 전자가 정확한 위치와 속도를 '갖고' 있었다고 어떻게 알 수 있을까요?</p><span class="see">이 설명을 보여 주는 그림: 04</span></section>
+    <section><span class="see">(다) 대상</span><h4>대상이 두 값을 동시에 갖지 않아서</h4><p>03번 그림이 이 설명입니다. '값을 갖지 않는다'는 말은 '우리가 모른다'는 말과 어떻게 다를까요?</p><span class="see">이 설명을 보여 주는 그림: 03, 그리고 01의 구름</span></section>
+  </div>
+  <div class="ask"><p><b>질문</b> 세 설명 중 가장 설득력 있는 것을 고르고 근거를 한 줄로 쓰세요. 1927년의 하이젠베르크는 어느 쪽에 서 있었는지, 그 판단이 지금의 내 판단보다 나았는지도 생각해 보세요.</p><p>마지막으로 1장의 문장 B를 꺼냅니다. 하이젠베르크가 한 일은 선입견을 '없앤' 것인가요, 낡은 선입견을 '바꾼' 것인가요?</p></div>
+  <p class="caveat">그림의 수치는 이해를 돕기 위한 어림값입니다. 안개상자 물방울의 크기와 간격은 기체와 장치에 따라 다르고, 원자의 크기는 물방울의 수십만분의 1입니다. 오비탈은 수소형 파동함수로 계산했고 화면 크기에 맞춰 늘이거나 줄였습니다. 파동묶음은 ħ = 1인 단위로 계산했습니다.</p>
+</div></section>
+
+</main>
+<section class="next gut"><div class="in"><a class="big" href="tribunal.html">칸트의 <span class="se">법정</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 03</span></div></section>
+<footer class="foot gut"><div class="in"><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
 <script>
-(function(){
+const PB=(function(){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const C={ink:'#111111',red:'#c8261e',muted:'#77736d',line:'#c8c5bf',panel:'#f3f2ef',paper:'#f7f6f4',dim:'#8d8a85'};
-function fit(cv){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;const W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);return {g,w:r.width,h:r.height};}
+const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
+function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
 const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
-const dp=(s,w)=>`${w||600} ${s}px Archivo,"Noto Sans KR",sans-serif`;
+const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
+const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
 function gauss(){let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random());}
-const kep=(M,e)=>{let E=M;for(let i=0;i<12;i++)E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));return E;};
-function chipGroup(id,cb){const bs=[...document.querySelectorAll('#'+id+' button')];bs.forEach((b,i)=>b.addEventListener('click',()=>{bs.forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));cb(i);}));}
+function chips(id,cb){const bs=[...document.querySelectorAll('#'+id+' button')];bs.forEach((b,i)=>b.addEventListener('click',()=>{bs.forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));cb(i,b);}));return bs;}
+/* 3D */
+const PHI=(1+Math.sqrt(5))/2;
+function solid(name){
+  let v=[];const p=PHI,q=1/PHI;
+  if(name==='tetra')v=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  if(name==='cube'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);}
+  if(name==='octa')v=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  if(name==='icosa'){for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a,b*p]);v.push([a,b*p,0]);v.push([a*p,0,b]);}}
+  if(name==='dodeca'){for(const a of[-1,1])for(const b of[-1,1])for(const c of[-1,1])v.push([a,b,c]);for(const a of[-1,1])for(const b of[-1,1]){v.push([0,a*q,b*p]);v.push([a*q,b*p,0]);v.push([a*p,0,b*q]);}}
+  const n=Math.hypot(...v[0]);v=v.map(x=>x.map(c=>c/n));
+  let dmin=1e9;for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)dmin=Math.min(dmin,Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2]));
+  const e=[];for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)if(Math.hypot(v[i][0]-v[j][0],v[i][1]-v[j][1],v[i][2]-v[j][2])<dmin*1.01)e.push([i,j]);
+  return {v,e};
+}
+function rot(p,ax,ay){let [x,y,z]=p;let c=Math.cos(ay),s=Math.sin(ay);[x,z]=[x*c+z*s,-x*s+z*c];c=Math.cos(ax);s=Math.sin(ax);[y,z]=[y*c-z*s,y*s+z*c];return [x,y,z];}
+function drawSolid(g,S,cx,cy,R,ax,ay,col,lw,dots){
+  const P=S.v.map(p=>rot(p,ax,ay));
+  const order=S.e.map(([i,j])=>({i,j,z:(P[i][2]+P[j][2])/2})).sort((a,b)=>a.z-b.z);
+  for(const o of order){const a=P[o.i],b=P[o.j];const f=(o.z+1)/2;g.globalAlpha=.25+.75*f;g.strokeStyle=col;g.lineWidth=lw*(.6+.6*f);g.beginPath();g.moveTo(cx+a[0]*R,cy-a[1]*R);g.lineTo(cx+b[0]*R,cy-b[1]*R);g.stroke();}
+  if(dots){for(const a of P){const f=(a[2]+1)/2;g.globalAlpha=.35+.65*f;g.fillStyle=col;g.beginPath();g.arc(cx+a[0]*R,cy-a[1]*R,dots*(.6+.6*f),0,7);g.fill();}}
+  g.globalAlpha=1;
+}
+/* drag to rotate */
+function dragger(cv,state){let down=null;
+  cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,ax:state.ax,ay:state.ay};cv.setPointerCapture(e.pointerId);state.hold=true;});
+  cv.addEventListener('pointermove',e=>{if(!down)return;state.ay=down.ay+(e.clientX-down.x)*0.01;state.ax=down.ax+(e.clientY-down.y)*0.01;state.dirty=true;});
+  const up=()=>{down=null;state.hold=false;};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);}
+/* loop */
+const loops=[];let running=false;
+function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
+function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops)f(0);}
+addEventListener('resize',()=>{if(reduce)redraw();});
+if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
+return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
 
-/* ---------- 00 다리 ---------- */
-let bState=0,cloud=[];
-const BR=[
- {era:'1609 · 케플러',obj:'행성과 태양',orbit:'있다. 관측된 위치를 이은 타원',fate:'관측과 맞았다'},
+</script>
+<script>
+(function(){
+const {$,reduce,C,fit,ko,ep,gauss,chips,onFrame}=PB;
+const _h={};function setH(id,html){if(_h[id]!==html){_h[id]=html;$(id).innerHTML=html;}}
+
+/* ================= 오비탈 계산 ================= */
+const ANG={
+ 0:[{k:'s',h:'s',f:()=>1}],
+ 1:[{k:'p x',h:'p<sub>x</sub>',f:(x,y,z)=>x},{k:'p y',h:'p<sub>y</sub>',f:(x,y,z)=>y},{k:'p z',h:'p<sub>z</sub>',f:(x,y,z)=>z}],
+ 2:[{k:'d z²',h:'d<sub>z²</sub>',f:(x,y,z)=>3*z*z-1},{k:'d xz',h:'d<sub>xz</sub>',f:(x,y,z)=>x*z},{k:'d yz',h:'d<sub>yz</sub>',f:(x,y,z)=>y*z},{k:'d xy',h:'d<sub>xy</sub>',f:(x,y,z)=>x*y},{k:'d x²−y²',h:'d<sub>x²−y²</sub>',f:(x,y,z)=>x*x-y*y}],
+ 3:[{k:'f z³',h:'f<sub>z³</sub>',f:(x,y,z)=>z*(5*z*z-3)},{k:'f xz²',h:'f<sub>xz²</sub>',f:(x,y,z)=>x*(5*z*z-1)},{k:'f yz²',h:'f<sub>yz²</sub>',f:(x,y,z)=>y*(5*z*z-1)},{k:'f xyz',h:'f<sub>xyz</sub>',f:(x,y,z)=>x*y*z},{k:'f z(x²−y²)',h:'f<sub>z(x²−y²)</sub>',f:(x,y,z)=>z*(x*x-y*y)},{k:'f x(x²−3y²)',h:'f<sub>x(x²−3y²)</sub>',f:(x,y,z)=>x*(x*x-3*y*y)},{k:'f y(3x²−y²)',h:'f<sub>y(3x²−y²)</sub>',f:(x,y,z)=>y*(3*x*x-y*y)}]};
+const LN='spdf';
+function lag(k,a,x){if(k===0)return 1;let L0=1,L1=1+a-x;for(let i=1;i<k;i++){const L2=((2*i+1+a-x)*L1-(i+a)*L0)/(i+1);L0=L1;L1=L2;}return L1;}
+function rad(n,l,r){const p=2*r/n;return Math.pow(p,l)*Math.exp(-p/2)*lag(n-l-1,2*l+1,p);}
+function makeOrb(n,l,mi){
+  const A=ANG[l][mi],rmax=6*n*n+8,M=3000,cdf=new Float64Array(M+1);let acc=0;
+  for(let i=1;i<=M;i++){const r=rmax*i/M,R=rad(n,l,r);acc+=r*r*R*R;cdf[i]=acc;}
+  for(let i=0;i<=M;i++)cdf[i]/=acc;
+  let r99=rmax;for(let i=0;i<=M;i++)if(cdf[i]>=0.985){r99=rmax*i/M;break;}
+  let fmax=1e-9;for(let i=0;i<4000;i++){const z=2*Math.random()-1,t=2*Math.PI*Math.random(),s=Math.sqrt(1-z*z);fmax=Math.max(fmax,Math.abs(A.f(s*Math.cos(t),s*Math.sin(t),z)));}
+  fmax*=1.02;
+  function sample(){
+    const u=Math.random();let lo=0,hi=M;while(hi-lo>1){const md=(lo+hi)>>1;if(cdf[md]<u)lo=md;else hi=md;}
+    const r=rmax*(lo+Math.random())/M;
+    let x,y,z,fv;for(let k=0;k<400;k++){z=2*Math.random()-1;const t=2*Math.PI*Math.random(),s=Math.sqrt(1-z*z);x=s*Math.cos(t);y=s*Math.sin(t);fv=A.f(x,y,z);if(Math.random()*fmax*fmax<=fv*fv)break;}
+    const sg=Math.sign(rad(n,l,r)*fv)||1;
+    return [x*r,y*r,z*r,sg];
+  }
+  return {n,l,mi,A,r99,sample};
+}
+function drawCloud(g,w,h,pts,count,r99,ax,ay,opts){
+  const s=Math.min(w,h)*0.46/r99,cx=w/2,cy=h/2;
+  const ca=Math.cos(ay),sa=Math.sin(ay),cb=Math.cos(ax),sb=Math.sin(ax);
+  for(let i=0;i<count;i++){const p=pts[i];
+    // 화면: 가로 x, 세로 z(위쪽), 깊이 y
+    let x=p[0]*ca+p[1]*sa, y=-p[0]*sa+p[1]*ca, z=p[2];
+    const y2=y*cb-z*sb, z2=y*sb+z*cb;
+    const f=Math.max(0,Math.min(1,0.5-y2/(r99*2)));
+    g.globalAlpha=(opts.alpha||0.5)*(0.35+0.65*f);
+    g.fillStyle=opts.phase?(p[3]>0?opts.cPos:opts.cNeg):opts.cOne;
+    g.fillRect(cx+x*s-0.95,cy-z2*s-0.95,1.9,1.9);}
+  g.globalAlpha=1;
+  return s;
+}
+
+/* ================= 히어로: 2p 구름 ================= */
+{const cv=$('hero-obj');if(cv){const O=makeOrb(2,1,2),pts=[];for(let i=0;i<5000;i++)pts.push(O.sample());
+  onFrame(t=>{const {g,w,h}=fit(cv);g.clearRect(0,0,w,h);drawCloud(g,w,h,pts,pts.length,O.r99*1.05,-0.25+Math.sin(t/4000)*0.15,t/2600,{phase:false,cOne:C.mint,alpha:.55});});}}
+
+/* ================= 00 다리 ================= */
+let bState=0,bPts=[],bOrb=makeOrb(2,1,2);
+const BR=[{era:'1609 · 케플러',obj:'행성과 태양',orbit:'있다. 관측된 위치를 이은 타원',fate:'관측과 맞았다'},
  {era:'1913 · 보어',obj:'전자와 원자핵',orbit:'있다고 가정했다',fate:'빛의 색깔은 맞혔고, 궤도는 버려졌다'},
  {era:'1926 이후',obj:'전자와 원자핵',orbit:'없다. 위치가 나올 확률만',fate:'지금의 표준 설명'}];
 function bRead(){const r=BR[bState];$('rob').innerHTML=`<dt>시대</dt><dd class="k">${r.era}</dd><dt>대상</dt><dd class="k">${r.obj}</dd><dt>궤도</dt><dd class="k">${r.orbit}</dd><dt>그 뒤</dt><dd class="k">${r.fate}</dd>`;}
-chipGroup('bchips',i=>{bState=i;cloud=[];bRead();});
-bRead();
-function sample2p(){ // 수소 2p_z: r ~ Gamma(5), cosθ pdf ∝ u²
-  let r=0;for(let i=0;i<5;i++)r-=Math.log(Math.random()||1e-9);
-  const u=Math.cbrt(2*Math.random()-1),s=Math.sqrt(1-u*u),ph=2*Math.PI*Math.random();
-  return {x:r*s*Math.cos(ph),z:r*u};}
-function bridge(t){
-  const {g,w,h}=fit($('cv0'));g.clearRect(0,0,w,h);
-  const cx=w/2,cy=h/2,m=Math.min(w,h);
-  g.textAlign='left';g.textBaseline='alphabetic';
-  if(bState===0){
-    const e=0.55,a=m*0.42,b=a*Math.sqrt(1-e*e),c=a*e,sx=cx+c;
-    g.strokeStyle=C.ink;g.lineWidth=1.4;g.beginPath();g.ellipse(cx,cy,a,b,0,0,7);g.stroke();
-    const E=kep((reduce?2:t/1300)%(2*Math.PI),e);const px=cx+a*Math.cos(E),py=cy+b*Math.sin(E);
-    g.strokeStyle=C.line;g.beginPath();g.moveTo(sx,cy);g.lineTo(px,py);g.stroke();
-    g.fillStyle=C.ink;g.beginPath();g.arc(sx,cy,9,0,7);g.fill();
-    g.fillStyle=C.red;g.beginPath();g.arc(px,py,5.5,0,7);g.fill();
-    g.fillStyle=C.ink;g.font=ko(13,700);g.fillText('태양',sx+14,cy+5);
-    g.font=dp(11);g.fillStyle=C.muted;g.fillText('KEPLER · 1609 · 관측한 위치를 이은 궤도',14,h-14);
-  }else if(bState===1){
-    const s=m*0.43/9;
-    for(let n=1;n<=3;n++){g.setLineDash(n===2?[]:[4,5]);g.strokeStyle=n===2?C.ink:C.line;g.lineWidth=n===2?1.6:1;g.beginPath();g.arc(cx,cy,s*n*n,0,7);g.stroke();
-      g.setLineDash([]);g.fillStyle=C.muted;g.font=dp(10);g.fillText('n='+n,cx+s*n*n*0.71+4,cy-s*n*n*0.71-2);}
-    g.fillStyle=C.ink;g.beginPath();g.arc(cx,cy,7,0,7);g.fill();
-    const an=reduce?1:t/650;g.fillStyle=C.red;g.beginPath();g.arc(cx+s*4*Math.cos(an),cy+s*4*Math.sin(an),5,0,7);g.fill();
-    g.font=dp(11);g.fillStyle=C.muted;g.fillText('BOHR · 1913 · 행성 그림을 빌려 온 궤도',14,h-14);
-  }else{
-    const a0=m*0.44/12;
-    const add=reduce?6000-cloud.length:Math.min(60,6000-cloud.length);
-    for(let i=0;i<add;i++)cloud.push(sample2p());
-    g.fillStyle=C.ink;g.globalAlpha=.42;
-    for(const p of cloud){const x=cx+p.x*a0,y=cy-p.z*a0;g.fillRect(x-0.75,y-0.75,1.5,1.5);}
-    g.globalAlpha=1;
-    g.setLineDash([5,5]);g.strokeStyle=C.red;g.lineWidth=1.3;g.beginPath();g.arc(cx,cy,4*a0,0,7);g.stroke();g.setLineDash([]);
-    g.fillStyle=C.red;g.font=ko(12,700);g.fillText('보어의 n=2 궤도',cx+4*a0*0.72+6,cy+4*a0*0.72+4);
-    g.fillStyle=C.ink;g.beginPath();g.arc(cx,cy,3,0,7);g.fill();
-    g.font=dp(11);g.fillStyle=C.muted;g.fillText(`2p 상태 · 위치를 ${cloud.length.toLocaleString()}번 잰 결과`,14,h-14);
-  }
-}
-
-/* ---------- 01 안개상자 ---------- */
-const R=70,drops=[],strays=[];
-(function(){let s=-80;while(s<80){s+=-Math.log(Math.random()||1e-9)*0.6;const al=s/R,n=gauss()*0.04;drops.push({x:(R+n)*Math.sin(al),y:-(R-(R+n)*Math.cos(al)),d:0.03+Math.random()*0.05,s});}})();
-const c0=drops.reduce((a,b)=>Math.abs(b.s)<Math.abs(a.s)?b:a);
-for(let i=0;i<320;i++)strays.push({x:c0.x+(Math.random()-.5)*170,y:c0.y+(Math.random()-.5)*130,d:0.03+Math.random()*0.05});
-function fmtLen(mm){if(mm>=1)return (mm<10?mm.toFixed(1):mm.toFixed(0))+' mm';const um=mm*1000;return (um<10?um.toFixed(1):um.toFixed(0))+' μm';}
-function nice(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p;}
-function track(){
-  const {g,w,h}=fit($('cv1'));const z=+$('zoom').value;const W=120*Math.pow(0.12/120,z),sc=w/W;
-  g.fillStyle=C.ink;g.fillRect(0,0,w,h);
-  const X=x=>(x-c0.x)*sc+w/2,Y=y=>(y-c0.y)*sc+h/2;
-  let inView=0;
-  const draw=(p,a)=>{const x=X(p.x),y=Y(p.y),r=Math.max(p.d/2*sc,0.8);if(x<-r||x>w+r||y<-r||y>h+r)return false;
-    if(r>4){const gr=g.createRadialGradient(x-r*.3,y-r*.3,r*.1,x,y,r);gr.addColorStop(0,'rgba(247,246,244,'+a+')');gr.addColorStop(1,'rgba(247,246,244,'+(a*0.35)+')');g.fillStyle=gr;}
-    else g.fillStyle='rgba(247,246,244,'+a+')';
-    g.beginPath();g.arc(x,y,r,0,7);g.fill();return true;};
-  for(const p of strays)draw(p,0.45);
-  for(const p of drops)if(draw(p,0.95))inView++;
-  if($('drawline').checked){g.strokeStyle=C.red;g.lineWidth=1.6;g.beginPath();let first=true;
-    for(let s=-80;s<=80;s+=Math.max(0.002,W/400)){const al=s/R,x=X(R*Math.sin(al)),y=Y(-(R-R*Math.cos(al)));if(x<-50||x>w+50){first=true;continue;}first?g.moveTo(x,y):g.lineTo(x,y);first=false;}
-    g.stroke();g.fillStyle=C.red;g.font=ko(12,700);g.fillText('우리가 그은 선',14,24);}
-  // 눈금 막대
-  const bl=nice(W/5),bp=bl*sc;g.fillStyle=C.panel;g.fillRect(w-16-bp,h-22,bp,2);
-  g.font=dp(11);g.textAlign='right';g.fillText(fmtLen(bl),w-16,h-30);g.textAlign='left';
-  if(W<0.6){g.fillStyle=C.dim;g.font=ko(12);g.fillText('물방울 하나. 전자는 이 근처 어딘가를 지나갔다.',14,h-14);}
-  $('ro1').innerHTML=`<dt>화면의 폭</dt><dd>${fmtLen(W)}</dd><dt>화면 속 궤적 물방울</dt><dd>${inView}개</dd><dt>물방울 지름</dt><dd>약 0.05 mm</dd><dt>원자 하나의 크기</dt><dd>약 0.0000001 mm</dd>`;
-}
-['zoom','drawline'].forEach(id=>$(id).addEventListener('input',track));
-
-/* ---------- 02 파동묶음 ---------- */
-const L=12,N=400,K0=3,M=320,PMIN=K0-8,PMAX=K0+8;
-const xs=Float64Array.from({length:N},(_,i)=>-L+2*L*i/(N-1)),dx=xs[1]-xs[0];
-const ps=Float64Array.from({length:M},(_,j)=>PMIN+(PMAX-PMIN)*j/(M-1)),dpp=ps[1]-ps[0];
-let pShape=0,PK=null;
-function env(x,sg){if(pShape===0)return Math.exp(-x*x/(4*sg*sg));const s2=sg/2;return Math.exp(-((x-sg)**2)/(4*s2*s2))+Math.exp(-((x+sg)**2)/(4*s2*s2));}
-function stats(arr,grid,d){let n=0,m=0,v=0;for(let i=0;i<arr.length;i++)n+=arr[i]*d;for(let i=0;i<arr.length;i++)m+=grid[i]*arr[i]*d/n;for(let i=0;i<arr.length;i++)v+=(grid[i]-m)**2*arr[i]*d/n;return {n,m,sd:Math.sqrt(v)};}
-function computePK(){
-  const sg=+$('sx').value,re=new Float64Array(N),im=new Float64Array(N),px=new Float64Array(N);
-  for(let i=0;i<N;i++){const e=env(xs[i],sg);re[i]=e*Math.cos(K0*xs[i]);im[i]=e*Math.sin(K0*xs[i]);px[i]=e*e;}
-  const pp=new Float64Array(M);
-  for(let j=0;j<M;j++){let a=0,b=0;const p=ps[j];for(let i=0;i<N;i++){const c=Math.cos(p*xs[i]),s=Math.sin(p*xs[i]);a+=re[i]*c+im[i]*s;b+=im[i]*c-re[i]*s;}pp[j]=a*a+b*b;}
-  PK={sg,re,px,pp,sx:stats(px,xs,dx),sp:stats(pp,ps,dpp)};
-  const prod=PK.sx.sd*PK.sp.sd;
-  $('ro2').innerHTML=`<dt>위치의 퍼짐 Δx</dt><dd>${PK.sx.sd.toFixed(2)}</dd><dt>운동량의 퍼짐 Δp</dt><dd>${PK.sp.sd.toFixed(2)}</dd><dt>곱 Δx · Δp</dt><dd class="${prod<0.52?'hot':''}">${prod.toFixed(2)}</dd><dt>바닥 ħ/2</dt><dd>0.50</dd>`;
-}
-function packet(){
-  if(!PK)computePK();
-  const {g,w,h}=fit($('cv2'));g.clearRect(0,0,w,h);
-  const pad=14,ph=(h-3*pad-28)/2;
-  const panel=(top,grid,dens,st,lo,hi,label,wave)=>{
-    const base=top+ph,mx=Math.max(...dens);const X=v=>pad+(v-lo)/(hi-lo)*(w-2*pad);const Yv=v=>base-v/mx*(ph-18);
-    g.fillStyle='rgba(200,38,30,.10)';g.fillRect(X(st.m-st.sd),top+6,X(st.m+st.sd)-X(st.m-st.sd),ph-6);
-    if(wave){g.strokeStyle=C.line;g.lineWidth=1;g.beginPath();const am=Math.sqrt(mx);for(let i=0;i<grid.length;i++){const y=base-(ph-18)/2-wave[i]/am*(ph-18)/2*0.9;i?g.lineTo(X(grid[i]),y):g.moveTo(X(grid[i]),y);}g.stroke();}
-    g.fillStyle='rgba(17,17,17,.82)';g.beginPath();g.moveTo(X(grid[0]),base);for(let i=0;i<grid.length;i++)g.lineTo(X(grid[i]),Yv(dens[i]));g.lineTo(X(grid[grid.length-1]),base);g.closePath();g.fill();
-    g.strokeStyle=C.ink;g.lineWidth=1;g.beginPath();g.moveTo(pad,base+.5);g.lineTo(w-pad,base+.5);g.stroke();
-    g.strokeStyle=C.red;g.lineWidth=1.5;[st.m-st.sd,st.m+st.sd].forEach(v=>{g.beginPath();g.moveTo(X(v),top+6);g.lineTo(X(v),base);g.stroke();});
-    g.fillStyle=C.muted;g.font=dp(11);g.textAlign='left';g.fillText(label,pad,top+12);
-  };
-  panel(pad,xs,PK.px,PK.sx,-L*0.75,L*0.75,'위치 x  ·  빨간 선 사이가 Δx',PK.re);
-  panel(pad*2+ph+14,ps,PK.pp,PK.sp,PMIN,PMAX,'운동량 p  ·  빨간 선 사이가 Δp',null);
-}
-$('sx').addEventListener('input',()=>{computePK();packet();});
-chipGroup('pchips',i=>{pShape=i;computePK();packet();});
-let actx=null;
-$('play').addEventListener('click',()=>{
-  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
-  actx.resume&&actx.resume();
-  const sg=+$('sx').value,T=1.6,sr=actx.sampleRate,n=Math.floor(T*sr),buf=actx.createBuffer(1,n,sr),d=buf.getChannelData(0);
-  for(let i=0;i<n;i++){const t=i/sr,x=-L+2*L*t/T;d[i]=0.35*env(x,sg)*Math.sin(2*Math.PI*440*t);}
-  const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start();
+chips('bchips',i=>{bState=i;bPts=[];bRead();});bRead();
+const kep=(M,e)=>{let E=M;for(let i=0;i<12;i++)E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));return E;};
+onFrame(t=>{
+  const {g,w,h}=fit($('cv0'));g.clearRect(0,0,w,h);const cx=w/2,cy=h/2,m=Math.min(w,h);g.textAlign='left';
+  if(bState===0){const e=.55,a=m*.42,b=a*Math.sqrt(1-e*e),c=a*e,sx=cx+c;
+    g.strokeStyle=C.olive;g.lineWidth=1.6;g.beginPath();g.ellipse(cx,cy,a,b,0,0,7);g.stroke();
+    const E=kep((reduce?2:t/1300)%(2*Math.PI),e),px=cx+a*Math.cos(E),py=cy+b*Math.sin(E);
+    g.strokeStyle=C.sage2;g.beginPath();g.moveTo(sx,cy);g.lineTo(px,py);g.stroke();
+    g.fillStyle=C.forest;g.beginPath();g.arc(sx,cy,9,0,7);g.fill();g.fillStyle=C.ochre;g.beginPath();g.arc(px,py,6,0,7);g.fill();
+    g.fillStyle=C.ink;g.font=ko(13,700);g.fillText('태양',sx+14,cy+5);g.font=ko(12);g.fillStyle=C.muted;g.fillText('케플러 · 관측한 위치를 이은 궤도',16,h-16);}
+  else if(bState===1){const s=m*.43/9;
+    for(let n=1;n<=3;n++){g.setLineDash(n===2?[]:[4,5]);g.strokeStyle=n===2?C.olive:C.sage2;g.lineWidth=n===2?1.8:1;g.beginPath();g.arc(cx,cy,s*n*n,0,7);g.stroke();g.setLineDash([]);g.fillStyle=C.muted;g.font=ep(11);g.fillText('n='+n,cx+s*n*n*.71+4,cy-s*n*n*.71-2);}
+    g.fillStyle=C.forest;g.beginPath();g.arc(cx,cy,7,0,7);g.fill();const an=reduce?1:t/650;g.fillStyle=C.ochre;g.beginPath();g.arc(cx+s*4*Math.cos(an),cy+s*4*Math.sin(an),5.5,0,7);g.fill();
+    g.font=ko(12);g.fillStyle=C.muted;g.fillText('보어 · 행성 그림을 빌려 온 궤도',16,h-16);}
+  else{const add=reduce?6000-bPts.length:Math.min(70,6000-bPts.length);for(let i=0;i<add;i++)bPts.push(bOrb.sample());
+    const a0=m*.44/12;
+    g.fillStyle=C.moss;g.globalAlpha=.45;for(const p of bPts)g.fillRect(cx+p[0]*a0-.8,cy-p[2]*a0-.8,1.6,1.6);g.globalAlpha=1;
+    g.setLineDash([5,5]);g.strokeStyle=C.ochre;g.lineWidth=1.5;g.beginPath();g.arc(cx,cy,4*a0,0,7);g.stroke();g.setLineDash([]);
+    g.fillStyle=C.ochre;g.font=ko(12,700);g.fillText('보어의 n=2 궤도',cx+4*a0*.72+6,cy+4*a0*.72+4);
+    g.fillStyle=C.forest;g.beginPath();g.arc(cx,cy,3,0,7);g.fill();
+    g.font=ko(12);g.fillStyle=C.muted;g.fillText(`2p 상태 · 위치를 ${bPts.length.toLocaleString()}번 잰 결과`,16,h-16);}
 });
 
-/* ---------- 03 감마선 현미경 ---------- */
-const TH=Math.PI/6;let cyc=-1,beta=0;
-function micro(t){
-  const {g,w,h}=fit($('cv3'));g.clearRect(0,0,w,h);
-  const lam=+$('lam').value,lp=14+lam*46,ex=w*0.5,ey=h*0.68,ly=h*0.16,lw=(ey-ly)*Math.tan(TH);
-  const period=2800,ph=reduce?0.75:(t%period)/period,k=Math.floor(t/period);
-  if(k!==cyc){cyc=k;beta=(Math.random()*2-1)*TH;}
-  if(reduce)beta=TH*0.6;
-  // 렌즈와 구경
-  g.setLineDash([4,5]);g.strokeStyle=C.line;g.lineWidth=1;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex-lw,ly);g.moveTo(ex,ey);g.lineTo(ex+lw,ly);g.stroke();g.setLineDash([]);
-  g.strokeStyle=C.ink;g.lineWidth=1.6;g.beginPath();g.ellipse(ex,ly,lw,9,0,0,7);g.stroke();
-  g.fillStyle=C.muted;g.font=dp(11);g.textAlign='left';g.fillText('렌즈',ex+lw+8,ly+4);
-  // 반동 부채꼴 (가능한 모든 방향)
-  const kick=900/lp;
-  const kv=b=>({x:(1-Math.sin(b))*kick,y:-Math.cos(b)*kick*-1});
-  g.strokeStyle='rgba(119,115,109,.45)';g.lineWidth=1;
-  for(let i=0;i<=8;i++){const b=-TH+2*TH*i/8,v={x:(1-Math.sin(b)),y:Math.cos(b)},s=kick;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex+v.x*s,ey+v.y*s);g.stroke();}
-  // 위치 흐림
-  const blur=lp*0.9;for(let r=blur;r>2;r-=blur/7){g.fillStyle='rgba(17,17,17,.07)';g.beginPath();g.arc(ex,ey,r,0,7);g.fill();}
-  // 들어오는 빛
-  const hit=0.4;
-  if(ph<hit){const xp=12+(ex-12-10)*(ph/hit);g.strokeStyle=C.red;g.lineWidth=2;g.beginPath();for(let s=0;s<lp*3;s+=1){const x=xp-s;if(x<0)break;const y=ey+Math.sin((s/lp)*2*Math.PI)*8*Math.exp(-(((s-lp*1.5)/(lp*1.1))**2));s?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();}
-  else{const q=(ph-hit)/(1-hit);const ox=ex+Math.sin(beta)*(ey-ly)*q*1.05,oy=ey-(ey-ly)*q*1.05;
-    if(oy>ly-4){g.strokeStyle=C.red;g.lineWidth=2;g.beginPath();g.moveTo(ex+Math.sin(beta)*(ey-ly)*Math.max(0,q-0.12),ey-(ey-ly)*Math.max(0,q-0.12));g.lineTo(ox,oy);g.stroke();}
-    const v={x:(1-Math.sin(beta)),y:Math.cos(beta)};g.strokeStyle=C.red;g.lineWidth=2.2;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex+v.x*kick,ey+v.y*kick);g.stroke();
-    const e2=Math.min(q*1.4,1);g.fillStyle=C.ink;g.beginPath();g.arc(ex+v.x*kick*0.5*e2,ey+v.y*kick*0.5*e2,5,0,7);g.fill();}
-  if(ph<hit){g.fillStyle=C.ink;g.beginPath();g.arc(ex,ey,5,0,7);g.fill();}
-  g.fillStyle=C.muted;g.font=ko(12);g.textAlign='left';
-  g.fillText('흐린 원: 렌즈로 본 위치',14,h-32);g.fillText('회색 부채꼴: 전자가 튕겨 나갈 수 있는 방향',14,h-14);
-  $('ro3').innerHTML=`<dt>빛의 파장 (상대)</dt><dd>${lam.toFixed(2)}</dd><dt>위치의 흐림 Δx</dt><dd>${lam.toFixed(2)}</dd><dt>반동의 범위 Δp</dt><dd>${(1/lam).toFixed(2)}</dd><dt>곱 Δx · Δp</dt><dd class="hot">1.00</dd>`;
+/* ================= 01 오비탈 실험실 ================= */
+const EL=('H 수소,He 헬륨,Li 리튬,Be 베릴륨,B 붕소,C 탄소,N 질소,O 산소,F 플루오린,Ne 네온,Na 나트륨,Mg 마그네슘,Al 알루미늄,Si 규소,P 인,S 황,Cl 염소,Ar 아르곤,'+
+ 'K 칼륨,Ca 칼슘,Sc 스칸듐,Ti 타이타늄,V 바나듐,Cr 크로뮴,Mn 망가니즈,Fe 철,Co 코발트,Ni 니켈,Cu 구리,Zn 아연,Ga 갈륨,Ge 저마늄,As 비소,Se 셀레늄,Br 브로민,Kr 크립톤').split(',').map((s,i)=>{const [sym,name]=s.split(' ');return {Z:i+1,sym,name};});
+const ORDER=[[1,0],[2,0],[2,1],[3,0],[3,1],[4,0],[3,2],[4,1]];
+function config(Z){let left=Z;const out=[];for(const [n,l] of ORDER){if(!left)break;const c=Math.min(left,2*(2*l+1));out.push({n,l,e:c});left-=c;}
+  if(Z===24||Z===29){const s=out.find(o=>o.n===4&&o.l===0),d=out.find(o=>o.n===3&&o.l===2);s.e=1;d.e+=1;}return out;}
+function pos(Z){if(Z===1)return[1,1];if(Z===2)return[1,18];if(Z<=10)return[2,Z<=4?Z-2:Z+8];if(Z<=18)return[3,Z<=12?Z-10:Z];return[4,Z-18];}
+const SUP='⁰¹²³⁴⁵⁶⁷⁸⁹';const sup=n=>String(n).split('').map(d=>SUP[+d]).join('');
+let mode=0,Z=6,cfg=config(6),sel=null,O=null,pts=[],view={ax:-0.7,ay:0.5,hold:false};
+PB.dragger($('cvo'),view);
+// 주기율표
+{const pt=$('ptable');for(const e of EL){const [r,c]=pos(e.Z);const b=document.createElement('button');b.type='button';b.style.gridRow=r;b.style.gridColumn=c;
+  const last=config(e.Z).slice(-1)[0];b.className=last.l===1?'blk-p':last.l===2?'blk-d':'';
+  b.innerHTML=`<b>${e.sym}</b><small>${e.Z}</small>`;b.setAttribute('aria-label',`${e.Z} ${e.name}`);b.setAttribute('aria-pressed',e.Z===Z?'true':'false');
+  b.addEventListener('click',()=>{Z=e.Z;[...pt.children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));renderEl(true);});pt.appendChild(b);}}
+function boxesHTML(l,e){const k=2*l+1;let s='';for(let i=0;i<k;i++){const up=e>i,dn=e>k+i;s+=`<i>${up?'↑':''}${dn?'↓':''}</i>`;}return s;}
+function renderEl(pickOuter){
+  cfg=config(Z);const E=EL[Z-1];
+  $('cfgline').innerHTML=`<span class="el">${E.name}</span>`+cfg.map(o=>`${o.n}${LN[o.l]}${sup(o.e)}`).join(' ');
+  if(pickOuter||!sel||!cfg.find(o=>o.n===sel.n&&o.l===sel.l)){const o=cfg[cfg.length-1];sel={n:o.n,l:o.l,mi:o.l===1?2:0};}
+  const bx=$('boxes');bx.innerHTML='';
+  for(const o of cfg){const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',o.n===sel.n&&o.l===sel.l?'true':'false');
+    b.innerHTML=`<span class="nm">${o.n}${LN[o.l]}</span><span class="bx">${boxesHTML(o.l,o.e)}</span>`;b.setAttribute('aria-label',`${o.n}${LN[o.l]} 부분껍질, 전자 ${o.e}개`);
+    b.addEventListener('click',()=>{sel={n:o.n,l:o.l,mi:o.l===1?2:0};renderEl(false);});bx.appendChild(b);}
+  setOrb();
 }
-$('lam').addEventListener('input',()=>{if(reduce)micro(0);});
+function renderDex(){
+  const nc=$('nchips');nc.innerHTML='';for(let n=1;n<=4;n++){const b=document.createElement('button');b.type='button';b.textContent='n = '+n;b.setAttribute('aria-pressed',sel.n===n?'true':'false');
+    b.addEventListener('click',()=>{sel.n=n;if(sel.l>=n)sel.l=n-1;sel.mi=0;renderDex();});nc.appendChild(b);}
+  const lc=$('lchips');lc.innerHTML='';for(let l=0;l<4;l++){const b=document.createElement('button');b.type='button';b.textContent=LN[l]+' 오비탈';b.disabled=l>=sel.n;
+    if(b.disabled){b.style.opacity=.35;b.style.cursor='not-allowed';b.title=`n=${sel.n}에는 ${LN[l]} 오비탈이 없습니다`;}
+    b.setAttribute('aria-pressed',sel.l===l?'true':'false');b.addEventListener('click',()=>{if(l<sel.n){sel.l=l;sel.mi=0;renderDex();}});lc.appendChild(b);}
+  setOrb();
+}
+function setOrb(){
+  const mc=$('mchips');mc.innerHTML='';ANG[sel.l].forEach((a,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML=a.h;b.setAttribute('aria-pressed',i===sel.mi?'true':'false');
+    b.addEventListener('click',()=>{sel.mi=i;setOrb();});mc.appendChild(b);});
+  O=makeOrb(sel.n,sel.l,sel.mi);pts=[];
+  const nm=`${sel.n}${ANG[sel.l][sel.mi].h}`;
+  $('otitle').innerHTML=`<span class="se">${nm}</span> 오비탈`+(mode===0?` · ${EL[Z-1].name}`:'');
+  const e=mode===0?(cfg.find(o=>o.n===sel.n&&o.l===sel.l)||{}).e:null;
+  $('roo').innerHTML=`<dt>주양자수 n</dt><dd>${sel.n}</dd><dt>모양 l</dt><dd class="k">${LN[sel.l]} (l = ${sel.l})</dd><dt>방향의 수</dt><dd class="k">${2*sel.l+1}가지</dd><dt>공 모양 마디 (n−l−1)</dt><dd>${sel.n-sel.l-1}개</dd><dt>평면·원뿔 마디 (l)</dt><dd>${sel.l}개</dd>`+
+    (e!=null?`<dt>이 부분껍질의 전자</dt><dd class="hot">${e}개 / 최대 ${2*(2*sel.l+1)}개</dd>`:'');
+}
+chips('omode',i=>{mode=i;$('elpane').hidden=i!==0;$('dexpane').hidden=i!==1;if(i===0)renderEl(false);else renderDex();});
+$('remeasure').addEventListener('click',()=>{pts=[];});
+$('phase').addEventListener('change',()=>{});
+renderEl(true);
+onFrame(t=>{
+  const {g,w,h}=fit($('cvo'));g.clearRect(0,0,w,h);
+  if(!O)return;
+  const target=reduce?7000:7000,add=reduce?target-pts.length:Math.min(110,target-pts.length);for(let i=0;i<add;i++)pts.push(O.sample());
+  if(!view.hold&&!reduce)view.ay+=0.004;
+  const s=drawCloud(g,w,h,pts,pts.length,O.r99,view.ax,view.ay,{phase:$('phase').checked,cPos:C.moss,cNeg:C.ochre,cOne:C.moss,alpha:.55});
+  g.fillStyle=C.forest;g.beginPath();g.arc(w/2,h/2,2.6,0,7);g.fill();
+  // 축 표시
+  const ox=34,oy=h-34,L=20,ca=Math.cos(view.ay),sa=Math.sin(view.ay),cb=Math.cos(view.ax),sb=Math.sin(view.ax);
+  [['x',[1,0,0]],['y',[0,1,0]],['z',[0,0,1]]].forEach(([nm,v])=>{const X=v[0]*ca+v[1]*sa,Y=-v[0]*sa+v[1]*ca,Zs=v[2];const z2=Y*sb+Zs*cb;
+    g.strokeStyle=C.muted;g.lineWidth=1.2;g.beginPath();g.moveTo(ox,oy);g.lineTo(ox+X*L,oy-z2*L);g.stroke();g.fillStyle=C.muted;g.font=ep(11,600);g.fillText(nm,ox+X*(L+7)-3,oy-z2*(L+7)+4);});
+  g.font=ko(12);g.fillStyle=C.muted;g.textAlign='right';g.fillText(`측정 ${pts.length.toLocaleString()}번`,w-16,h-16);
+  if($('phase').checked){g.textAlign='left';g.fillStyle=C.moss;g.fillRect(16,16,10,10);g.fillStyle=C.muted;g.font=ko(12);g.fillText('+',31,25);g.fillStyle=C.ochre;g.fillRect(48,16,10,10);g.fillStyle=C.muted;g.fillText('−',63,25);}
+  g.textAlign='left';
+});
 
-function frame(t){bridge(t);track();packet();micro(t);if(!reduce)requestAnimationFrame(frame);}
-computePK();
-requestAnimationFrame(frame);
-addEventListener('resize',()=>{if(reduce)frame(0);});
-if(reduce){['sx','zoom','drawline'].forEach(id=>$(id).addEventListener('input',()=>frame(0)));document.querySelectorAll('.chips button').forEach(b=>b.addEventListener('click',()=>frame(0)));}
+/* ================= 02 안개상자 ================= */
+const R=70,drops=[],strays=[];
+{let s=-80;while(s<80){s+=-Math.log(Math.random()||1e-9)*0.6;const al=s/R,n=gauss()*0.04;drops.push({x:(R+n)*Math.sin(al),y:-(R-(R+n)*Math.cos(al)),d:0.03+Math.random()*0.05,s});}}
+const c0=drops.reduce((a,b)=>Math.abs(b.s)<Math.abs(a.s)?b:a);
+for(let i=0;i<320;i++)strays.push({x:c0.x+(Math.random()-.5)*170,y:c0.y+(Math.random()-.5)*130,d:0.03+Math.random()*0.05});
+const fmtLen=mm=>mm>=1?(mm<10?mm.toFixed(1):mm.toFixed(0))+' mm':((mm*1000)<10?(mm*1000).toFixed(1):(mm*1000).toFixed(0))+' μm';
+function nice(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p;}
+onFrame(()=>{
+  const {g,w,h}=fit($('cv1'));const z=+$('zoom').value,W=120*Math.pow(0.12/120,z),sc=w/W;
+  g.fillStyle=C.forest;g.fillRect(0,0,w,h);
+  const X=x=>(x-c0.x)*sc+w/2,Y=y=>(y-c0.y)*sc+h/2;let inView=0;
+  const draw=(p,a)=>{const x=X(p.x),y=Y(p.y),r=Math.max(p.d/2*sc,.8);if(x<-r||x>w+r||y<-r||y>h+r)return false;
+    if(r>4){const gr=g.createRadialGradient(x-r*.3,y-r*.3,r*.1,x,y,r);gr.addColorStop(0,`rgba(224,245,198,${a})`);gr.addColorStop(1,`rgba(224,245,198,${a*.3})`);g.fillStyle=gr;}else g.fillStyle=`rgba(224,245,198,${a})`;
+    g.beginPath();g.arc(x,y,r,0,7);g.fill();return true;};
+  for(const p of strays)draw(p,.4);for(const p of drops)if(draw(p,.95))inView++;
+  if($('drawline').checked){g.strokeStyle=C.ochre;g.lineWidth=1.8;g.beginPath();let first=true;
+    for(let s=-80;s<=80;s+=Math.max(.002,W/400)){const al=s/R,x=X(R*Math.sin(al)),y=Y(-(R-R*Math.cos(al)));if(x<-50||x>w+50){first=true;continue;}first?g.moveTo(x,y):g.lineTo(x,y);first=false;}
+    g.stroke();g.fillStyle=C.ochre;g.font=ko(12,700);g.textAlign='left';g.fillText('우리가 그은 선',16,26);}
+  const bl=nice(W/5),bp=bl*sc;g.fillStyle=C.mint;g.fillRect(w-16-bp,h-22,bp,2);g.font=ep(11);g.textAlign='right';g.fillText(fmtLen(bl),w-16,h-30);g.textAlign='left';
+  if(W<.6){g.fillStyle=C.mintdim;g.font=ko(12);g.fillText('물방울 하나. 전자는 이 근처 어딘가를 지나갔다.',16,h-16);}
+  setH('ro1',`<dt>화면의 폭</dt><dd>${fmtLen(W)}</dd><dt>화면 속 궤적 물방울</dt><dd>${inView}개</dd><dt>물방울 지름</dt><dd>약 0.05 mm</dd><dt>원자 하나의 크기</dt><dd>약 0.0000001 mm</dd>`);
+});
+
+/* ================= 03 파동묶음 ================= */
+const L=12,N=400,K0=3,M2=320,PMIN=K0-8,PMAX=K0+8;
+const xs=Float64Array.from({length:N},(_,i)=>-L+2*L*i/(N-1)),dx=xs[1]-xs[0];
+const ps=Float64Array.from({length:M2},(_,j)=>PMIN+(PMAX-PMIN)*j/(M2-1)),dpp=ps[1]-ps[0];
+let pShape=0,PK=null;
+function env(x,sg){if(pShape===0)return Math.exp(-x*x/(4*sg*sg));const s2=sg/2;return Math.exp(-((x-sg)**2)/(4*s2*s2))+Math.exp(-((x+sg)**2)/(4*s2*s2));}
+function stats(a,gr,d){let n=0,m=0,v=0;for(let i=0;i<a.length;i++)n+=a[i]*d;for(let i=0;i<a.length;i++)m+=gr[i]*a[i]*d/n;for(let i=0;i<a.length;i++)v+=(gr[i]-m)**2*a[i]*d/n;return {m,sd:Math.sqrt(v)};}
+function computePK(){const sg=+$('sx').value,re=new Float64Array(N),im=new Float64Array(N),px=new Float64Array(N);
+  for(let i=0;i<N;i++){const e=env(xs[i],sg);re[i]=e*Math.cos(K0*xs[i]);im[i]=e*Math.sin(K0*xs[i]);px[i]=e*e;}
+  const pp=new Float64Array(M2);for(let j=0;j<M2;j++){let a=0,b=0;const p=ps[j];for(let i=0;i<N;i++){const c=Math.cos(p*xs[i]),s=Math.sin(p*xs[i]);a+=re[i]*c+im[i]*s;b+=im[i]*c-re[i]*s;}pp[j]=a*a+b*b;}
+  PK={re,px,pp,sx:stats(px,xs,dx),sp:stats(pp,ps,dpp)};const prod=PK.sx.sd*PK.sp.sd;
+  $('ro2').innerHTML=`<dt>위치의 퍼짐 Δx</dt><dd>${PK.sx.sd.toFixed(2)}</dd><dt>운동량의 퍼짐 Δp</dt><dd>${PK.sp.sd.toFixed(2)}</dd><dt>곱 Δx · Δp</dt><dd class="hot">${prod.toFixed(2)}</dd><dt>바닥 ħ/2</dt><dd>0.50</dd>`;}
+$('sx').addEventListener('input',computePK);chips('pchips',i=>{pShape=i;computePK();});computePK();
+onFrame(()=>{
+  const {g,w,h}=fit($('cv2'));g.clearRect(0,0,w,h);const pad=16,ph=(h-3*pad-24)/2;
+  const panel=(top,gr,dens,st,lo,hi,label,wave)=>{const base=top+ph,mx=Math.max(...dens);const X=v=>pad+(v-lo)/(hi-lo)*(w-2*pad),Yv=v=>base-v/mx*(ph-20);
+    g.fillStyle='rgba(176,135,58,.16)';g.fillRect(X(st.m-st.sd),top+6,X(st.m+st.sd)-X(st.m-st.sd),ph-6);
+    if(wave){g.strokeStyle=C.sage2;g.lineWidth=1;g.beginPath();const am=Math.sqrt(mx);for(let i=0;i<gr.length;i++){const y=base-(ph-20)/2-wave[i]/am*(ph-20)/2*.9;i?g.lineTo(X(gr[i]),y):g.moveTo(X(gr[i]),y);}g.stroke();}
+    g.fillStyle=C.olive;g.globalAlpha=.9;g.beginPath();g.moveTo(X(gr[0]),base);for(let i=0;i<gr.length;i++)g.lineTo(X(gr[i]),Yv(dens[i]));g.lineTo(X(gr[gr.length-1]),base);g.closePath();g.fill();g.globalAlpha=1;
+    g.strokeStyle=C.ink;g.lineWidth=1;g.beginPath();g.moveTo(pad,base+.5);g.lineTo(w-pad,base+.5);g.stroke();
+    g.strokeStyle=C.ochre;g.lineWidth=1.8;[st.m-st.sd,st.m+st.sd].forEach(v=>{g.beginPath();g.moveTo(X(v),top+6);g.lineTo(X(v),base);g.stroke();});
+    g.fillStyle=C.muted;g.font=ko(12);g.textAlign='left';g.fillText(label,pad,top+12);};
+  panel(pad,xs,PK.px,PK.sx,-L*.75,L*.75,'위치 x · 금색 선 사이가 Δx',PK.re);
+  panel(pad*2+ph+12,ps,PK.pp,PK.sp,PMIN,PMAX,'운동량 p · 금색 선 사이가 Δp',null);
+});
+let actx=null;
+$('play').addEventListener('click',()=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}if(actx.resume)actx.resume();
+  const sg=+$('sx').value,T=1.6,sr=actx.sampleRate,n=Math.floor(T*sr),buf=actx.createBuffer(1,n,sr),d=buf.getChannelData(0);
+  for(let i=0;i<n;i++){const t=i/sr;d[i]=.35*env(-L+2*L*t/T,sg)*Math.sin(2*Math.PI*440*t);}
+  const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start();});
+
+/* ================= 04 감마선 현미경 ================= */
+const TH=Math.PI/6;let cyc=-1,beta=0;
+onFrame(t=>{
+  const {g,w,h}=fit($('cv3'));g.clearRect(0,0,w,h);
+  const lam=+$('lam').value,lp=14+lam*46,ex=w*.5,ey=h*.66,ly=h*.16,lw=(ey-ly)*Math.tan(TH);
+  const period=2800,ph=reduce?.75:(t%period)/period,k=Math.floor(t/period);
+  if(k!==cyc){cyc=k;beta=(Math.random()*2-1)*TH;}if(reduce)beta=TH*.6;
+  g.setLineDash([4,5]);g.strokeStyle=C.sage2;g.lineWidth=1;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex-lw,ly);g.moveTo(ex,ey);g.lineTo(ex+lw,ly);g.stroke();g.setLineDash([]);
+  g.fillStyle='rgba(91,106,55,.12)';g.strokeStyle=C.olive;g.lineWidth=1.6;g.beginPath();g.ellipse(ex,ly,lw,10,0,0,7);g.fill();g.stroke();
+  g.fillStyle=C.muted;g.font=ko(12);g.textAlign='left';g.fillText('렌즈',ex+lw+8,ly+4);
+  const kick=900/lp;g.strokeStyle='rgba(107,111,91,.45)';g.lineWidth=1;
+  for(let i=0;i<=8;i++){const b=-TH+2*TH*i/8;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex+(1-Math.sin(b))*kick,ey+Math.cos(b)*kick);g.stroke();}
+  const blur=lp*.9;for(let r=blur;r>2;r-=blur/7){g.fillStyle='rgba(62,74,38,.08)';g.beginPath();g.arc(ex,ey,r,0,7);g.fill();}
+  const hit=.4;
+  if(ph<hit){const xp=12+(ex-22)*(ph/hit);g.strokeStyle=C.ochre;g.lineWidth=2.2;g.beginPath();for(let s=0;s<lp*3;s++){const x=xp-s;if(x<0)break;const y=ey+Math.sin(s/lp*2*Math.PI)*8*Math.exp(-(((s-lp*1.5)/(lp*1.1))**2));s?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
+    g.fillStyle=C.forest;g.beginPath();g.arc(ex,ey,5,0,7);g.fill();}
+  else{const q=(ph-hit)/(1-hit),qq=Math.max(0,q-.12);
+    g.strokeStyle=C.ochre;g.lineWidth=2.2;g.beginPath();g.moveTo(ex+Math.sin(beta)*(ey-ly)*qq,ey-(ey-ly)*qq);g.lineTo(ex+Math.sin(beta)*(ey-ly)*Math.min(q,1),ey-(ey-ly)*Math.min(q,1));g.stroke();
+    const v={x:1-Math.sin(beta),y:Math.cos(beta)};g.strokeStyle=C.olive;g.lineWidth=2.4;g.beginPath();g.moveTo(ex,ey);g.lineTo(ex+v.x*kick,ey+v.y*kick);g.stroke();
+    const e2=Math.min(q*1.4,1);g.fillStyle=C.forest;g.beginPath();g.arc(ex+v.x*kick*.5*e2,ey+v.y*kick*.5*e2,5,0,7);g.fill();}
+  g.fillStyle=C.muted;g.font=ko(12);g.fillText('흐린 원: 렌즈로 본 위치',16,h-34);g.fillText('회색 부채꼴: 전자가 튕겨 나갈 수 있는 방향',16,h-16);
+  setH('ro3',`<dt>빛의 파장 (상대값)</dt><dd>${lam.toFixed(2)}</dd><dt>위치의 흐림 Δx</dt><dd>${lam.toFixed(2)}</dd><dt>반동의 범위 Δp</dt><dd>${(1/lam).toFixed(2)}</dd><dt>곱 Δx · Δp</dt><dd class="hot">1.00</dd>`);
+});
 })();
+
 </script>
 </body>
 </html>
