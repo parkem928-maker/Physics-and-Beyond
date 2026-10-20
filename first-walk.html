@@ -699,7 +699,7 @@ function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);
 function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
-    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
+    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 박언민" required></label>
     <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
