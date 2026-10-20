@@ -190,6 +190,14 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .wcol .wcard .bd{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .wcol .none{font-size:13px;color:var(--moss);padding:4px 6px 8px}
 
+/* 학생 사용성 보완 */
+body{word-break:keep-all;overflow-wrap:break-word}
+.obj.grab,.board canvas.grab{touch-action:pan-y}
+@media (max-width:760px){
+  .giant{padding-block:64px 70px}
+  .obj{width:min(250px,54vw)}
+}
+
 .ptable{display:grid;grid-template-columns:repeat(18,minmax(30px,1fr));gap:4px;overflow-x:auto;padding-bottom:4px}
 .ptable button{aspect-ratio:1;border:0;border-radius:10px;background:var(--sage);color:var(--ink);cursor:pointer;display:grid;place-items:center;align-content:center;line-height:1.05;padding:2px;min-width:30px}
 .ptable button b{font-family:var(--sans);font-weight:600;font-size:14px}
@@ -210,12 +218,13 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 
 .ptnote{display:none;margin:0 0 6px}
 @media (max-width:640px){.ptnote{display:block}}
+@media (max-width:640px){.ptable{grid-template-columns:repeat(18,38px);gap:3px}.ptable button{min-width:38px;min-height:38px}}
 
 </style>
 </head>
 <body>
 <header class="hero gut"><div class="in">
-<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html" aria-current="page">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html" aria-current="page">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:9"><p class="giant" aria-hidden="true">Invisible</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
 <div class="hrow"><div><span class="tag">Room 02 · 5장 · 6장</span><h1>보이지 않는 <span class="se">궤도</span></h1><div class="btns"><a class="btn mint" href="#orbital">확률 구름 실험실</a><a class="btn ghost" href="#bridge">케플러에서 시작</a></div></div><p>케플러는 행성의 궤도를 찾았고, 하이젠베르크는 전자의 궤도를 버렸습니다. 구름과 물방울과 파동을 움직여 보며, 우리가 무엇을 '보았다'고 말해 왔는지 다시 묻습니다.</p></div>
 </div></header>
@@ -355,7 +364,8 @@ const PB=(function(){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
-function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const SKIP={};const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{e.target.__vis=e.isIntersecting;}),{rootMargin:'120px'}):null;
+function fit(cv){if(io&&!cv.__obs){cv.__obs=1;cv.__vis=true;io.observe(cv);}if(io&&!reduce&&cv.__vis===false&&cv.__drawn)throw SKIP;cv.__drawn=1;const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
 const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
 const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
 const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
@@ -391,9 +401,10 @@ function dragger(cv,state){let down=null;
 /* loop */
 const loops=[];let running=false;
 function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
-function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
-function redraw(){for(const f of loops)f(0);}
+function tick(t){for(const f of loops){try{f(reduce?0:t);}catch(e){if(e!==SKIP)console.error(e);}}if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops){try{f(0);}catch(e){if(e!==SKIP)console.error(e);}}}
 addEventListener('resize',()=>{if(reduce)redraw();});
+{const a=document.querySelector('.bar nav [aria-current]');if(a){const n=a.parentElement;n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2);}}
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
 return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
 })();

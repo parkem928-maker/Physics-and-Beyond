@@ -190,6 +190,14 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .wcol .wcard .bd{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .wcol .none{font-size:13px;color:var(--moss);padding:4px 6px 8px}
 
+/* 학생 사용성 보완 */
+body{word-break:keep-all;overflow-wrap:break-word}
+.obj.grab,.board canvas.grab{touch-action:pan-y}
+@media (max-width:760px){
+  .giant{padding-block:64px 70px}
+  .obj{width:min(250px,54vw)}
+}
+
 .arches .arch{border:0;cursor:pointer;color:var(--ink);font:inherit;line-height:1.6;transition:transform .2s}
 .arches .arch:hover{transform:translateY(-3px)}
 .arches .arch[aria-pressed="true"]{background:var(--olive);color:var(--cream)}
@@ -200,7 +208,7 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 </head>
 <body>
 <header class="hero gut"><div class="in">
-<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html" aria-current="page">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html" aria-current="page">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:10"><p class="giant" aria-hidden="true">First walk</p><canvas class="obj grab" id="hero-obj" aria-hidden="true"></canvas></div>
 <div class="hrow"><div><span class="tag">Room 01 · 1장 · 3장</span><h1>첫 번째 <span class="se">산책</span></h1><div class="btns"><a class="btn mint" href="#timaeus">지붕 위의 티마이오스</a><a class="btn ghost" href="#frames">같은 점, 다른 틀</a></div></div><p>1919년 뮌헨, 열여덟 살의 하이젠베르크는 교과서의 원자 그림을 믿지 못했습니다. 지붕 위에서 플라톤의 『티마이오스』를 읽으며, 가장 작은 것은 수학의 형식일지 모른다는 생각에 사로잡힙니다.</p></div>
 </div></header>
@@ -276,7 +284,8 @@ const PB=(function(){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
-function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const SKIP={};const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{e.target.__vis=e.isIntersecting;}),{rootMargin:'120px'}):null;
+function fit(cv){if(io&&!cv.__obs){cv.__obs=1;cv.__vis=true;io.observe(cv);}if(io&&!reduce&&cv.__vis===false&&cv.__drawn)throw SKIP;cv.__drawn=1;const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
 const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
 const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
 const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
@@ -312,9 +321,10 @@ function dragger(cv,state){let down=null;
 /* loop */
 const loops=[];let running=false;
 function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
-function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
-function redraw(){for(const f of loops)f(0);}
+function tick(t){for(const f of loops){try{f(reduce?0:t);}catch(e){if(e!==SKIP)console.error(e);}}if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops){try{f(0);}catch(e){if(e!==SKIP)console.error(e);}}}
 addEventListener('resize',()=>{if(reduce)redraw();});
+{const a=document.querySelector('.bar nav [aria-current]');if(a){const n=a.parentElement;n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2);}}
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
 return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
 })();

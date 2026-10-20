@@ -190,6 +190,14 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .wcol .wcard .bd{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .wcol .none{font-size:13px;color:var(--moss);padding:4px 6px 8px}
 
+/* 학생 사용성 보완 */
+body{word-break:keep-all;overflow-wrap:break-word}
+.obj.grab,.board canvas.grab{touch-action:pan-y}
+@media (max-width:760px){
+  .giant{padding-block:64px 70px}
+  .obj{width:min(250px,54vw)}
+}
+
 .tray{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;background:var(--cream);border-radius:20px;padding:10px}
 .card{border:1px solid var(--olive);background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;text-align:left}
 .card[aria-pressed="true"]{background:var(--forest);color:var(--mint);border-color:var(--forest)}
@@ -215,7 +223,7 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 </head>
 <body>
 <header class="hero gut"><div class="in">
-<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html" aria-current="page">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html" aria-current="page">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:8"><p class="giant" aria-hidden="true">Tribunal</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
 <div class="hrow"><div><span class="tag">Room 03 · 10장</span><h1>칸트의 <span class="se">법정</span></h1><div class="btns"><a class="btn mint" href="#spin">하나는 모르고, 천은 안다</a><a class="btn ghost" href="#sort">두 단어 분류판</a></div></div><p>1930년대 초 라이프치히. 칸트주의 철학자 그레테 헤르만이 물리학자들을 찾아옵니다. 양자역학이 인과율을 버렸다는 말을 그대로 둘 수 없었기 때문입니다. 두 단어를 갈라 보면 법정의 쟁점이 보입니다.</p></div>
 </div></header>
@@ -276,7 +284,8 @@ const PB=(function(){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
-function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const SKIP={};const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{e.target.__vis=e.isIntersecting;}),{rootMargin:'120px'}):null;
+function fit(cv){if(io&&!cv.__obs){cv.__obs=1;cv.__vis=true;io.observe(cv);}if(io&&!reduce&&cv.__vis===false&&cv.__drawn)throw SKIP;cv.__drawn=1;const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
 const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
 const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
 const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
@@ -312,9 +321,10 @@ function dragger(cv,state){let down=null;
 /* loop */
 const loops=[];let running=false;
 function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
-function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
-function redraw(){for(const f of loops)f(0);}
+function tick(t){for(const f of loops){try{f(reduce?0:t);}catch(e){if(e!==SKIP)console.error(e);}}if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops){try{f(0);}catch(e){if(e!==SKIP)console.error(e);}}}
 addEventListener('resize',()=>{if(reduce)redraw();});
+{const a=document.querySelector('.bar nav [aria-current]');if(a){const n=a.parentElement;n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2);}}
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
 return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
 })();
@@ -404,9 +414,9 @@ onFrame(t=>{const cv=$('hero-obj'),{g,w,h}=fit(cv);g.clearRect(0,0,w,h);
   g.beginPath();g.arc(cx,top,6,0,7);g.fill();
   const lx=cx-L*Math.cos(a),ly=top-L*Math.sin(a),rx=cx+L*Math.cos(a),ry=top+L*Math.sin(a);
   g.beginPath();g.moveTo(lx,ly);g.lineTo(rx,ry);g.stroke();
-  [[lx,ly,'인과율'],[rx,ry,'예측 가능성']].forEach(([x,y,t2])=>{g.lineWidth=1.5;g.beginPath();g.moveTo(x,y);g.lineTo(x-L*.22,y+L*.42);g.moveTo(x,y);g.lineTo(x+L*.22,y+L*.42);g.stroke();
+  [[lx,ly,'인과율'],[rx,ry,'예측 가능성']].forEach(([x,y,t2])=>{const showT=L>120;g.lineWidth=1.5;g.beginPath();g.moveTo(x,y);g.lineTo(x-L*.22,y+L*.42);g.moveTo(x,y);g.lineTo(x+L*.22,y+L*.42);g.stroke();
     g.lineWidth=3;g.beginPath();g.moveTo(x-L*.3,y+L*.42);g.quadraticCurveTo(x,y+L*.62,x+L*.3,y+L*.42);g.stroke();
-    g.font=ko(Math.max(12,L*.09),700);g.textAlign='center';g.fillText(t2,x,y+L*.78);});
+    if(showT){g.font=ko(Math.max(12,L*.09),700);g.textAlign='center';g.fillText(t2,x,y+L*.78);}});
 });
 
 /* 01 측정 실험 */

@@ -190,6 +190,14 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .wcol .wcard .bd{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .wcol .none{font-size:13px;color:var(--moss);padding:4px 6px 8px}
 
+/* 학생 사용성 보완 */
+body{word-break:keep-all;overflow-wrap:break-word}
+.obj.grab,.board canvas.grab{touch-action:pan-y}
+@media (max-width:760px){
+  .giant{padding-block:64px 70px}
+  .obj{width:min(250px,54vw)}
+}
+
 .rooms .step{min-height:280px}
 .walk{background:var(--forest);color:var(--mint);border-radius:40px;padding:clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 48px;position:relative;overflow:hidden}
 @media (max-width:820px){.walk{grid-template-columns:minmax(0,1fr)}}
@@ -203,15 +211,33 @@ a.step:hover .go{transform:rotate(-30deg);transition:transform .2s}
 .walk-r b{font-family:var(--it);font-style:italic;font-weight:400;font-size:24px;color:var(--mint)}
 .walk-r span{color:var(--cream);font-size:14.5px}
 
+.join{background:var(--sage);border-radius:36px;padding:clamp(22px,4vw,40px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:18px 40px;align-items:start}
+@media (max-width:820px){.join{grid-template-columns:minmax(0,1fr)}}
+.join h2{margin:8px 0 0;font-family:var(--sans);font-weight:500;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.035em;line-height:1.15}
+.join ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15.5px}
+.join .btn{grid-column:1/-1;justify-self:start}
+
 </style>
 </head>
 <body>
 <header class="hero gut"><div class="in">
-<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html" aria-current="page">처음</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
+<div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html" aria-current="page">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:6"><p class="giant" aria-hidden="true">Beyond</p><canvas class="obj grab" id="hero-obj" aria-hidden="true"></canvas></div>
-<div class="hrow"><div><span class="tag">『부분과 전체』 독서 캠프 · 걸으며 묻다</span><h1>물리학에서 시작해<br><span class="se">그 너머로</span> 걷기</h1><div class="btns"><a class="btn mint" href="first-walk.html">첫 번째 산책 시작</a><a class="btn ghost" href="#rooms">네 개의 방 보기</a></div></div><p>하이젠베르크는 자기 생각의 역사를 대화로 썼고, 그 대화는 대부분 걸으며 오갑니다. 네 번의 산책을 따라 물리학의 장면을 손으로 움직여 보며, 이해한다는 것이 무엇인지 묻습니다.</p></div>
+<div class="hrow"><div><span class="tag">『부분과 전체』 독서 캠프 · 걸으며 묻다</span><h1>물리학에서 시작해<br><span class="se">그 너머로</span> 걷기</h1><div class="btns"><a class="btn mint" href="map.html">처음이라면, 안내도 보기</a><a class="btn ghost" href="first-walk.html">첫 번째 산책 시작</a></div></div><p>하이젠베르크는 자기 생각의 역사를 대화로 썼고, 그 대화는 대부분 걸으며 오갑니다. 네 번의 산책을 따라 물리학의 장면을 손으로 움직여 보며, 이해한다는 것이 무엇인지 묻습니다.</p></div>
 </div></header>
 <main>
+<section class="sec gut" id="join"><div class="in">
+  <div class="join">
+    <div><span class="eyebrow" style="color:var(--olive)">참여하는 법</span><h2>움직이고, 판정하고, <span class="se">붙입니다</span></h2></div>
+    <ol>
+      <li>방에 들어가 그림을 움직이고, 고르거나 맞서는 활동을 해 봅니다.</li>
+      <li>맨 아래 담벼락에 이름(별명도 좋다)과 내 생각을 남깁니다. 긴 글은 노션에 쓰고 링크를 붙입니다.</li>
+      <li>친구의 글을 읽고 '질문 남기기'로 묻고 싶은 것을 한 줄 남깁니다.</li>
+    </ol>
+    <a class="btn" href="map.html">처음이라면, 안내도 보기 →</a>
+  </div>
+</div></section>
+
 <section class="sec gut" id="rooms"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z"/></svg><h2>네 번의 <span class="se">산책</span></h2><p>방마다 손으로 움직여 볼 수 있는 그림이 있습니다. 노션 탐구 공간의 같은 이름 방과 짝을 이룹니다.</p></div>
   <div class="steps rooms">
@@ -264,7 +290,8 @@ const PB=(function(){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const C={cream:'#f3efe3',paper:'#fbf9f3',sage:'#dfe2bf',sage2:'#c4cb94',olive:'#5b6a37',moss:'#3e4a26',forest:'#142614',forest2:'#1f3420',mint:'#e0f5c6',mintdim:'#a9c29a',ink:'#1c2316',muted:'#6b6f5b',line:'#d6d3c0',ochre:'#b0873a'};
-function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
+const SKIP={};const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{e.target.__vis=e.isIntersecting;}),{rootMargin:'120px'}):null;
+function fit(cv){if(io&&!cv.__obs){cv.__obs=1;cv.__vis=true;io.observe(cv);}if(io&&!reduce&&cv.__vis===false&&cv.__drawn)throw SKIP;cv.__drawn=1;const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(1,Math.round(r.width*d)),H=Math.max(1,Math.round(r.height*d));if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g,w:r.width,h:r.height};}
 const ko=(s,w)=>`${w||500} ${s}px "Noto Sans KR",sans-serif`;
 const ep=(s,w)=>`${w||500} ${s}px Epilogue,"Noto Sans KR",sans-serif`;
 const it=s=>`italic 400 ${s}px "Instrument Serif",Georgia,serif`;
@@ -300,9 +327,10 @@ function dragger(cv,state){let down=null;
 /* loop */
 const loops=[];let running=false;
 function onFrame(f){loops.push(f);if(!running){running=true;requestAnimationFrame(tick);}}
-function tick(t){for(const f of loops)f(reduce?0:t);if(!reduce)requestAnimationFrame(tick);}
-function redraw(){for(const f of loops)f(0);}
+function tick(t){for(const f of loops){try{f(reduce?0:t);}catch(e){if(e!==SKIP)console.error(e);}}if(!reduce)requestAnimationFrame(tick);}
+function redraw(){for(const f of loops){try{f(0);}catch(e){if(e!==SKIP)console.error(e);}}}
 addEventListener('resize',()=>{if(reduce)redraw();});
+{const a=document.querySelector('.bar nav [aria-current]');if(a){const n=a.parentElement;n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2);}}
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
 return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
 })();
