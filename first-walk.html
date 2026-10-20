@@ -18,6 +18,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0}
 body{background:var(--cream);color:var(--ink);font-family:var(--ko);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
 a{color:inherit}
@@ -197,6 +198,29 @@ body{word-break:keep-all;overflow-wrap:break-word}
   .giant{padding-block:64px 70px}
   .obj{width:min(250px,54vw)}
 }
+.wtools{display:flex;gap:6px;flex-wrap:wrap}
+.wbar .minebtn[aria-pressed="true"]{background:var(--olive);color:var(--cream)}
+.wbar .dot{background:var(--ochre);color:#fff;border-radius:999px;padding:0 7px;margin-left:4px;font-weight:700}
+.wcard.mine{box-shadow:0 0 0 2px var(--sage2)}
+.wcard .me{font-size:11px;font-weight:700;background:var(--sage);color:var(--moss);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+.wcard .reply.new{background:#f1e3c4;box-shadow:inset 3px 0 0 var(--ochre)}
+.wcard .reply i{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--ochre)}
+.winbox{background:var(--forest);color:var(--mint);border-radius:22px;padding:14px 18px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.winbox a{color:var(--cream);font-weight:700;font-size:14px}
+.glosswrap{padding-block:28px 0}
+.gloss{background:var(--paper);border-radius:26px;padding:4px 20px}
+.gloss summary{cursor:pointer;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:14px 0;list-style:none}
+.gloss summary::-webkit-details-marker{display:none}
+.gloss summary::before{content:"+";font-family:var(--sans);font-weight:600;font-size:20px;color:var(--olive);width:16px}
+.gloss[open] summary::before{content:"−"}
+.gloss summary .se{font-size:19px}
+.gloss .gn{font-size:13px;color:var(--muted)}
+.gloss dl{margin:0 0 18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px}
+@media (max-width:760px){.gloss dl{grid-template-columns:minmax(0,1fr)}}
+.gloss dl div{border-top:1px solid var(--line);padding-top:8px;min-width:0}
+.gloss dt{font-weight:700;color:var(--moss);font-size:14.5px}
+.gloss dd{margin:2px 0 0;font-size:14px;line-height:1.65}
+.glossfab{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:20;border:0;border-radius:999px;background:var(--forest);color:var(--mint);font:inherit;font-weight:700;font-size:13px;padding:10px 15px;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);cursor:pointer}
 
 .arches .arch{border:0;cursor:pointer;color:var(--ink);font:inherit;line-height:1.6;transition:transform .2s}
 .arches .arch:hover{transform:translateY(-3px)}
@@ -326,7 +350,17 @@ function redraw(){for(const f of loops){try{f(0);}catch(e){if(e!==SKIP)console.e
 addEventListener('resize',()=>{if(reduce)redraw();});
 {const a=document.querySelector('.bar nav [aria-current]');if(a){const n=a.parentElement;n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2);}}
 if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener(ev,()=>requestAnimationFrame(redraw)));}
-return {$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+
+/* 용어 풀이: 접힌 상자 + 화면 구석의 버튼 */
+function gloss(terms){
+  const sec=document.createElement('section');sec.className='sec gut glosswrap';sec.id='gloss';
+  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼쳐 보세요 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
+  const main=document.querySelector('main');main.insertBefore(sec,main.firstChild);
+  const b=document.createElement('button');b.type='button';b.className='glossfab';b.textContent='용어';b.setAttribute('aria-label','용어 풀이 열기');
+  b.addEventListener('click',()=>{const d=sec.querySelector('details');d.open=true;sec.scrollIntoView({behavior:reduce?'auto':'smooth'});d.querySelector('summary').focus({preventScroll:true});});
+  document.body.appendChild(b);
+}
+return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -339,14 +373,21 @@ const safeLink=u=>/^https?:\/\//i.test(u||'')?u:'';
 function ago(t){if(!t)return '';const s=(Date.now()-t)/1000;if(s<60)return '방금';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';const d=new Date(t);return `${d.getMonth()+1}월 ${d.getDate()}일`;}
 let myName='';try{myName=localStorage.getItem('pb-name')||'';}catch(e){}
 function keepName(n){myName=n;try{localStorage.setItem('pb-name',n);}catch(e){}}
+/* 내가 쓴 글과 이미 읽은 질문은 이 기기에만 기억 */
+function getSet(k){try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'));}catch(e){return new Set();}}
+function putSet(k,set){try{localStorage.setItem(k,JSON.stringify([...set].slice(-500)));}catch(e){}}
+const MINE=getSet('pb-mine'),SEEN=getSet('pb-seen');
+function addMine(id){MINE.add(id);putSet('pb-mine',MINE);}
+function inbox(posts){const mineTop=posts.filter(p=>!p.parent&&MINE.has(p.id));const ids=new Set(mineTop.map(p=>p.id));
+  const got=posts.filter(p=>p.parent&&ids.has(p.parent)&&!MINE.has(p.id));return {mineTop,got,fresh:got.filter(p=>!SEEN.has(p.id))};}
 async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했습니다');return j.posts;}
 async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했습니다');return j;}
 
-function cardHTML(p,replies,full){
+function cardHTML(p,replies,full,hl){
   const lk=safeLink(p.link);
-  return `<article class="wcard" data-id="${esc(p.id)}"><div class="who"><b>${esc(p.name)}</b><time>${ago(p.t)}</time></div><p class="bd">${esc(p.body)}</p>`+
+  return `<article class="wcard${MINE.has(p.id)?' mine':''}" data-id="${esc(p.id)}"><div class="who"><b>${esc(p.name)}${MINE.has(p.id)?' <span class="me">내 글</span>':''}</b><time>${ago(p.t)}</time></div><p class="bd">${esc(p.body)}</p>`+
    (lk?`<a class="lk" href="${esc(lk)}" target="_blank" rel="noopener noreferrer">↗ ${esc(lk.replace(/^https?:\/\//,'').slice(0,48))}</a>`:'')+
-   (full?`<div class="q">${replies.map(r=>`<div class="reply"><b>${esc(r.name)}</b>${esc(r.body)}</div>`).join('')}<button type="button" data-ask>질문 남기기${replies.length?' · '+replies.length:''}</button></div>`:(replies.length?`<span class="note">질문 ${replies.length}개</span>`:''))+
+   (full?`<div class="q">${replies.map(r=>`<div class="reply${hl&&hl.has(r.id)?' new':''}">${hl&&hl.has(r.id)?'<i>새 질문</i>':''}<b>${esc(r.name)}</b>${esc(r.body)}</div>`).join('')}<button type="button" data-ask>질문 남기기${replies.length?' · '+replies.length:''}</button></div>`:(replies.length?`<span class="note">질문 ${replies.length}개</span>`:''))+
    `</article>`;
 }
 function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);const rep={};posts.filter(p=>p.parent).sort((a,b)=>a.t-b.t).forEach(p=>(rep[p.parent]=rep[p.parent]||[]).push(p));return {top,rep};}
@@ -359,13 +400,20 @@ function room(el,room,prompt){
     <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
-   <div class="wlist"><div class="wbar"><span class="count">불러오는 중…</span><button type="button" class="refresh">새로 고침</button></div><div class="wcards"></div></div></div>`;
+   <div class="wlist"><div class="wbar"><span class="count">불러오는 중…</span><span class="wtools"><button type="button" class="minebtn" aria-pressed="false" hidden>내 글 · 받은 질문</button><button type="button" class="refresh">새로 고침</button></span></div><div class="wcards"></div></div></div>`;
   const f=el.querySelector('form'),msg=f.querySelector('.msg'),cards=el.querySelector('.wcards'),count=el.querySelector('.count');
   const F=f.elements;F['name'].value=myName;
-  let posts=[];
-  function render(){const {top,rep}=split(posts);count.textContent=`글 ${top.length}개`;
-    cards.innerHTML=top.length?top.map(p=>cardHTML(p,rep[p.id]||[],true)).join(''):'';
-    if(!top.length)cards.innerHTML=`<div class="wempty"><b>아직 올라온 글이 없습니다</b><span>왼쪽에 첫 번째 생각을 남겨 주세요.</span></div>`;}
+  let posts=[],mineOnly=location.hash==='#mine',hl=new Set();
+  const mb=el.querySelector('.minebtn');
+  function render(){const {top,rep}=split(posts);const box=inbox(posts);
+    mb.hidden=!box.mineTop.length;mb.setAttribute('aria-pressed',mineOnly?'true':'false');
+    mb.innerHTML=mineOnly?'모든 글 보기':`내 글 ${box.mineTop.length} · 받은 질문 ${box.got.length}`+(box.fresh.length?` <b class="dot">새 ${box.fresh.length}</b>`:'');
+    if(mineOnly){box.fresh.forEach(p=>{hl.add(p.id);SEEN.add(p.id);});putSet('pb-seen',SEEN);}
+    const list=mineOnly?top.filter(p=>MINE.has(p.id)):top;
+    count.textContent=mineOnly?`내 글 ${list.length}개`:`글 ${top.length}개`;
+    cards.innerHTML=list.map(p=>cardHTML(p,rep[p.id]||[],true,hl)).join('');
+    if(!list.length)cards.innerHTML=mineOnly?`<div class="wempty"><b>이 기기에서 쓴 글이 아직 없습니다</b><span>다른 기기에서 썼다면 그 기기에서 확인해 주세요.</span></div>`:`<div class="wempty"><b>아직 올라온 글이 없습니다</b><span>왼쪽에 첫 번째 생각을 남겨 주세요.</span></div>`;}
+  mb.addEventListener('click',()=>{mineOnly=!mineOnly;if(!mineOnly)hl=new Set();render();});
   async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 나타납니다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
     try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했습니다. 잠시 뒤 새로 고침을 눌러 주세요.';}}
   el.querySelector('.refresh').addEventListener('click',refresh);
@@ -374,7 +422,7 @@ function room(el,room,prompt){
     if(!d.body){msg.className='msg err';msg.textContent='내용을 적어 주세요.';F['body'].focus();return;}
     if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 합니다.';F['link'].focus();return;}
     const b=f.querySelector('.btn');b.disabled=true;msg.className='msg';msg.textContent='올리는 중…';
-    try{const r=await send(d);keepName(d.name);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸습니다.';}
+    try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸습니다.';}
     catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 주세요.';}
     b.disabled=false;});
   cards.addEventListener('click',e=>{const ask=e.target.closest('[data-ask]');if(!ask)return;const card=ask.closest('.wcard');if(card.querySelector('form'))return;
@@ -383,17 +431,21 @@ function room(el,room,prompt){
     fm.addEventListener('submit',async ev=>{ev.preventDefault();const m=fm.querySelector('.msg');const d={room,name:E['name'].value.trim(),body:E['body'].value.trim(),parent:card.dataset.id};
       if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어 주세요.';return;}
       fm.querySelector('.btn').disabled=true;m.textContent='올리는 중…';
-      try{const r=await send(d);keepName(d.name);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:'',parent:d.parent});render();}
+      try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:'',parent:d.parent});render();}
       catch(err){m.textContent=err.message;fm.querySelector('.btn').disabled=false;}});});
+  if(mineOnly)setTimeout(()=>{const w=document.getElementById('wall');if(w)w.scrollIntoView();},300);
   refresh();setInterval(()=>{if(document.visibilityState==='visible'&&URL_&&!el.querySelector('.wcard form')&&!f.contains(document.activeElement))refresh();},45000);
 }
 
 /* 첫 화면: 네 방을 한눈에 */
 function overview(el){
   const cols=Object.keys(ROOMS);
-  el.innerHTML=`<div class="wcols">${cols.map(r=>`<section class="wcol" data-room="${r}"><h3>${ROOMS[r]}<a href="${PAGES[r]}#wall">쓰러 가기 →</a></h3><div class="none">불러오는 중…</div></section>`).join('')}</div>`;
+  el.innerHTML=`<div class="winbox" hidden></div><div class="wcols">${cols.map(r=>`<section class="wcol" data-room="${r}"><h3>${ROOMS[r]}<a href="${PAGES[r]}#wall">쓰러 가기 →</a></h3><div class="none">불러오는 중…</div></section>`).join('')}</div>`;
   if(!URL_){el.querySelectorAll('.none').forEach(n=>n.textContent='담벼락 연결 준비 중');return;}
-  load('all').then(posts=>{cols.forEach(r=>{const {top,rep}=split(posts.filter(p=>p.room===r));const box=el.querySelector(`[data-room="${r}"]`);
+  load('all').then(posts=>{const box=inbox(posts);const ib=el.querySelector('.winbox');
+    if(box.fresh.length){const by={};box.fresh.forEach(p=>by[p.room]=(by[p.room]||0)+1);ib.hidden=false;
+      ib.innerHTML=`<b>내 글에 새 질문이 ${box.fresh.length}개 달렸습니다.</b>`+Object.keys(by).map(r=>`<a href="${PAGES[r]}#mine">${ROOMS[r]} · ${by[r]}개 →</a>`).join('');}
+    cols.forEach(r=>{const {top,rep}=split(posts.filter(p=>p.room===r));const box=el.querySelector(`[data-room="${r}"]`);
     box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없습니다.</div>');});})
    .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했습니다.'));
 }
@@ -495,6 +547,8 @@ onFrame(()=>{const {g,w,h}=fit($('cvf'));g.clearRect(0,0,w,h);
 })();
 
 BOARD.room(document.getElementById('board'),'r1',["가장 마음에 걸리는 1장 문장(A/B/C)과 그 이유 한 문장", "내가 '이해한다'고 여긴 개념과 그 근거 (그림 / 계산 / 예측)", "그 개념을 바꾼 틀은 내가 만든 것인가, 받은 것인가 (2문장)"]);
+
+PB.gloss([["원자론", "물질이 더 나눌 수 없는 아주 작은 알갱이(원자)로 되어 있다는 생각입니다."], ["『티마이오스』", "플라톤이 우주가 어떻게 생겨났는지를 이야기한 대화편입니다. 불·공기·물·흙을 정다면체로 설명합니다."], ["정다면체", "모든 면이 똑같은 정다각형이고, 꼭짓점마다 모인 모양도 똑같은 입체입니다. 세상에 다섯 가지뿐입니다."], ["오일러의 공식", "볼록한 다면체라면 언제나 꼭짓점 수 − 모서리 수 + 면 수 = 2입니다. 정육면체는 8 − 12 + 6 = 2입니다."], ["틀 (모형)", "흩어진 관찰들을 하나로 묶어 설명하는 방식입니다. 직선, 원, 타원 모두 점들을 읽는 틀입니다."], ["타원", "두 점(초점)까지의 거리의 합이 일정한 점들이 그리는 곡선입니다. 케플러는 행성이 타원을 그리며 돈다는 것을 찾았습니다."], ["예측", "아직 보지 않은 것을 미리 맞히는 일입니다. 숨겨 둔 관측 8개를 맞히는 틀이 예측을 잘하는 틀입니다."], ["보어", "덴마크의 물리학자입니다. 원자 모형을 처음 제안했고, 하이젠베르크의 스승이자 대화 상대였습니다."]]);
 
 </script>
 </body>
