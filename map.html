@@ -491,18 +491,55 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-index:2;display:block}
 @media (max-width:760px){canvas.wp{height:64px}}
 
+/* ================= 포스터 요소 + 스크롤 변화 (v3) ================= */
+/* 흘러가는 큰 단어: 스크롤에 따라 좌우로 */
+.drift{overflow:hidden;margin-top:120px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:14px 0 10px;white-space:nowrap;user-select:none}
+.drow{display:flex;align-items:center;gap:30px;width:max-content;font-family:var(--display);font-weight:600;letter-spacing:-.045em;line-height:.95;font-size:clamp(52px,9vw,132px);transform:translate3d(var(--dx,0px),0,0);will-change:transform}
+.drow span{color:transparent;-webkit-text-stroke:1.2px var(--olive)}
+.drow b{font-family:var(--sko);font-weight:600;font-size:.34em;letter-spacing:-.03em;color:var(--olive);padding:0 6px}
+.drow.r{font-size:clamp(20px,2.6vw,34px);margin-top:8px;letter-spacing:-.02em}
+.drow.r span{color:var(--ink);-webkit-text-stroke:0}
+.drow.r b{font-size:.7em;color:var(--muted)}
+.drift + #wall{margin-top:130px}
+
+/* 바닥: 메타 정보 + 바코드 */
+.foot .in{display:flex;align-items:center;gap:18px 30px;flex-wrap:wrap}
+.foot .meta{margin:0;display:grid;grid-template-columns:repeat(3,auto);gap:0 26px;flex:1;min-width:0}
+@media (max-width:760px){.foot .meta{grid-template-columns:minmax(0,1fr)}}
+.foot .meta div{display:grid;gap:0;border:0;padding:0}
+.foot .meta dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mintdim)}
+.foot .meta dt::after{content:" —"}
+.foot .meta dd{margin:0;color:var(--cream);font-size:13px}
+.code{display:grid;gap:4px;justify-items:end;color:var(--mint)}
+.code svg{width:120px;height:30px;fill:currentColor}
+.code i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--mintdim)}
+
+/* 맨 위의 진행 막대: 끝에 입자 하나 */
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;pointer-events:none;transform-origin:left;transform:scaleX(var(--pg,0));background:linear-gradient(90deg,transparent,var(--olive) 30%,var(--sage2))}
+.prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
+
+/* 나타나기: 아래에서 천천히 */
+html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i.seen{opacity:1;transform:none}
+.head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
+
+/* 방 히어로: 내리면 큰 글자는 뒤로 물러나고 물체는 앞으로 */
+.hero:not(.dive-hero) .giant{transform:translate3d(0,calc(var(--hp,0) * 70px),0) scale(calc(1 - var(--hp,0) * .08));opacity:calc(1 - var(--hp,0) * .55);letter-spacing:calc(-.05em + var(--hp,0) * .06em)}
+.hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
+.hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
+
 </style>
 </head>
-<body>
+<body class="p-map">
 <header class="hero gut"><canvas class="sky" id="sky" aria-hidden="true"></canvas><div class="in">
 <div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html" aria-current="page">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:4"><div class="hud" aria-hidden="true"><span class="tl">Route · 4 walks</span><span class="tr">Guide · 안내도</span><span class="bl">München → Göttingen → København → Leipzig</span><span class="br">Map · 00</span></div><p class="giant" aria-hidden="true">Map</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
-<div class="hrow"><div><span class="tag">처음이라면 · 안내도</span><h1>네 번의 산책을<br><span class="se">이렇게</span> 걷습니다</h1><div class="btns"><a class="btn mint" href="first-walk.html">01 첫 번째 산책부터</a><a class="btn ghost" href="index.html">처음 화면으로</a></div></div><p>방은 01부터 04까지 이어지고, 1장의 세 문장이 그 사이를 꿰는 실이 됩니다. 각 방에서 무엇을 움직이고 무엇을 남기는지, 담벼락은 어떻게 쓰는지 한눈에 봅니다.</p></div>
+<div class="hrow"><div><span class="tag">처음이라면 · 안내도</span><h1>네 번의 산책을<br><span class="se">이렇게</span> 걷는다</h1><div class="btns"><a class="btn mint" href="first-walk.html">01 첫 번째 산책부터</a><a class="btn ghost" href="index.html">처음 화면으로</a></div></div><p>방은 01부터 04까지 이어지고, 1장의 세 문장이 그 사이를 꿰는 실이 된다. 방마다 무엇을 움직이고 무엇을 남기는지, 담벼락은 어떻게 쓰는지 여기에 다 모아 두었다.</p></div>
 </div></header>
 <main>
 <section class="sec gut"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>네 번의 산책을 <span class="se">이렇게</span> 걷습니다</h2>
-    <p>방은 01부터 04까지 차례로 이어집니다. 방마다 하는 일은 같습니다. 질문을 읽고, 그림을 움직이고, 판정해 보고, 맨 아래 담벼락에 내 생각을 붙입니다. 한 번에 다 하지 않아도 됩니다. 담벼락은 언제든 다시 열립니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>네 번의 산책을 <span class="se">이렇게</span> 걷는다</h2>
+    <p>방은 01부터 04까지 차례로 이어진다. 방마다 하는 일은 비슷하다. 질문을 읽고, 그림을 움직이고, 판정해 보고, 맨 아래 담벼락에 내 생각을 붙인다. 한 번에 다 하지 않아도 된다. 담벼락은 언제든 다시 열린다.</p></div>
   <ol class="route">
     <li class="stop o"><span class="no">01 · 1장 · 3장</span><h3><a href="first-walk.html">첫 번째 산책</a></h3><p class="q">무엇을 '이해했다'고 말할 수 있는가?</p>
       <dl><dt>움직여 볼 것</dt><dd>1장의 세 문장 중 하나를 고른다. 정다면체 다섯 개를 돌려 보고, 같은 점들 위에 다섯 가지 틀을 씌운 뒤 숨긴 관측을 드러낸다.</dd>
@@ -521,50 +558,50 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
 
 <section class="sec gut"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>네 방을 꿰는 <span class="se">세 문장</span></h2>
-    <p>이 캠프에는 처음부터 끝까지 들고 다니는 것이 있습니다. 1장에 나오는 세 문장입니다.</p></div>
+    <p>이 캠프에는 처음부터 끝까지 들고 다니는 게 하나 있다. 1장에 나오는 세 문장이다.</p></div>
   <div class="thread">
-    <div class="tstep"><b>01</b><span>첫 번째 산책에서 가장 마음에 걸리는 문장 하나를 고릅니다. 고른 문장은 이 기기에 기억됩니다.</span></div>
-    <div class="tstep"><b>02 · 03</b><span>방마다 A·B·C가 적힌 연두색 상자가 세 문장 중 하나를 다시 꺼냅니다. A는 물리학과 철학을 잇는 안경, B는 안경을 쓴 사람을 재는 눈금, C는 책 전체를 보는 안경입니다. 내가 고른 문장이 나오는 곳에서 한 번 더 멈춰 봅니다.</span></div>
-    <div class="tstep"><b>04</b><span>부분과 전체에 첫날 고른 문장이 다시 나타납니다. 그 문장이 지금도 같은지 대화문으로 답합니다.</span></div>
+    <div class="tstep"><b>01</b><span>첫 번째 산책에서 가장 마음에 걸리는 문장 하나를 고른다. 고른 문장은 이 기기에 기억된다.</span></div>
+    <div class="tstep"><b>02 · 03</b><span>방마다 A·B·C가 적힌 연두색 상자가 세 문장 중 하나를 다시 꺼낸다. A는 물리학과 철학을 잇는 안경, B는 안경을 쓴 사람을 재는 눈금, C는 책 전체를 보는 안경이다. 내가 고른 문장이 나오는 곳에서 한 번 더 멈춰 본다.</span></div>
+    <div class="tstep"><b>04</b><span>부분과 전체에 첫날 고른 문장이 다시 나타난다. 그 문장이 지금도 같은지 대화문으로 답한다.</span></div>
   </div>
-  <p class="caveat">고른 문장은 같은 기기, 같은 브라우저에서만 이어집니다. 다른 기기로 바꿨다면 첫 번째 산책에서 다시 한 번 고르면 됩니다.</p>
+  <p class="caveat">고른 문장은 같은 기기, 같은 브라우저에서만 이어진다. 다른 기기로 바꿨다면 첫 번째 산책에서 다시 한 번 고르면 된다.</p>
 </div></section>
 
 <section class="sec gut"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>한 방에서의 <span class="se">순서</span></h2><p>위에서 아래로 내려가면 됩니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>한 방에서의 <span class="se">순서</span></h2><p>위에서 아래로 내려가면 된다.</p></div>
   <div class="steps">
-    <div class="step o"><span class="no">STEP 1</span><h3>묻는다</h3><p>맨 위의 큰 제목과 설명이 그 방의 질문입니다. 그림을 만지기 전에 내 답을 먼저 짐작해 봅니다.</p></div>
-    <div class="step s"><span class="no">STEP 2</span><h3>움직인다</h3><p>막대, 버튼, 원소를 움직여 봅니다. 무엇이 바뀌고 무엇이 그대로인지 봅니다. 검은 칸의 숫자가 단서입니다.</p></div>
-    <div class="step c"><span class="no">STEP 3</span><h3>판정한다</h3><p>방마다 고르거나 맞서는 활동이 있습니다. (가)(나)(다) 판정, 칸트 편과 물리학자 편, 카드 나누기. 책의 해당 장을 펼쳐 두면 좋습니다.</p></div>
-    <div class="step p"><span class="no">STEP 4</span><h3>붙인다</h3><p>맨 아래 담벼락의 세 항목에 답해 올리고, 친구들의 글을 읽고 질문을 남깁니다.</p></div>
+    <div class="step o"><span class="no">STEP 1</span><h3>묻는다</h3><p>맨 위의 큰 제목과 설명이 그 방의 질문이다. 그림을 만지기 전에 내 답을 먼저 짐작해 본다.</p></div>
+    <div class="step s"><span class="no">STEP 2</span><h3>움직인다</h3><p>막대, 버튼, 원소를 움직여 본다. 무엇이 바뀌고 무엇이 그대로인지 본다. 검은 칸의 숫자가 단서다.</p></div>
+    <div class="step c"><span class="no">STEP 3</span><h3>판정한다</h3><p>방마다 고르거나 맞서는 활동이 있다. (가)(나)(다) 판정, 칸트 편과 물리학자 편, 카드 나누기. 책의 해당 장을 펼쳐 두면 좋다.</p></div>
+    <div class="step p"><span class="no">STEP 4</span><h3>붙인다</h3><p>맨 아래 담벼락의 세 항목에 답해 올리고, 친구들의 글을 읽고 질문을 남긴다.</p></div>
   </div>
 </div></section>
 
 <section class="sec gut"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>담벼락 <span class="se">쓰는 법</span></h2></div>
   <div class="howto">
-    <div><b>이름</b><p>이름을 작성해주세요. 한 번 적으면 다음 방에서 자동으로 채워집니다.</p></div>
-    <div><b>내 생각</b><p>왼쪽 카드의 세 항목 순서대로, 짧아도 내 말로 씁니다. 거창하지 않아도 됩니다.</p></div>
-    <div><b>링크</b><p>판정문, 변론문, 대화문 같은 긴 글은 노션에 쓰고 링크를 붙입니다. 구글 문서는 '링크가 있는 모든 사용자'로 공유해야 친구들이 열 수 있습니다.</p></div>
-    <div><b>친구에게</b><p>친구 글 아래의 '질문 남기기'로 묻고 싶은 것을 한 줄 남깁니다. 칭찬보다 질문이 더 좋은 선물입니다.</p></div>
-    <div><b>받은 질문</b><p>내 글에 질문이 달리면 첫 화면 담벼락 위에 '새 질문' 알림이 뜹니다. 방의 담벼락에서는 '내 글 · 받은 질문' 버튼으로 내 글만 모아 보고 답할 수 있습니다. 글을 쓴 기기와 같은 기기에서만 보입니다.</p></div>
-    <div><b>고치고 싶을 때</b><p>올린 글은 직접 고치거나 지울 수 없습니다. 고치거나 내리고 싶으면 선생님께 말해 주세요.</p></div>
-    <div><b>안 보일 때</b><p>새 글은 1분 안에 저절로 불러옵니다. 그래도 안 보이면 담벼락 위의 '새로 고침'을 누릅니다.</p></div>
+    <div><b>이름</b><p>실명 대신 별명도 괜찮다. 한 번 적으면 다음에 자동으로 채워진다.</p></div>
+    <div><b>내 생각</b><p>왼쪽 카드의 세 항목 순서대로, 짧아도 내 말로 쓴다. 거창할 필요는 없다. 오히려 망설인 흔적이 남은 글이 더 읽힌다.</p></div>
+    <div><b>링크</b><p>판정문, 변론문, 대화문 같은 긴 글은 노션에 쓰고 링크를 붙인다. 구글 문서는 '링크가 있는 모든 사용자'로 공유해야 친구들이 열 수 있다.</p></div>
+    <div><b>친구에게</b><p>친구 글 아래의 '질문 남기기'로 묻고 싶은 것을 한 줄 남긴다. 칭찬도 좋지만, 질문이 더 오래 남는 선물인 것 같다.</p></div>
+    <div><b>받은 질문</b><p>내 글에 질문이 달리면 첫 화면 담벼락 위에 '새 질문' 알림이 뜬다. 방의 담벼락에서는 '내 글 · 받은 질문' 버튼으로 내 글만 모아 보고 답할 수 있다. 글을 쓴 기기와 같은 기기에서만 보인다.</p></div>
+    <div><b>고치고 싶을 때</b><p>올린 글은 직접 고치거나 지울 수 없다. 고치거나 내리고 싶으면 선생님에게 말하면 된다.</p></div>
+    <div><b>안 보일 때</b><p>새 글은 1분 안에 저절로 뜬다. 그래도 안 보이면 담벼락 위의 '새로 고침'을 누른다.</p></div>
   </div>
 </div></section>
 
 <section class="sec gut"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>노션과 <span class="se">함께</span> 쓰기</h2><p>이 사이트는 움직여 보는 곳, 노션 「걸으며 묻다」는 읽고 쓰는 곳입니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>노션과 <span class="se">함께</span> 쓰기</h2><p>이 사이트는 움직여 보는 곳, 노션 「걸으며 묻다」는 읽고 쓰는 곳이다.</p></div>
   <div class="steps">
-    <div class="step c"><span class="no">사이트</span><h3>보고, 판정하고, 짧게 남긴다</h3><p>그림을 움직이며 생각의 재료를 얻고, 담벼락에 세 항목을 짧게 남깁니다.</p></div>
-    <div class="step s"><span class="no">노션</span><h3>읽고, 길게 쓴다</h3><p>방마다 정거장의 읽을거리와 질문이 있습니다. 판정문(02), 변론문(03), 대화문(04)은 내 노션 페이지에 씁니다.</p></div>
-    <div class="step o"><span class="no">잇기</span><h3>링크로 묶는다</h3><p>노션에 쓴 글의 링크를 담벼락에 붙이면, 짧은 생각과 긴 글이 한곳에서 이어집니다.</p></div>
+    <div class="step c"><span class="no">사이트</span><h3>보고, 판정하고, 짧게 남긴다</h3><p>그림을 움직이며 생각의 재료를 얻고, 담벼락에 세 항목을 짧게 남긴다.</p></div>
+    <div class="step s"><span class="no">노션</span><h3>읽고, 길게 쓴다</h3><p>방마다 정거장의 읽을거리와 질문이 있다. 판정문(02), 변론문(03), 대화문(04)은 내 노션 페이지에 쓴다.</p></div>
+    <div class="step o"><span class="no">잇기</span><h3>링크로 묶는다</h3><p>노션에 쓴 글의 링크를 담벼락에 붙이면, 짧은 생각과 긴 글이 한곳에서 이어진다.</p></div>
   </div>
 </div></section>
 
 </main>
 <section class="next gut"><div class="in"><a class="big" href="first-walk.html">첫 번째 <span class="se">산책</span>부터 →</a><span class="eyebrow" style="color:var(--muted)">Start here</span></div></section>
-<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><dl class="meta"><div><dt>Camp</dt><dd>걸으며 묻다</dd></div><div><dt>Book</dt><dd>Der Teil und das Ganze, 1969</dd></div><div><dt>Issue</dt><dd>No. 00 · 2026</dd></div></dl><span class="code" aria-hidden="true"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><rect x="0" y="0" width="1" height="30"/><rect x="3" y="0" width="3" height="30"/><rect x="7" y="0" width="3" height="30"/><rect x="17" y="0" width="1" height="30"/><rect x="19" y="0" width="1" height="30"/><rect x="22" y="0" width="1" height="30"/><rect x="30" y="0" width="1" height="30"/><rect x="33" y="0" width="1" height="30"/><rect x="36" y="0" width="1" height="30"/><rect x="44" y="0" width="2" height="30"/><rect x="47" y="0" width="1" height="30"/><rect x="49" y="0" width="1" height="30"/><rect x="51" y="0" width="1" height="30"/><rect x="59" y="0" width="1" height="30"/><rect x="61" y="0" width="2" height="30"/><rect x="65" y="0" width="2" height="30"/><rect x="68" y="0" width="1" height="30"/><rect x="70" y="0" width="1" height="30"/><rect x="73" y="0" width="2" height="30"/><rect x="77" y="0" width="2" height="30"/><rect x="81" y="0" width="2" height="30"/><rect x="84" y="0" width="1" height="30"/><rect x="87" y="0" width="2" height="30"/><rect x="90" y="0" width="1" height="30"/><rect x="96" y="0" width="2" height="30"/><rect x="100" y="0" width="1" height="30"/><rect x="102" y="0" width="2" height="30"/><rect x="105" y="0" width="2" height="30"/><rect x="108" y="0" width="3" height="30"/><rect x="113" y="0" width="1" height="30"/></svg><i>PB—00 · 1969 · 2026</i></span></div></footer>
 <script src="board-config.js"></script>
 <script>
 const PB=(function(){
@@ -674,13 +711,36 @@ if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener
 /* 용어 풀이: 접힌 상자 + 화면 구석의 버튼 */
 function gloss(terms){
   const sec=document.createElement('section');sec.className='sec gut glosswrap';sec.id='gloss';
-  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼쳐 보세요 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
+  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼친다 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
   const main=document.querySelector('main');main.insertBefore(sec,main.firstChild);
   const b=document.createElement('button');b.type='button';b.className='glossfab';b.textContent='용어';b.setAttribute('aria-label','용어 풀이 열기');
   b.addEventListener('click',()=>{const d=sec.querySelector('details');d.open=true;sec.scrollIntoView({behavior:reduce?'auto':'smooth'});d.querySelector('summary').focus({preventScroll:true});});
   document.body.appendChild(b);
 }
 return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+/* 스크롤 변화: 진행 막대, 나타나기, 방 히어로 시차, 흘러가는 단어 */
+(function(){
+  const root=document.documentElement,reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bar=document.createElement('div');bar.className='prog';const dot=document.createElement('div');dot.className='prog-dot';
+  document.body.append(bar,dot);
+  const hero=document.querySelector('.hero:not(.dive-hero)');
+  const drifts=[...document.querySelectorAll('.drift')];
+  let ticking=false;
+  function upd(){ticking=false;const y=scrollY,max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    root.style.setProperty('--pg',(y/max).toFixed(4));root.style.setProperty('--sy',Math.round(y));
+    if(hero&&!reduceM){const h=hero.offsetHeight;root.style.setProperty('--hp',Math.min(1,Math.max(0,y/h)).toFixed(3));}
+    if(!reduceM)drifts.forEach(d=>{const r=d.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50)return;
+      const p=(innerHeight-r.top)/(innerHeight+r.height);const rows=d.querySelectorAll('.drow');
+      rows[0]&&rows[0].style.setProperty('--dx',(-p*Math.min(900,innerWidth*.7)).toFixed(1)+'px');
+      rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
+  if(reduceM||!('IntersectionObserver' in window))return;
+  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */

@@ -489,21 +489,58 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-index:2;display:block}
 @media (max-width:760px){canvas.wp{height:64px}}
 
+/* ================= 포스터 요소 + 스크롤 변화 (v3) ================= */
+/* 흘러가는 큰 단어: 스크롤에 따라 좌우로 */
+.drift{overflow:hidden;margin-top:120px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:14px 0 10px;white-space:nowrap;user-select:none}
+.drow{display:flex;align-items:center;gap:30px;width:max-content;font-family:var(--display);font-weight:600;letter-spacing:-.045em;line-height:.95;font-size:clamp(52px,9vw,132px);transform:translate3d(var(--dx,0px),0,0);will-change:transform}
+.drow span{color:transparent;-webkit-text-stroke:1.2px var(--olive)}
+.drow b{font-family:var(--sko);font-weight:600;font-size:.34em;letter-spacing:-.03em;color:var(--olive);padding:0 6px}
+.drow.r{font-size:clamp(20px,2.6vw,34px);margin-top:8px;letter-spacing:-.02em}
+.drow.r span{color:var(--ink);-webkit-text-stroke:0}
+.drow.r b{font-size:.7em;color:var(--muted)}
+.drift + #wall{margin-top:130px}
+
+/* 바닥: 메타 정보 + 바코드 */
+.foot .in{display:flex;align-items:center;gap:18px 30px;flex-wrap:wrap}
+.foot .meta{margin:0;display:grid;grid-template-columns:repeat(3,auto);gap:0 26px;flex:1;min-width:0}
+@media (max-width:760px){.foot .meta{grid-template-columns:minmax(0,1fr)}}
+.foot .meta div{display:grid;gap:0;border:0;padding:0}
+.foot .meta dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mintdim)}
+.foot .meta dt::after{content:" —"}
+.foot .meta dd{margin:0;color:var(--cream);font-size:13px}
+.code{display:grid;gap:4px;justify-items:end;color:var(--mint)}
+.code svg{width:120px;height:30px;fill:currentColor}
+.code i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--mintdim)}
+
+/* 맨 위의 진행 막대: 끝에 입자 하나 */
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;pointer-events:none;transform-origin:left;transform:scaleX(var(--pg,0));background:linear-gradient(90deg,transparent,var(--olive) 30%,var(--sage2))}
+.prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
+
+/* 나타나기: 아래에서 천천히 */
+html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i.seen{opacity:1;transform:none}
+.head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
+
+/* 방 히어로: 내리면 큰 글자는 뒤로 물러나고 물체는 앞으로 */
+.hero:not(.dive-hero) .giant{transform:translate3d(0,calc(var(--hp,0) * 70px),0) scale(calc(1 - var(--hp,0) * .08));opacity:calc(1 - var(--hp,0) * .55);letter-spacing:calc(-.05em + var(--hp,0) * .06em)}
+.hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
+.hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
+
 </style>
 </head>
-<body>
+<body class="p-tribunal">
 <header class="hero gut"><canvas class="sky" id="sky" aria-hidden="true"></canvas><div class="in">
 <div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html" aria-current="page">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:8"><div class="hud" aria-hidden="true"><span class="tl">Room 03 · 1930–1932</span><span class="tr">Causality ≠ predictability</span><span class="bl">51.34°N 12.37°E · Leipzig</span><span class="br">Verdict · pending</span></div><p class="giant" aria-hidden="true">Tribunal</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
-<div class="hrow"><div><span class="tag">Room 03 · 10장</span><h1>칸트의 <span class="se">법정</span></h1><div class="btns"><a class="btn mint" href="#spin">하나는 모르고, 천은 안다</a><a class="btn ghost" href="#sort">두 단어 분류판</a></div></div><p>1930년대 초 라이프치히. 칸트주의 철학자 그레테 헤르만이 물리학자들을 찾아옵니다. 양자역학이 인과율을 버렸다는 말을 그대로 둘 수 없었기 때문입니다. 두 단어를 갈라 보면 법정의 쟁점이 보입니다.</p></div>
+<div class="hrow"><div><span class="tag">Room 03 · 10장</span><h1>칸트의 <span class="se">법정</span></h1><div class="btns"><a class="btn mint" href="#spin">하나는 모르고, 천은 안다</a><a class="btn ghost" href="#sort">두 단어 분류판</a></div></div><p>1930년대 초 라이프치히. 칸트주의 철학자 그레테 헤르만이 물리학자들을 찾아온다. 양자역학이 인과율을 버렸다는 말을 그냥 넘길 수 없었기 때문이다. 두 단어를 갈라 보면 법정의 쟁점이 드러난다.</p></div>
 </div></header>
 <main>
 <section class="sec gut"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>법정의 <span class="se">두 편</span></h2><p>10장 · 1930–1932</p></div>
   <div class="steps">
-    <div class="step o"><span class="no">칸트 편 · 그레테 헤르만</span><h3>인과율은 버릴 수 없다</h3><p>칸트에게 인과성은 세계에서 찾아내는 사실이 아니라, 우리가 무엇이든 경험할 수 있기 위한 조건입니다. 그렇다면 어떤 실험도 인과율을 반박할 수 없어 보입니다.</p></div>
-    <div class="step c"><span class="no">물리학자 편 · 하이젠베르크와 바이츠제커</span><h3>선험도 고쳐질 수 있다</h3><p>경험의 조건이라고 해서 영원히 고정된 것은 아닙니다. 칸트가 선험적이라 여긴 유클리드 공간도 일반상대성이론에서 고쳐졌습니다.</p></div>
-    <div class="step s"><span class="no">쟁점</span><h3>무엇이 무너졌나</h3><p>두 단어를 갈라야 합니다. <b>인과율</b>은 사건이 법칙을 따라 이어진다는 것, <b>예측 가능성</b>은 다음 결과를 미리 알 수 있다는 것입니다.</p></div>
+    <div class="step o"><span class="no">칸트 편 · 그레테 헤르만</span><h3>인과율은 버릴 수 없다</h3><p>칸트에게 인과성은 세계에서 찾아내는 사실이 아니라, 우리가 무엇이든 경험하려면 먼저 갖춰져 있어야 하는 조건이다. 그렇다면 어떤 실험도 인과율을 반박할 수 없을 것처럼 보인다.</p></div>
+    <div class="step c"><span class="no">물리학자 편 · 하이젠베르크와 바이츠제커</span><h3>선험도 고쳐질 수 있다</h3><p>경험의 조건이라고 해서 영원히 고정된 건 아니다. 칸트가 선험적이라 여긴 유클리드 공간도 일반상대성이론에서 고쳐졌다.</p></div>
+    <div class="step s"><span class="no">쟁점</span><h3>무엇이 무너졌나</h3><p>두 단어를 갈라 봐야 한다. <b>인과율</b>은 사건이 법칙을 따라 이어진다는 것, <b>예측 가능성</b>은 다음 결과를 미리 알 수 있다는 것. 평소에는 한 단어처럼 쓰는데, 이 법정에서는 둘이 갈라진다.</p></div>
   </div>
 </div></section>
 
@@ -514,18 +551,18 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick">01 · 측정 실험</span>
       <h3>개별 결과는 <span class="se">알 수 없고</span>, 비율은 정확하다</h3>
-      <p>모든 전자를 똑같은 상태(위쪽 스핀)로 준비해, 자석 장치에 하나씩 보냅니다. 전자는 '위' 아니면 '아래'로만 나옵니다. 장치를 기울이면 결과가 섞이기 시작합니다.</p>
+      <p>모든 전자를 똑같은 상태(위쪽 스핀)로 준비해서 자석 장치에 하나씩 보낸다. 전자는 '위' 아니면 '아래'로만 나온다. 장치를 기울이면 결과가 섞이기 시작한다.</p>
       <div class="ctl"><label for="theta">장치의 기울기 θ</label><input type="range" id="theta" min="0" max="180" step="15" value="60"><div class="ticks"><span>0°</span><span>90°</span><span>180°</span></div></div>
       <div class="btns"><button type="button" class="btn" id="s1">전자 1개</button><button type="button" class="btn" id="s100">100개</button><button type="button" class="btn" id="s1000">1000개</button><button type="button" class="btn ghost" id="sreset" style="color:var(--olive)">처음부터</button></div>
       <dl class="ro" id="rop"></dl>
-      <p>다음 전자가 어느 쪽으로 나올지는 아무리 정밀하게 준비해도 말할 수 없습니다. 그런데 많이 보내면 '위'의 비율은 곡선 cos²(θ/2)에 정확히 내려앉습니다. 이 곡선을 정하는 파동함수는 슈뢰딩거 방정식에 따라 한 치도 어긋나지 않게 변합니다.</p>
-      <div class="lens"><b>?</b><span>그렇다면 무너진 것은 인과율일까요, 예측 가능성일까요? 헤르만은 측정이 끝난 뒤에는 그 결과에 이른 과정을 거슬러 원인으로 설명할 수 있다고 보았습니다.</span></div>
+      <p>다음 전자가 어느 쪽으로 나올지는 아무리 정밀하게 준비해도 말할 수 없다. 그런데 많이 보내면 '위'의 비율은 곡선 cos²(θ/2)에 정확히 내려앉는다. 이 곡선을 정하는 파동함수는 슈뢰딩거 방정식에 따라 한 치도 어긋나지 않게 변한다. 하나는 모르는데 천은 안다. 처음 이 결과를 봤을 때 이상하다기보다 조금 억울한 기분이 들었다.</p>
+      <div class="lens"><b>?</b><span>그렇다면 무너진 건 인과율일까, 예측 가능성일까. 헤르만은 측정이 끝난 뒤에는 그 결과에 이른 과정을 거슬러 올라가 원인으로 설명할 수 있다고 봤다.</span></div>
     </div>
   </div>
 </div></section>
 
 <section class="sec gut" id="sort"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>두 단어 <span class="se">분류판</span></h2><p>카드를 누른 다음 칸을 눌러 옮기세요. 다 옮겼으면 해설을 엽니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>두 단어 <span class="se">분류판</span></h2><p>카드를 누르고, 옮길 칸을 누른다. 다 옮기면 해설을 연다. 정답을 맞히는 판이라기보다 내 기준을 드러내는 판에 가깝다.</p></div>
   <div class="lab" style="grid-template-columns:minmax(0,1fr)">
     <div class="text">
       <div class="tray" id="tray" role="group" aria-label="분류할 카드"></div>
@@ -536,18 +573,19 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
       <div id="notes" class="notes-grid" hidden></div>
     </div>
   </div>
-  <div class="ask"><p><b>변론문을 쓰기 전에</b> 내가 맡은 편의 주장을 이 분류판의 말로 바꿔 보세요. 칸트 편이라면 '원자 하나의 붕괴'는 어느 칸에 있어야 할까요? 물리학자 편이라면요? 그리고 1장의 문장 A, 곧 지각이 인상을 이해할 수 있는 것으로 '바꾼다'는 생각이 어느 편에 더 유리한 증거인지 한 줄로 적어 보세요.</p></div>
-  <p class="caveat">헤르만은 1935년, 당대 최고의 수학자 폰 노이만이 양자역학에 대해 내놓은 '숨은 변수 불가능성' 증명에 논리적 허점이 있음을 지적했습니다. 이 지적은 오래 잊혔다가 30년 뒤 물리학자 벨의 비판과 함께 다시 드러났습니다.</p>
+  <div class="ask"><p><b>변론문을 쓰기 전에</b> 내가 맡은 편의 주장을 이 분류판의 말로 바꿔 본다. 칸트 편이라면 '원자 하나의 붕괴'는 어느 칸에 있어야 할까. 물리학자 편이라면? 그리고 1장의 문장 A, 지각이 인상을 이해할 수 있는 것으로 '바꾼다'는 생각이 어느 편에 더 유리한 증거인지 한 줄로 적는다. 내 생각엔 양쪽 다 이 문장을 자기 편이라고 우길 수 있을 것 같은데, 그게 이 법정의 묘한 점이다.</p></div>
+  <p class="caveat">헤르만은 1935년, 당대 최고의 수학자 폰 노이만이 내놓은 '숨은 변수 불가능성' 증명에 논리적 허점이 있다고 지적했다. 이 지적은 오래 묻혀 있다가 30년쯤 뒤 물리학자 벨의 비판과 함께 다시 드러났다. 법정에서 진 줄 알았던 변론이 한참 뒤에 다시 읽힌 셈이다.</p>
 </div></section>
 
+<div class="drift" aria-hidden="true"><div class="drow"><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b></div><div class="drow r"><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b><span>Kausalität ≠ Vorhersage</span><b>칸트의 법정</b></div></div>
 <section class="sec gut" id="wall"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>이 방에서 생각한 것을 남기고, 친구 글에는 칭찬보다 질문을 하나 남겨 주세요. 긴 글은 노션에 쓰고 링크를 붙이면 됩니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>내가 맡은 편과 변론을 남긴다. 반대편 친구의 글을 찾아 질문을 하나 남겨 보면 좋겠다. 법정은 양쪽이 있어야 열린다.</p></div>
   <div id="board"></div>
 </div></section>
 
 </main>
 <section class="next gut"><div class="in"><a class="big" href="part-and-whole.html">부분과 <span class="se">전체</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 04</span></div></section>
-<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><dl class="meta"><div><dt>Camp</dt><dd>걸으며 묻다</dd></div><div><dt>Book</dt><dd>Der Teil und das Ganze, 1969</dd></div><div><dt>Issue</dt><dd>No. 03 · 2026</dd></div></dl><span class="code" aria-hidden="true"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><rect x="11" y="0" width="1" height="30"/><rect x="13" y="0" width="2" height="30"/><rect x="16" y="0" width="1" height="30"/><rect x="28" y="0" width="1" height="30"/><rect x="31" y="0" width="3" height="30"/><rect x="35" y="0" width="2" height="30"/><rect x="38" y="0" width="2" height="30"/><rect x="41" y="0" width="1" height="30"/><rect x="43" y="0" width="1" height="30"/><rect x="45" y="0" width="1" height="30"/><rect x="47" y="0" width="3" height="30"/><rect x="51" y="0" width="1" height="30"/><rect x="54" y="0" width="1" height="30"/><rect x="60" y="0" width="2" height="30"/><rect x="63" y="0" width="1" height="30"/><rect x="68" y="0" width="2" height="30"/><rect x="71" y="0" width="3" height="30"/><rect x="77" y="0" width="1" height="30"/><rect x="79" y="0" width="1" height="30"/><rect x="86" y="0" width="1" height="30"/><rect x="89" y="0" width="2" height="30"/><rect x="92" y="0" width="1" height="30"/><rect x="94" y="0" width="3" height="30"/><rect x="101" y="0" width="1" height="30"/><rect x="103" y="0" width="1" height="30"/><rect x="105" y="0" width="2" height="30"/><rect x="108" y="0" width="2" height="30"/><rect x="112" y="0" width="1" height="30"/></svg><i>PB—03 · 1969 · 2026</i></span></div></footer>
 <script src="board-config.js"></script>
 <script>
 const PB=(function(){
@@ -657,13 +695,36 @@ if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener
 /* 용어 풀이: 접힌 상자 + 화면 구석의 버튼 */
 function gloss(terms){
   const sec=document.createElement('section');sec.className='sec gut glosswrap';sec.id='gloss';
-  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼쳐 보세요 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
+  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼친다 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
   const main=document.querySelector('main');main.insertBefore(sec,main.firstChild);
   const b=document.createElement('button');b.type='button';b.className='glossfab';b.textContent='용어';b.setAttribute('aria-label','용어 풀이 열기');
   b.addEventListener('click',()=>{const d=sec.querySelector('details');d.open=true;sec.scrollIntoView({behavior:reduce?'auto':'smooth'});d.querySelector('summary').focus({preventScroll:true});});
   document.body.appendChild(b);
 }
 return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+/* 스크롤 변화: 진행 막대, 나타나기, 방 히어로 시차, 흘러가는 단어 */
+(function(){
+  const root=document.documentElement,reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bar=document.createElement('div');bar.className='prog';const dot=document.createElement('div');dot.className='prog-dot';
+  document.body.append(bar,dot);
+  const hero=document.querySelector('.hero:not(.dive-hero)');
+  const drifts=[...document.querySelectorAll('.drift')];
+  let ticking=false;
+  function upd(){ticking=false;const y=scrollY,max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    root.style.setProperty('--pg',(y/max).toFixed(4));root.style.setProperty('--sy',Math.round(y));
+    if(hero&&!reduceM){const h=hero.offsetHeight;root.style.setProperty('--hp',Math.min(1,Math.max(0,y/h)).toFixed(3));}
+    if(!reduceM)drifts.forEach(d=>{const r=d.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50)return;
+      const p=(innerHeight-r.top)/(innerHeight+r.height);const rows=d.querySelectorAll('.drow');
+      rows[0]&&rows[0].style.setProperty('--dx',(-p*Math.min(900,innerWidth*.7)).toFixed(1)+'px');
+      rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
+  if(reduceM||!('IntersectionObserver' in window))return;
+  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -699,7 +760,7 @@ function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);
 function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
-    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 박언민" required></label>
+    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
     <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
@@ -803,20 +864,20 @@ onFrame(()=>{const {g,w,h}=fit($('cvp'));g.clearRect(0,0,w,h);const pad=18;
 
 /* 02 분류판 */
 const CARDS=[
- {k:'행성의 공전 (뉴턴 역학)',ans:0,note:'법칙이 정해 주고, 일식 날짜를 수백 년 앞까지 계산할 수 있습니다. 칸트가 생각한 인과율의 모범입니다.'},
- {k:'한 달 뒤의 날씨',ans:2,note:'대기는 결정론적인 법칙을 따르지만, 처음 상태의 아주 작은 차이가 커져서 사실상 예측할 수 없습니다(혼돈). 인과율과 예측 가능성이 갈라지는 고전적인 예입니다.'},
- {k:'던진 주사위의 눈',ans:2,note:'원리로는 뉴턴 역학을 따르지만 처음 조건을 다 알 수 없어서 확률로 다룹니다. 여기서 확률은 우리의 무지를 뜻합니다.'},
- {k:'파동함수의 시간 변화',ans:0,note:'슈뢰딩거 방정식에 따라 완전히 정해집니다. 양자역학에도 법칙이 정해 주는 부분이 있습니다.'},
- {k:'원자 1조 개 중 절반이 붕괴하는 시간',ans:0,note:'반감기는 매우 정확하게 예측됩니다. 수많은 개별 사건이 모이면 통계 법칙이 됩니다.'},
- {k:'원자 하나가 붕괴하는 순간',ans:3,issue:true,note:'법정의 쟁점입니다. 표준적인 양자역학(코펜하겐 해석)은 이 순간을 정하는 원인이 없다고 봅니다. 주사위처럼 숨은 원인을 우리가 모를 뿐이라고 보는 입장도 있었고, 바로 그 \'숨은 변수\'가 가능한지가 헤르만이 파고든 문제였습니다.'}];
+ {k:'행성의 공전 (뉴턴 역학)',ans:0,note:'법칙이 정해 주고, 일식 날짜를 수백 년 앞까지 계산할 수 있다. 칸트가 생각한 인과율의 모범이다.'},
+ {k:'한 달 뒤의 날씨',ans:2,note:'대기는 결정론적인 법칙을 따르지만, 처음 상태의 아주 작은 차이가 불어나서 사실상 예측할 수 없다(혼돈). 인과율과 예측 가능성이 갈라지는 고전적인 예다.'},
+ {k:'던진 주사위의 눈',ans:2,note:'원리로는 뉴턴 역학을 따르지만 처음 조건을 다 알 수 없어서 확률로 다룬다. 여기서 확률은 우리의 무지를 뜻한다.'},
+ {k:'파동함수의 시간 변화',ans:0,note:'슈뢰딩거 방정식에 따라 완전히 정해진다. 양자역학에도 법칙이 정해 주는 부분은 있다.'},
+ {k:'원자 1조 개 중 절반이 붕괴하는 시간',ans:0,note:'반감기는 아주 정확하게 예측된다. 하나하나는 몰라도 수많은 사건이 모이면 통계 법칙이 된다.'},
+ {k:'원자 하나가 붕괴하는 순간',ans:3,issue:true,note:'법정의 쟁점이다. 표준적인 양자역학(코펜하겐 해석)은 이 순간을 정하는 원인이 없다고 본다. 주사위처럼 숨은 원인을 우리가 모를 뿐이라는 입장도 있었고, 그 \'숨은 변수\'가 가능한지가 바로 헤르만이 파고든 문제였다.'}];
 const CELLS=['법칙이 정한다 · 미리 알 수 있다','정하는 법칙이 없다 · 미리 알 수 있다','법칙이 정한다 · 미리 알 수 없다','정하는 법칙이 없다 · 미리 알 수 없다'];
-const HINT=['','이런 경우가 있을까요?','',''];
+const HINT=['','이런 경우가 있을까?','',''];
 let place=CARDS.map(()=>-1),picked=-1;
 function draw(){const tray=$('tray'),cells=$('cells');tray.innerHTML='';cells.innerHTML='';
   const mk=i=>{const b=document.createElement('button');b.type='button';b.className='card'+(CARDS[i].issue?' issue':'');b.textContent=CARDS[i].k;b.setAttribute('aria-pressed',picked===i?'true':'false');
     b.addEventListener('click',e=>{e.stopPropagation();picked=picked===i?-1:i;draw();});return b;};
   CARDS.forEach((c,i)=>{if(place[i]<0)tray.appendChild(mk(i));});
-  if(!tray.children.length){const s=document.createElement('span');s.className='note';s.textContent='모두 옮겼습니다. 해설을 열어 보세요.';tray.appendChild(s);}
+  if(!tray.children.length){const s=document.createElement('span');s.className='note';s.textContent='다 옮겼다. 이제 해설을 열어 본다.';tray.appendChild(s);}
   CELLS.forEach((nm,q)=>{const c=document.createElement('div');c.className='cell'+(picked>=0?' armed':'');c.setAttribute('role','button');c.tabIndex=0;c.setAttribute('aria-label',nm+' 칸에 놓기');
     c.innerHTML=`<span class="hint">${nm}${HINT[q]?' · '+HINT[q]:''}</span>`;CARDS.forEach((cd,i)=>{if(place[i]===q)c.appendChild(mk(i));});
     const drop=()=>{if(picked<0)return;place[picked]=q;picked=-1;draw();};c.addEventListener('click',drop);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();drop();}});cells.appendChild(c);});
@@ -829,7 +890,7 @@ draw();
 
 BOARD.room(document.getElementById('board'),'r3',["내가 맡은 편 (칸트 편 / 물리학자 편)", "\"이 논쟁은 사실 ○○라는 단어의 뜻을 두고 벌어진 것이었다\" 완성하기", "내 변론의 가장 약한 고리 한 줄 (변론문 전체는 노션에 쓰고 링크로)"]);
 
-PB.gloss([["인과율", "사건이 법칙에 따라 이어진다는 원리입니다. 원인이 있으면 정해진 결과가 따릅니다."], ["예측 가능성", "다음 결과를 미리 알 수 있다는 것입니다. 인과율과 같은 말처럼 들리지만 다릅니다."], ["선험적", "경험보다 먼저, 경험이 가능하기 위해 미리 갖춰져 있는 것입니다. 칸트에게는 공간, 시간, 인과성이 그렇습니다."], ["결정론", "지금의 상태와 법칙이 미래를 하나로 정한다는 생각입니다."], ["스핀", "전자가 가진 성질 중 하나입니다. 자석 장치를 지나면 '위' 아니면 '아래' 두 값으로만 나옵니다. 팽이처럼 실제로 도는 것은 아닙니다."], ["자석 장치", "1922년 슈테른과 게를라흐의 실험입니다. 원자들이 자석 사이를 지나며 두 갈래로만 갈라졌습니다."], ["cos²(θ/2)", "장치를 θ만큼 기울였을 때 '위'가 나올 확률입니다. 0°면 100%, 90°면 50%, 180°면 0%입니다."], ["혼돈", "법칙은 정해져 있지만 처음의 아주 작은 차이가 크게 불어나, 사실상 예측할 수 없는 현상입니다. 날씨가 대표적입니다."], ["숨은 변수", "측정 결과를 미리 정해 두는, 우리가 아직 모르는 원인이 있다는 생각입니다."], ["유클리드 공간", "평행선이 끝까지 만나지 않는 평평한 공간입니다. 아인슈타인의 일반상대성이론에서는 중력이 공간을 휘게 합니다."]]);
+PB.gloss([["인과율", "사건이 법칙에 따라 이어진다는 원리이다. 원인이 있으면 정해진 결과가 따른다."], ["예측 가능성", "다음 결과를 미리 알 수 있다는 것이다. 인과율과 같은 말처럼 들리지만 다르다."], ["선험적", "경험보다 먼저, 경험이 가능하기 위해 미리 갖춰져 있는 것이다. 칸트에게는 공간, 시간, 인과성이 그렇다."], ["결정론", "지금의 상태와 법칙이 미래를 하나로 정한다는 생각이다."], ["스핀", "전자가 가진 성질 중 하나이다. 자석 장치를 지나면 '위' 아니면 '아래' 두 값으로만 나온다. 팽이처럼 실제로 도는 것은 아니다."], ["자석 장치", "1922년 슈테른과 게를라흐의 실험이다. 원자들이 자석 사이를 지나며 두 갈래로만 갈라졌다."], ["cos²(θ/2)", "장치를 θ만큼 기울였을 때 '위'가 나올 확률이다. 0°면 100%, 90°면 50%, 180°면 0%이다."], ["혼돈", "법칙은 정해져 있지만 처음의 아주 작은 차이가 크게 불어나, 사실상 예측할 수 없는 현상이다. 날씨가 대표적이다."], ["숨은 변수", "측정 결과를 미리 정해 두는, 우리가 아직 모르는 원인이 있다는 생각이다."], ["유클리드 공간", "평행선이 끝까지 만나지 않는 평평한 공간이다. 아인슈타인의 일반상대성이론에서는 중력이 공간을 휘게 한다."]]);
 
 </script>
 </body>

@@ -474,24 +474,61 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-index:2;display:block}
 @media (max-width:760px){canvas.wp{height:64px}}
 
+/* ================= 포스터 요소 + 스크롤 변화 (v3) ================= */
+/* 흘러가는 큰 단어: 스크롤에 따라 좌우로 */
+.drift{overflow:hidden;margin-top:120px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:14px 0 10px;white-space:nowrap;user-select:none}
+.drow{display:flex;align-items:center;gap:30px;width:max-content;font-family:var(--display);font-weight:600;letter-spacing:-.045em;line-height:.95;font-size:clamp(52px,9vw,132px);transform:translate3d(var(--dx,0px),0,0);will-change:transform}
+.drow span{color:transparent;-webkit-text-stroke:1.2px var(--olive)}
+.drow b{font-family:var(--sko);font-weight:600;font-size:.34em;letter-spacing:-.03em;color:var(--olive);padding:0 6px}
+.drow.r{font-size:clamp(20px,2.6vw,34px);margin-top:8px;letter-spacing:-.02em}
+.drow.r span{color:var(--ink);-webkit-text-stroke:0}
+.drow.r b{font-size:.7em;color:var(--muted)}
+.drift + #wall{margin-top:130px}
+
+/* 바닥: 메타 정보 + 바코드 */
+.foot .in{display:flex;align-items:center;gap:18px 30px;flex-wrap:wrap}
+.foot .meta{margin:0;display:grid;grid-template-columns:repeat(3,auto);gap:0 26px;flex:1;min-width:0}
+@media (max-width:760px){.foot .meta{grid-template-columns:minmax(0,1fr)}}
+.foot .meta div{display:grid;gap:0;border:0;padding:0}
+.foot .meta dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mintdim)}
+.foot .meta dt::after{content:" —"}
+.foot .meta dd{margin:0;color:var(--cream);font-size:13px}
+.code{display:grid;gap:4px;justify-items:end;color:var(--mint)}
+.code svg{width:120px;height:30px;fill:currentColor}
+.code i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--mintdim)}
+
+/* 맨 위의 진행 막대: 끝에 입자 하나 */
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;pointer-events:none;transform-origin:left;transform:scaleX(var(--pg,0));background:linear-gradient(90deg,transparent,var(--olive) 30%,var(--sage2))}
+.prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
+
+/* 나타나기: 아래에서 천천히 */
+html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i.seen{opacity:1;transform:none}
+.head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
+
+/* 방 히어로: 내리면 큰 글자는 뒤로 물러나고 물체는 앞으로 */
+.hero:not(.dive-hero) .giant{transform:translate3d(0,calc(var(--hp,0) * 70px),0) scale(calc(1 - var(--hp,0) * .08));opacity:calc(1 - var(--hp,0) * .55);letter-spacing:calc(-.05em + var(--hp,0) * .06em)}
+.hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
+.hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
+
 </style>
 </head>
-<body>
+<body class="p-first-walk">
 <header class="hero gut"><canvas class="sky" id="sky" aria-hidden="true"></canvas><div class="in">
 <div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html" aria-current="page">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:10"><div class="hud" aria-hidden="true"><span class="tl">Room 01 · 1919–1922</span><span class="tr">Timaeus · Plato</span><span class="bl">48.14°N 11.58°E · München</span><span class="br">Polyhedra · 5</span></div><p class="giant" aria-hidden="true">First walk</p><canvas class="obj grab" id="hero-obj" aria-hidden="true"></canvas></div>
-<div class="hrow"><div><span class="tag">Room 01 · 1장 · 3장</span><h1>첫 번째 <span class="se">산책</span></h1><div class="btns"><a class="btn mint" href="#timaeus">지붕 위의 티마이오스</a><a class="btn ghost" href="#frames">같은 점, 다른 틀</a></div></div><p>1919년 뮌헨, 열여덟 살의 하이젠베르크는 교과서의 원자 그림을 믿지 못했습니다. 지붕 위에서 플라톤의 『티마이오스』를 읽으며, 가장 작은 것은 수학의 형식일지 모른다는 생각에 사로잡힙니다.</p></div>
+<div class="hrow"><div><span class="tag">Room 01 · 1장 · 3장</span><h1>첫 번째 <span class="se">산책</span></h1><div class="btns"><a class="btn mint" href="#timaeus">지붕 위의 티마이오스</a><a class="btn ghost" href="#frames">같은 점, 다른 틀</a></div></div><p>1919년 뮌헨. 열여덟 살의 하이젠베르크는 교과서의 원자 그림을 믿지 못했다. 갈고리와 고리로 서로 엮인 원자라니. 지붕 위에서 『티마이오스』를 읽으며, 그는 가장 작은 것이 알갱이가 아니라 수학의 모양일지 모른다고 생각하기 시작한다.</p></div>
 </div></header>
 <main>
 <section class="sec gut" id="pick"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>1장의 <span class="se">세 문장</span></h2>
-    <p>가장 마음에 걸리는 문장 하나를 고르세요. 고른 문장은 이 기기에 기억되었다가, 마지막 방 「부분과 전체」에서 다시 꺼내집니다.</p></div>
+    <p>셋 중에 가장 마음에 걸리는 문장 하나를 고른다. 좋아서 고른 문장보다 걸려서 고른 문장이 끝까지 가는 것 같다. 고른 문장은 이 기기에 기억해 두었다가 마지막 방 「부분과 전체」에서 다시 꺼낸다.</p></div>
   <div class="steps arches" id="arches" role="group" aria-label="가장 마음에 걸리는 문장 고르기">
     <button type="button" class="arch" data-k="A" aria-pressed="false"><span class="role">물리학과 철학을 잇는 안경</span><span class="letter">A</span><p>지각은 개별적 인상을 '이해할 수 있는 것'으로 바꾸는 활동이다.</p></button>
     <button type="button" class="arch" data-k="B" aria-pressed="false"><span class="role">안경을 쓴 사람을 재는 눈금</span><span class="letter">B</span><p>아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능할 거야.</p></button>
     <button type="button" class="arch" data-k="C" aria-pressed="false"><span class="role">책 전체를 보는 안경</span><span class="letter">C</span><p>부분적 질서들은 중심으로 가는 길을 찾지 못한다.</p></button>
   </div>
-  <p class="caveat" id="pickmsg">아직 고르지 않았습니다.</p>
+  <p class="caveat" id="pickmsg">아직 고르지 않았다.</p>
 </div></section>
 
 <section class="sec gut" id="timaeus"><div class="in">
@@ -501,13 +538,13 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick">01 · 플라톤의 원자</span>
       <h3>가장 작은 것은 <span class="se">모양</span>일까</h3>
-      <p>혁명과 시가전이 지나간 1919년의 뮌헨, 하이젠베르크는 지붕 위에서 『티마이오스』를 읽습니다. 플라톤은 불·공기·물·흙의 가장 작은 조각을 정다면체로 보았습니다. 소년은 이 생각이 엉뚱하다고 느끼면서도, 물질의 바탕에 수학의 형식이 있다는 발상에 오래 사로잡힙니다.</p>
+      <p>1919년 뮌헨. 혁명과 시가전이 막 지나간 도시에서 열여덟 살의 하이젠베르크는 지붕 위에 올라가 『티마이오스』를 읽는다. 플라톤은 불, 공기, 물, 흙의 가장 작은 조각이 정다면체라고 했다. 소년은 엉뚱하다고 느끼면서도 그 생각을 쉽게 내려놓지 못한다. 물질의 맨 밑바닥에 알갱이가 아니라 수학의 모양이 있다는 생각 말이다.</p>
       <div class="chips" id="schips" role="group" aria-label="정다면체 고르기">
         <button type="button" aria-pressed="true">정사면체</button><button type="button" aria-pressed="false">정팔면체</button><button type="button" aria-pressed="false">정이십면체</button><button type="button" aria-pressed="false">정육면체</button><button type="button" aria-pressed="false">정십이면체</button>
       </div>
       <dl class="ro" id="ros"></dl>
-      <p class="note">정다면체는 이 다섯 개뿐입니다. 꼭짓점 − 모서리 + 면은 언제나 2입니다(오일러의 공식). 끌어서 돌려 보세요.</p>
-      <div class="lens"><b>B</b><span>플라톤의 원소론은 틀렸습니다. 그런데 '자연의 밑바닥에는 수학적 형식이 있다'는 믿음은 하이젠베르크를 평생 이끌었고, 책의 마지막 장에서 소립자와 함께 돌아옵니다. 이것은 선입견일까요, 아닐까요?</span></div>
+      <p class="note">정다면체는 이 다섯 개가 전부다. 어느 것을 골라도 꼭짓점 − 모서리 + 면은 2가 된다(오일러의 공식). 끌어서 이리저리 돌려 본다.</p>
+      <div class="lens"><b>B</b><span>플라톤의 원소론은 틀렸다. 그런데 '자연의 밑바닥에는 수학의 형식이 있다'는 믿음은 하이젠베르크를 평생 따라다녔고, 책의 마지막 장에서 소립자와 함께 다시 나온다. 틀린 이론에서 건진 믿음. 이건 선입견일까, 아니면 선입견이 아닌 무엇일까.</span></div>
     </div>
   </div>
 </div></section>
@@ -519,13 +556,13 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick">02 · 인상을 이해로 바꾸기</span>
       <h3>틀은 점들 <span class="se">속에</span> 있지 않다</h3>
-      <p>어떤 행성의 위치를 스물두 번 잰 점들입니다. 이 점들만 보고는 아무것도 '이해'하지 못합니다. 틀을 하나 골라 점들 위에 씌워 보세요. 그다음 아직 보여 주지 않은 여덟 번의 관측을 드러내, 어느 틀이 그 점들이 있을 자리를 맞혔는지 확인합니다.</p>
+      <p>어떤 행성의 위치를 스물두 번 잰 점이다. 점만 봐서는 아무것도 '이해'되지 않는다. 틀을 하나 골라 점 위에 씌워 본다. 그다음 숨겨 둔 여덟 번의 관측을 드러내서, 어느 틀이 그 자리를 미리 맞혔는지 본다.</p>
       <div class="chips" id="fchips" role="group" aria-label="틀 고르기">
         <button type="button" aria-pressed="true">틀 없음</button><button type="button" aria-pressed="false">직선</button><button type="button" aria-pressed="false">별자리처럼 잇기</button><button type="button" aria-pressed="false">원</button><button type="button" aria-pressed="false">타원</button>
       </div>
       <div class="btns"><button type="button" class="btn" id="reveal">숨긴 관측 8개 드러내기</button><button type="button" class="btn ghost" id="renew" style="color:var(--olive)">새로 관측하기</button></div>
       <dl class="ro" id="rof"></dl>
-      <p>원과 타원은 『코스모스』에서 케플러가 씨름한 바로 그 두 틀입니다. 점은 같은데, 어떤 틀을 쓰느냐에 따라 보이는 것과 맞힐 수 있는 것이 달라집니다. 틀은 내가 만든 것일까요, 받은 것일까요?</p>
+      <p>원과 타원은 『코스모스』에서 케플러가 몇 년을 붙들고 씨름한 두 틀이다. 점은 그대로인데 틀이 바뀌면 보이는 것도, 맞힐 수 있는 것도 바뀐다. 그렇다면 틀은 내가 만든 걸까, 어딘가에서 받은 걸까. 받은 틀로 내가 본 것을 내 이해라고 불러도 되는지, 나는 아직 잘 모르겠다.</p>
     </div>
   </div>
 </div></section>
@@ -533,21 +570,22 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
 <section class="sec gut" id="bohr"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>보어와의 <span class="se">산책</span></h2><p>정거장 D · 3장</p></div>
   <div class="steps">
-    <div class="step o"><span class="no">그림</span><h3>그릴 수 있다</h3><p>원자를 작은 태양계로 그릴 수 있습니다. 그런데 그 그림은 누가 본 것일까요?</p></div>
-    <div class="step s"><span class="no">계산</span><h3>계산할 수 있다</h3><p>숫자는 맞게 나옵니다. 계산을 따라갈 수 있다는 것과 무슨 일이 일어나는지 아는 것은 같을까요?</p></div>
-    <div class="step c"><span class="no">예측</span><h3>예측할 수 있다</h3><p>다음 관측을 맞힙니다. 위의 '같은 점, 다른 틀'에서 가장 잘 맞힌 틀은 무엇이었나요?</p></div>
+    <div class="step o"><span class="no">그림</span><h3>그릴 수 있다</h3><p>원자를 작은 태양계처럼 그릴 수 있다. 그런데 그 그림을 실제로 본 사람이 있었을까.</p></div>
+    <div class="step s"><span class="no">계산</span><h3>계산할 수 있다</h3><p>숫자는 맞게 나온다. 계산을 따라갈 수 있다는 것과 무슨 일이 일어나는지 안다는 것이 같은 말일까.</p></div>
+    <div class="step c"><span class="no">예측</span><h3>예측할 수 있다</h3><p>다음 관측을 맞힌다. 위의 '같은 점, 다른 틀'에서 가장 잘 맞힌 틀은 무엇이었나. 맞혔다는 것만으로 이해했다고 해도 될까.</p></div>
   </div>
-  <div class="ask"><p><b>보어의 대답</b> 괴팅겐의 산길에서 보어는, 원자의 세계에서 언어는 무엇을 그대로 그리는 데 쓰이지 못하고 시처럼 비유로만 쓰일 수 있다고 말합니다. 내가 '안다고 생각했던' 과학 개념 하나를 골라, 그 이해가 그림·계산·예측 중 어디에 기대고 있었는지 내 카드에 적어 보세요.</p></div>
+  <div class="ask"><p><b>보어의 대답</b> 괴팅겐 근처 산길에서 보어는 이렇게 말한다. 원자의 세계에서 말은 무언가를 그대로 그려 내지 못하고, 시처럼 비유로만 쓰일 수 있다고. 과학자가 시인 이야기를 하는 장면이 처음엔 어색했는데, 다시 읽으니 이 장면이 책 전체의 문을 여는 것 같았다. 내가 '안다고 생각했던' 과학 개념 하나를 골라, 그 이해가 그림, 계산, 예측 가운데 어디에 기대고 있었는지 담벼락에 적어 본다.</p></div>
 </div></section>
 
+<div class="drift" aria-hidden="true"><div class="drow"><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b></div><div class="drow r"><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b><span>Timaeus · Ideen · Formen</span><b>지붕 위의 티마이오스</b></div></div>
 <section class="sec gut" id="wall"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>이 방에서 생각한 것을 남기고, 친구 글에는 칭찬보다 질문을 하나 남겨 주세요. 긴 글은 노션에 쓰고 링크를 붙이면 됩니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>이 방에서 생각한 것을 남긴다. 친구 글에는 칭찬보다 질문을 하나 남겨 주면 좋겠다. 칭찬은 기분이 좋고, 질문은 글을 다시 쓰게 만든다. 긴 글은 노션에 쓰고 링크를 붙인다.</p></div>
   <div id="board"></div>
 </div></section>
 
 </main>
 <section class="next gut"><div class="in"><a class="big" href="invisible-orbit.html">보이지 않는 <span class="se">궤도</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 02</span></div></section>
-<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><dl class="meta"><div><dt>Camp</dt><dd>걸으며 묻다</dd></div><div><dt>Book</dt><dd>Der Teil und das Ganze, 1969</dd></div><div><dt>Issue</dt><dd>No. 01 · 2026</dd></div></dl><span class="code" aria-hidden="true"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><rect x="0" y="0" width="1" height="30"/><rect x="2" y="0" width="3" height="30"/><rect x="6" y="0" width="2" height="30"/><rect x="13" y="0" width="2" height="30"/><rect x="16" y="0" width="1" height="30"/><rect x="23" y="0" width="2" height="30"/><rect x="29" y="0" width="1" height="30"/><rect x="31" y="0" width="2" height="30"/><rect x="34" y="0" width="1" height="30"/><rect x="38" y="0" width="1" height="30"/><rect x="40" y="0" width="3" height="30"/><rect x="44" y="0" width="1" height="30"/><rect x="46" y="0" width="3" height="30"/><rect x="50" y="0" width="3" height="30"/><rect x="60" y="0" width="3" height="30"/><rect x="71" y="0" width="2" height="30"/><rect x="74" y="0" width="1" height="30"/><rect x="77" y="0" width="1" height="30"/><rect x="84" y="0" width="2" height="30"/><rect x="87" y="0" width="2" height="30"/><rect x="91" y="0" width="1" height="30"/><rect x="94" y="0" width="2" height="30"/><rect x="98" y="0" width="2" height="30"/><rect x="109" y="0" width="2" height="30"/><rect x="112" y="0" width="1" height="30"/><rect x="114" y="0" width="2" height="30"/><rect x="117" y="0" width="3" height="30"/></svg><i>PB—01 · 1969 · 2026</i></span></div></footer>
 <script src="board-config.js"></script>
 <script>
 const PB=(function(){
@@ -657,13 +695,36 @@ if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener
 /* 용어 풀이: 접힌 상자 + 화면 구석의 버튼 */
 function gloss(terms){
   const sec=document.createElement('section');sec.className='sec gut glosswrap';sec.id='gloss';
-  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼쳐 보세요 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
+  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼친다 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
   const main=document.querySelector('main');main.insertBefore(sec,main.firstChild);
   const b=document.createElement('button');b.type='button';b.className='glossfab';b.textContent='용어';b.setAttribute('aria-label','용어 풀이 열기');
   b.addEventListener('click',()=>{const d=sec.querySelector('details');d.open=true;sec.scrollIntoView({behavior:reduce?'auto':'smooth'});d.querySelector('summary').focus({preventScroll:true});});
   document.body.appendChild(b);
 }
 return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+/* 스크롤 변화: 진행 막대, 나타나기, 방 히어로 시차, 흘러가는 단어 */
+(function(){
+  const root=document.documentElement,reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bar=document.createElement('div');bar.className='prog';const dot=document.createElement('div');dot.className='prog-dot';
+  document.body.append(bar,dot);
+  const hero=document.querySelector('.hero:not(.dive-hero)');
+  const drifts=[...document.querySelectorAll('.drift')];
+  let ticking=false;
+  function upd(){ticking=false;const y=scrollY,max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    root.style.setProperty('--pg',(y/max).toFixed(4));root.style.setProperty('--sy',Math.round(y));
+    if(hero&&!reduceM){const h=hero.offsetHeight;root.style.setProperty('--hp',Math.min(1,Math.max(0,y/h)).toFixed(3));}
+    if(!reduceM)drifts.forEach(d=>{const r=d.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50)return;
+      const p=(innerHeight-r.top)/(innerHeight+r.height);const rows=d.querySelectorAll('.drow');
+      rows[0]&&rows[0].style.setProperty('--dx',(-p*Math.min(900,innerWidth*.7)).toFixed(1)+'px');
+      rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
+  if(reduceM||!('IntersectionObserver' in window))return;
+  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -699,7 +760,7 @@ function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);
 function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
-    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 박언민" required></label>
+    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
     <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
@@ -769,7 +830,7 @@ const _h={};function setH(id,html){if(_h[id]!==html){_h[id]=html;$(id).innerHTML
 const KEY='pb-first-sentence';
 const arches=[...document.querySelectorAll('#arches .arch')];
 function showPick(k){arches.forEach(a=>a.setAttribute('aria-pressed',a.dataset.k===k?'true':'false'));
-  $('pickmsg').textContent=k?`문장 ${k}를 골랐습니다. 마지막 방에서 다시 만납니다.`:'아직 고르지 않았습니다.';}
+  $('pickmsg').textContent=k?`문장 ${k}를 골랐다. 마지막 방에서 다시 만난다.`:'아직 고르지 않았다.';}
 let saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
 showPick(saved);
 arches.forEach(a=>a.addEventListener('click',()=>{try{localStorage.setItem(KEY,a.dataset.k);}catch(e){}showPick(a.dataset.k);}));
@@ -824,10 +885,10 @@ function dist(p,f){
   if(f===3){const c=FIT.circle;return Math.abs(Math.hypot(p.x-c.ox,p.y-c.oy)-c.r);}
   if(f===4){const {A,B,C:Cc,D,E}=FIT.ell;const F=A*p.x*p.x+B*p.x*p.y+Cc*p.y*p.y+D*p.x+E*p.y-1,gx=2*A*p.x+B*p.y+D,gy=B*p.x+2*Cc*p.y+E;return Math.abs(F)/Math.hypot(gx,gy);}
   return null;}
-const SAY=['점들만 있습니다. 아무것도 말할 수 없습니다.','점들이 대략 한 줄로 늘어서 있다고 봅니다.','본 점들을 그대로 잇습니다. 본 것은 다 설명하지만 새로운 것은 모릅니다.','완전한 원이라고 봅니다. 2천 년 동안 쓰인 틀입니다.','타원이라고 봅니다. 케플러가 찾은 틀입니다.'];
+const SAY=['점만 있다. 아직 아무 말도 할 수 없다.','점들이 대충 한 줄로 늘어섰다고 본다.','본 점을 그대로 잇는다. 본 것은 다 설명하는데, 새로운 것은 하나도 모른다.','완전한 원이라고 본다. 2천 년 동안 쓰인 틀이다.','타원이라고 본다. 케플러가 찾은 틀이다.'];
 function fRead(){const err=frame&&shown?hid.reduce((s,p)=>s+dist(p,frame),0)/hid.length:null;
   const errs=[1,2,3,4].map(f=>hid.reduce((s,p)=>s+dist(p,f),0)/hid.length);
-  setH('rof',`<dt>틀이 하는 말</dt><dd class="k">${SAY[frame]}</dd><dt>숨긴 관측까지 평균 거리</dt><dd class="hot">${frame===0?'예측 없음':shown?(err*100).toFixed(1)+' %':'드러내면 보입니다'}</dd>`+
+  setH('rof',`<dt>틀이 하는 말</dt><dd class="k">${SAY[frame]}</dd><dt>숨긴 관측까지 평균 거리</dt><dd class="hot">${frame===0?'예측 없음':shown?(err*100).toFixed(1)+' %':'드러내면 보인다'}</dd>`+
    (shown?`<dt>다른 틀과 비교</dt><dd class="k">직선 ${(errs[0]*100).toFixed(0)} · 별자리 ${(errs[1]*100).toFixed(1)} · 원 ${(errs[2]*100).toFixed(1)} · 타원 ${(errs[3]*100).toFixed(1)} %</dd>`:'')+
    `<dt>단위</dt><dd class="k">궤도 긴반지름에 대한 비율</dd>`);}
 chips('fchips',i=>{frame=i;fRead();});
@@ -851,7 +912,7 @@ onFrame(()=>{const {g,w,h}=fit($('cvf'));g.clearRect(0,0,w,h);
 
 BOARD.room(document.getElementById('board'),'r1',["가장 마음에 걸리는 1장 문장(A/B/C)과 그 이유 한 문장", "내가 '이해한다'고 여긴 개념과 그 근거 (그림 / 계산 / 예측)", "그 개념을 바꾼 틀은 내가 만든 것인가, 받은 것인가 (2문장)"]);
 
-PB.gloss([["원자론", "물질이 더 나눌 수 없는 아주 작은 알갱이(원자)로 되어 있다는 생각입니다."], ["『티마이오스』", "플라톤이 우주가 어떻게 생겨났는지를 이야기한 대화편입니다. 불·공기·물·흙을 정다면체로 설명합니다."], ["정다면체", "모든 면이 똑같은 정다각형이고, 꼭짓점마다 모인 모양도 똑같은 입체입니다. 세상에 다섯 가지뿐입니다."], ["오일러의 공식", "볼록한 다면체라면 언제나 꼭짓점 수 − 모서리 수 + 면 수 = 2입니다. 정육면체는 8 − 12 + 6 = 2입니다."], ["틀 (모형)", "흩어진 관찰들을 하나로 묶어 설명하는 방식입니다. 직선, 원, 타원 모두 점들을 읽는 틀입니다."], ["타원", "두 점(초점)까지의 거리의 합이 일정한 점들이 그리는 곡선입니다. 케플러는 행성이 타원을 그리며 돈다는 것을 찾았습니다."], ["예측", "아직 보지 않은 것을 미리 맞히는 일입니다. 숨겨 둔 관측 8개를 맞히는 틀이 예측을 잘하는 틀입니다."], ["보어", "덴마크의 물리학자입니다. 원자 모형을 처음 제안했고, 하이젠베르크의 스승이자 대화 상대였습니다."]]);
+PB.gloss([["원자론", "물질이 더 나눌 수 없는 아주 작은 알갱이(원자)로 되어 있다는 생각이다."], ["『티마이오스』", "플라톤이 우주가 어떻게 생겨났는지를 이야기한 대화편이다. 불·공기·물·흙을 정다면체로 설명한다."], ["정다면체", "모든 면이 똑같은 정다각형이고, 꼭짓점마다 모인 모양도 똑같은 입체이다. 세상에 다섯 가지뿐이다."], ["오일러의 공식", "볼록한 다면체라면 언제나 꼭짓점 수 − 모서리 수 + 면 수 = 2이다. 정육면체는 8 − 12 + 6 = 2이다."], ["틀 (모형)", "흩어진 관찰들을 하나로 묶어 설명하는 방식이다. 직선, 원, 타원 모두 점들을 읽는 틀이다."], ["타원", "두 점(초점)까지의 거리의 합이 일정한 점들이 그리는 곡선이다. 케플러는 행성이 타원을 그리며 돈다는 것을 찾았다."], ["예측", "아직 보지 않은 것을 미리 맞히는 일이다. 숨겨 둔 관측 8개를 맞히는 틀이 예측을 잘하는 틀이다."], ["보어", "덴마크의 물리학자이다. 원자 모형을 처음 제안했고, 하이젠베르크의 스승이자 대화 상대였다."]]);
 
 </script>
 </body>

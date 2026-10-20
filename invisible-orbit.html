@@ -500,32 +500,69 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-index:2;display:block}
 @media (max-width:760px){canvas.wp{height:64px}}
 
+/* ================= 포스터 요소 + 스크롤 변화 (v3) ================= */
+/* 흘러가는 큰 단어: 스크롤에 따라 좌우로 */
+.drift{overflow:hidden;margin-top:120px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:14px 0 10px;white-space:nowrap;user-select:none}
+.drow{display:flex;align-items:center;gap:30px;width:max-content;font-family:var(--display);font-weight:600;letter-spacing:-.045em;line-height:.95;font-size:clamp(52px,9vw,132px);transform:translate3d(var(--dx,0px),0,0);will-change:transform}
+.drow span{color:transparent;-webkit-text-stroke:1.2px var(--olive)}
+.drow b{font-family:var(--sko);font-weight:600;font-size:.34em;letter-spacing:-.03em;color:var(--olive);padding:0 6px}
+.drow.r{font-size:clamp(20px,2.6vw,34px);margin-top:8px;letter-spacing:-.02em}
+.drow.r span{color:var(--ink);-webkit-text-stroke:0}
+.drow.r b{font-size:.7em;color:var(--muted)}
+.drift + #wall{margin-top:130px}
+
+/* 바닥: 메타 정보 + 바코드 */
+.foot .in{display:flex;align-items:center;gap:18px 30px;flex-wrap:wrap}
+.foot .meta{margin:0;display:grid;grid-template-columns:repeat(3,auto);gap:0 26px;flex:1;min-width:0}
+@media (max-width:760px){.foot .meta{grid-template-columns:minmax(0,1fr)}}
+.foot .meta div{display:grid;gap:0;border:0;padding:0}
+.foot .meta dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mintdim)}
+.foot .meta dt::after{content:" —"}
+.foot .meta dd{margin:0;color:var(--cream);font-size:13px}
+.code{display:grid;gap:4px;justify-items:end;color:var(--mint)}
+.code svg{width:120px;height:30px;fill:currentColor}
+.code i{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--mintdim)}
+
+/* 맨 위의 진행 막대: 끝에 입자 하나 */
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;pointer-events:none;transform-origin:left;transform:scaleX(var(--pg,0));background:linear-gradient(90deg,transparent,var(--olive) 30%,var(--sage2))}
+.prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
+
+/* 나타나기: 아래에서 천천히 */
+html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i.seen{opacity:1;transform:none}
+.head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
+
+/* 방 히어로: 내리면 큰 글자는 뒤로 물러나고 물체는 앞으로 */
+.hero:not(.dive-hero) .giant{transform:translate3d(0,calc(var(--hp,0) * 70px),0) scale(calc(1 - var(--hp,0) * .08));opacity:calc(1 - var(--hp,0) * .55);letter-spacing:calc(-.05em + var(--hp,0) * .06em)}
+.hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
+.hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
+
 </style>
 </head>
-<body>
+<body class="p-invisible-orbit">
 <header class="hero gut"><canvas class="sky" id="sky" aria-hidden="true"></canvas><div class="in">
 <div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html" aria-current="page">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:9"><div class="hud" aria-hidden="true"><span class="tl">Room 02 · 1926–1927</span><span class="tr">Δx · Δp ≥ ħ/2</span><span class="bl">55.68°N 12.57°E · København</span><span class="br">Track · droplets</span></div><p class="giant" aria-hidden="true">Invisible</p><canvas class="obj" id="hero-obj" aria-hidden="true"></canvas></div>
-<div class="hrow"><div><span class="tag">Room 02 · 5장 · 6장</span><h1>보이지 않는 <span class="se">궤도</span></h1><div class="btns"><a class="btn mint" href="#orbital">확률 구름 실험실</a><a class="btn ghost" href="#bridge">케플러에서 시작</a></div></div><p>케플러는 행성의 궤도를 찾았고, 하이젠베르크는 전자의 궤도를 버렸습니다. 구름과 물방울과 파동을 움직여 보며, 우리가 무엇을 '보았다'고 말해 왔는지 다시 묻습니다.</p></div>
+<div class="hrow"><div><span class="tag">Room 02 · 5장 · 6장</span><h1>보이지 않는 <span class="se">궤도</span></h1><div class="btns"><a class="btn mint" href="#orbital">확률 구름 실험실</a><a class="btn ghost" href="#bridge">케플러에서 시작</a></div></div><p>케플러는 행성의 궤도를 찾았고, 하이젠베르크는 전자의 궤도를 버렸다. 구름과 물방울과 파동을 움직여 보면서, 우리가 그동안 무엇을 '보았다'고 말해 왔는지 다시 묻는다.</p></div>
 </div></header>
 <main>
 <section class="sec gut" id="bridge"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
     <h2>케플러에서 <span class="se">구름</span>까지</h2>
-    <p>코스모스에서 넘어오는 다리입니다. 궤도라는 그림이 어디까지 갈 수 있었는지 세 장면으로 봅니다.</p></div>
+    <p>『코스모스』에서 건너오는 다리다. 궤도라는 그림이 어디까지 버틸 수 있었는지 세 장면으로 본다.</p></div>
   <div class="lab">
     <div class="board"><canvas id="cv0" aria-label="케플러의 타원, 보어의 원자 궤도, 양자역학의 확률 구름"></canvas></div>
     <div class="text">
       <span class="kick">00 · 다리</span>
       <h3>궤도라는 그림은 <span class="se">어디까지</span> 갈 수 있었나</h3>
-      <p>케플러는 튀코가 잰 화성의 위치들을 이어 타원을 찾았습니다. 1913년 보어는 이 행성 그림을 원자에 빌려 와, 전자가 정해진 원 궤도만 돈다고 가정했습니다. 그 가정으로 수소가 내는 빛의 색깔을 맞혔지만, 궤도 자체는 아무도 본 적이 없었습니다.</p>
+      <p>케플러는 튀코가 잰 화성의 위치를 이어서 타원을 찾았다. 1913년 보어는 이 행성 그림을 원자에 빌려 와서, 전자가 정해진 원 궤도만 돈다고 가정했다. 그 가정으로 수소가 내는 빛의 색깔까지 맞혔다. 그런데 궤도 자체는 아무도 본 적이 없었다. 맞히는 그림과 본 그림은 다른 것 같다.</p>
       <div class="chips" id="bchips" role="group" aria-label="모형 고르기">
         <button type="button" aria-pressed="true">케플러 1609</button>
         <button type="button" aria-pressed="false">보어 1913</button>
         <button type="button" aria-pressed="false">양자역학 1926</button>
       </div>
       <dl class="ro" id="rob"></dl>
-      <p class="note">세 번째 그림의 점 하나하나는 '위치를 한 번 재면 나올 수 있는 곳'입니다. 점과 점을 잇는 길은 어디에도 없습니다. 바로 아래 실험실에서 다른 모양의 구름도 볼 수 있습니다.</p>
+      <p class="note">세 번째 그림의 점 하나하나는 '위치를 한 번 재면 나올 수 있는 곳'이다. 점과 점을 잇는 길은 어디에도 없다. 바로 아래 실험실에서 다른 모양의 구름도 꺼내 볼 수 있다.</p>
     </div>
   </div>
 </div></section>
@@ -533,7 +570,7 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
 <section class="sec gut" id="orbital"><div class="in">
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
     <h2>확률 구름 <span class="se">실험실</span></h2>
-    <p>원소를 고르면 그 원자의 전자가 어떤 오비탈에 들어 있는지 보이고, 오비탈을 누르면 구름이 나타납니다. 도감 모드에서는 s, p, d, f 오비탈을 종류별로 꺼내 볼 수 있습니다.</p></div>
+    <p>원소를 고르면 그 원자의 전자가 어느 오비탈에 들어 있는지 나오고, 오비탈을 누르면 구름이 뜬다. 도감 모드에서는 s, p, d, f를 종류별로 꺼내 볼 수 있다. 교과서에서 본 아령 모양이 사실은 점들이 쌓인 결과라는 걸 직접 보면 조금 다르게 느껴진다.</p></div>
   <div class="lab" style="grid-template-columns:minmax(0,1fr)">
     <div class="text" style="gap:12px">
       <div class="chips" id="omode" role="group" aria-label="보는 방식">
@@ -541,7 +578,7 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
         <button type="button" aria-pressed="false">오비탈 도감</button>
       </div>
       <div id="elpane">
-        <p class="note ptnote">표가 잘리면 옆으로 밀어 보세요.</p>
+        <p class="note ptnote">표가 잘리면 옆으로 민다.</p>
         <div class="ptable" id="ptable" role="group" aria-label="원소 고르기 (수소부터 크립톤까지)"></div>
         <div class="cfg"><div><span class="lbl">전자 배치</span><div id="cfgline" class="cfgline"></div></div><div class="boxes" id="boxes" role="group" aria-label="부분껍질 고르기"></div></div>
       </div>
@@ -560,13 +597,13 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
       <label class="check"><input type="checkbox" id="phase" checked> 파동의 부호(+, −)를 색으로 보기</label>
       <div class="btns"><button type="button" class="btn" id="remeasure">처음부터 다시 재기</button></div>
       <dl class="ro" id="roo"></dl>
-      <p>점이 하나씩 쌓이는 것은 같은 상태의 원자에서 전자의 위치를 한 번씩 잰 결과를 모은 것입니다. 구름에는 점이 거의 찍히지 않는 면(마디)이 있습니다. 전자는 마디 양쪽에 다 나타나는데, 마디를 '지나가는' 길은 그릴 수 없습니다.</p>
-      <div class="lens"><b>A</b><span>수소 말고 다른 원자의 오비탈은 수소의 모양을 빌려 쓴 근사입니다. 전자가 여럿이면 정확한 모양은 이렇게 깔끔하지 않습니다. 이 그림 자체가 흩어진 측정을 '이해할 수 있는 것'으로 바꾸는 하나의 틀입니다.</span></div>
+      <p>점이 하나씩 쌓이는 건, 같은 상태의 원자에서 전자의 위치를 한 번씩 잰 결과를 모은 것이다. 구름에는 점이 거의 찍히지 않는 면(마디)이 있다. 전자는 마디 양쪽에 다 나타나는데, 마디를 '지나가는' 길은 그릴 수 없다. 여기서 처음으로 그림이 막히는 느낌이 든다.</p>
+      <div class="lens"><b>A</b><span>수소가 아닌 원자의 오비탈은 수소의 모양을 빌려 쓴 근사다. 전자가 여럿이면 실제 모양은 이렇게 깔끔하지 않다. 그러니까 이 그림도 흩어진 측정을 '이해할 수 있는 것'으로 바꾸는 틀 하나다. 깔끔해서 이해가 되고, 깔끔해서 조금 틀렸다.</span></div>
     </div>
   </div>
   <div class="pause" id="pause">
     <span class="kick warn">멈춤 질문</span>
-    <h3>점 하나는 측정했을 때 나온 자리입니다. <span class="se">측정하기 전에도</span> 전자가 그 자리에 있었을까요?</h3>
+    <h3>점 하나는 측정했을 때 나온 자리다. <span class="se">측정하기 전에도</span> 전자는 그 자리에 있었을까?</h3>
     <div class="chips" id="pchoice" role="group" aria-label="내 생각 고르기">
       <button type="button" aria-pressed="false">그렇다. 우리가 모를 뿐이다</button>
       <button type="button" aria-pressed="false">아니다. 재기 전에는 한 자리가 없다</button>
@@ -584,11 +621,11 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick">02 · 정거장 B</span>
       <h3>우리는 궤도가 아니라 <span class="se">물방울</span>을 보았다</h3>
-      <p>안개상자 속을 전자가 지나가면 그 자리의 공기가 전기를 띠고, 거기에 물방울이 맺힙니다. 멀리서 보면 매끈한 한 줄입니다. 막대를 밀어 확대해 보세요.</p>
+      <p>안개상자 속을 전자가 지나가면 그 자리의 공기가 전기를 띠고, 거기에 물방울이 맺힌다. 멀리서 보면 매끈한 한 줄이다. 막대를 밀어서 끝까지 확대해 본다.</p>
       <div class="ctl"><label for="zoom">확대</label><input type="range" id="zoom" min="0" max="1" step="0.001" value="0"><div class="ticks"><span>사진 한 장</span><span>물방울 하나</span></div></div>
       <label class="check"><input type="checkbox" id="drawline"> 우리가 그은 선 보이기</label>
       <dl class="ro" id="ro1"></dl>
-      <p>선은 사진 속에 있지 않습니다. 띄엄띄엄한 물방울을 우리가 이은 것입니다. 하이젠베르크는 코펜하겐의 밤 산책에서 물음을 바꿨습니다. "전자의 궤도는 어디인가"가 아니라 "대략의 위치와 대략의 속도를 함께 말할 수 있는 한계는 어디인가"였습니다.</p>
+      <p>선은 사진 속에 없다. 띄엄띄엄 맺힌 물방울을 우리가 이었을 뿐이다. 하이젠베르크는 코펜하겐의 밤 산책에서 물음을 바꿨다. "전자의 궤도는 어디인가"가 아니라 "대략의 위치와 대략의 속도를 함께 말할 수 있는 한계는 어디인가"로. 답을 찾은 게 아니라 물음을 바꾼 것이다. 책 전체에서 가장 조용하면서 가장 큰 장면인 것 같다.</p>
     </div>
   </div>
 </div></section>
@@ -601,13 +638,13 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick">03 · 정거장 C</span>
       <h3>위치를 모으면 <span class="se">운동량</span>이 퍼진다</h3>
-      <p>양자역학에서 전자의 상태는 하나의 파동으로 적힙니다. 위쪽은 그 파동에서 읽은 위치의 퍼짐, 아래쪽은 같은 파동에서 읽은 운동량의 퍼짐입니다. 측정 도구도 빛도 등장하지 않는데, 하나를 좁히면 다른 하나가 퍼집니다.</p>
+      <p>양자역학에서 전자의 상태는 파동 하나로 적힌다. 위쪽은 그 파동에서 읽은 위치의 퍼짐, 아래쪽은 같은 파동에서 읽은 운동량의 퍼짐이다. 측정 도구도 빛도 나오지 않는데, 하나를 좁히면 다른 하나가 퍼진다.</p>
       <div class="formula">Δx · Δp ≥ ħ / 2</div>
       <div class="ctl"><label for="sx">위치를 얼마나 좁게 모을까</label><input type="range" id="sx" min="0.3" max="3" step="0.01" value="1.2"><div class="ticks"><span>좁게</span><span>넓게</span></div></div>
       <div class="chips" id="pchips" role="group" aria-label="파동 모양"><button type="button" aria-pressed="true">봉우리 하나</button><button type="button" aria-pressed="false">봉우리 둘</button></div>
       <dl class="ro" id="ro2"></dl>
       <div class="btns"><button type="button" class="btn" id="play">소리로 듣기</button></div>
-      <p>소리도 파동이라 같은 일이 생깁니다. 아주 짧은 '틱' 소리는 높이를 알아듣기 어렵고, 높이가 또렷하려면 소리가 길어야 합니다. 봉우리를 둘로 바꾸면 곱이 바닥보다 커집니다. ħ/2는 늘 나오는 값이 아니라, 그 아래로는 내려갈 수 없는 바닥입니다.</p>
+      <p>소리도 파동이라 같은 일이 생긴다. 아주 짧은 '틱' 소리는 음높이를 알아듣기 어렵고, 음높이가 또렷하려면 소리가 길어야 한다. 봉우리를 둘로 바꾸면 곱이 바닥보다 커진다. ħ/2는 늘 나오는 값이 아니라, 그 아래로는 내려갈 수 없는 바닥이다.</p>
     </div>
   </div>
 </div></section>
@@ -620,10 +657,10 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
     <div class="text">
       <span class="kick warn">1927년 하이젠베르크의 설명 · 보어가 문제 삼은 것</span>
       <h3>선명하게 보려면 <span class="se">세게</span> 쳐야 한다</h3>
-      <p>전자를 현미경으로 보려면 빛을 쬐어야 합니다. 파장이 짧은 빛일수록 위치가 선명하게 보이지만, 그 빛은 전자를 더 세게 튕겨 냅니다. 튕겨 나간 방향은 렌즈 안 어디로 빛이 들어왔느냐에 달려 있어 미리 알 수 없습니다.</p>
+      <p>전자를 현미경으로 보려면 빛을 쬐어야 한다. 파장이 짧은 빛일수록 위치는 선명해지지만, 그 빛은 전자를 더 세게 튕겨 낸다. 어느 쪽으로 튕겨 나갔는지는 빛이 렌즈 어디로 들어왔느냐에 달려 있어서 미리 알 수 없다.</p>
       <div class="ctl"><label for="lam">빛의 파장</label><input type="range" id="lam" min="0.25" max="1" step="0.01" value="0.6"><div class="ticks"><span>짧게 (감마선)</span><span>길게</span></div></div>
       <dl class="ro" id="ro3"></dl>
-      <p>이 그림은 설명 (나), 곧 '재는 행위가 대상을 건드린다'를 보여 줍니다. 보어는 이 설명에 렌즈의 크기와 빛의 파동성이 빠져 있다고 지적했습니다. 더 근본적으로는 '위치'와 '운동량'이라는 두 개념을 한 실험에서 동시에 온전히 쓸 수 없다는 것이 문제라고 보았습니다. 이것이 상보성입니다.</p>
+      <p>이 그림은 설명 (나), 그러니까 '재는 행위가 대상을 건드린다'를 보여 준다. 1927년의 하이젠베르크가 처음 내놓은 설명이 이것이었다. 보어는 여기에 렌즈의 크기와 빛의 파동성이 빠졌다고 짚었다. 더 근본적으로는 '위치'와 '운동량'이라는 두 개념을 한 실험에서 동시에 온전히 쓸 수 없다는 게 문제라고 봤다. 이것을 상보성이라고 부른다. 스승이 제자의 발견을 제자보다 더 깊이 읽은 셈이다.</p>
     </div>
   </div>
 </div></section>
@@ -632,22 +669,23 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
   <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
     <h2>불확정성은 <span class="se">무엇에 대한</span> 말인가</h2><p>판정 · 내 카드에 남길 것</p></div>
   <div class="verdict">
-    <section><span class="see">(가) 도구</span><h4>측정 도구가 정밀하지 못해서</h4><p>더 좋은 도구를 만들면 언젠가 바닥이 사라질까요? 03번 그림에는 도구가 하나도 나오지 않는데도 바닥이 있었습니다.</p><span class="see">이 설명을 보여 주는 그림: 없음</span></section>
-    <section><span class="see">(나) 교란</span><h4>재는 행위가 대상을 건드려서</h4><p>04번 그림이 이 설명입니다. 그렇다면 건드리기 전에는 전자가 정확한 위치와 속도를 '갖고' 있었다고 어떻게 알 수 있을까요?</p><span class="see">이 설명을 보여 주는 그림: 04</span></section>
-    <section><span class="see">(다) 대상</span><h4>대상이 두 값을 동시에 갖지 않아서</h4><p>03번 그림이 이 설명입니다. '값을 갖지 않는다'는 말은 '우리가 모른다'는 말과 어떻게 다를까요?</p><span class="see">이 설명을 보여 주는 그림: 03, 그리고 01의 구름</span></section>
+    <section><span class="see">(가) 도구</span><h4>측정 도구가 정밀하지 못해서</h4><p>더 좋은 도구를 만들면 언젠가 바닥이 사라질까. 03번 그림에는 도구가 하나도 나오지 않았는데 바닥은 있었다.</p><span class="see">이 설명을 보여 주는 그림: 없음</span></section>
+    <section><span class="see">(나) 교란</span><h4>재는 행위가 대상을 건드려서</h4><p>04번 그림이 이 설명이다. 그렇다면 건드리기 전의 전자가 정확한 위치와 속도를 '갖고' 있었다는 건 어떻게 알 수 있을까.</p><span class="see">이 설명을 보여 주는 그림: 04</span></section>
+    <section><span class="see">(다) 대상</span><h4>대상이 두 값을 동시에 갖지 않아서</h4><p>03번 그림이 이 설명이다. '값을 갖지 않는다'는 말은 '우리가 모른다'는 말과 무엇이 다를까.</p><span class="see">이 설명을 보여 주는 그림: 03, 그리고 01의 구름</span></section>
   </div>
-  <div class="ask"><p><b>질문</b> 세 설명 중 가장 설득력 있는 것을 고르고 근거를 한 줄로 쓰세요. 1927년의 하이젠베르크는 어느 쪽에 서 있었는지, 그 판단이 지금의 내 판단보다 나았는지도 생각해 보세요.</p><p>마지막으로 1장의 문장 B를 꺼냅니다. 하이젠베르크가 한 일은 선입견을 '없앤' 것인가요, 낡은 선입견을 '바꾼' 것인가요?</p></div>
-  <p class="caveat">그림의 수치는 이해를 돕기 위한 어림값입니다. 안개상자 물방울의 크기와 간격은 기체와 장치에 따라 다르고, 원자의 크기는 물방울의 수십만분의 1입니다. 오비탈은 수소형 파동함수로 계산했고 화면 크기에 맞춰 늘이거나 줄였습니다. 파동묶음은 ħ = 1인 단위로 계산했습니다.</p>
+  <div class="ask"><p><b>질문</b> 셋 가운데 가장 설득력 있는 설명을 고르고 근거를 한 줄로 쓴다. 1927년의 하이젠베르크는 어느 쪽에 서 있었는지, 그 판단이 지금 내 판단보다 나았는지도 같이 따져 본다.</p><p>마지막으로 1장의 문장 B를 꺼낸다. 하이젠베르크가 한 일은 선입견을 '없앤' 것일까, 낡은 선입견을 새것으로 '바꾼' 것일까. 나는 후자 쪽에 조금 더 기우는데, 그렇다면 B는 이룰 수 없는 문장이 되는 건지 궁금하다.</p></div>
+  <p class="caveat">그림의 수치는 이해를 돕기 위한 어림값이다. 안개상자 물방울의 크기와 간격은 기체와 장치에 따라 다르고, 원자는 물방울의 수십만분의 1 크기다. 오비탈은 수소형 파동함수로 계산해 화면에 맞게 늘이거나 줄였고, 파동묶음은 ħ = 1인 단위로 계산했다.</p>
 </div></section>
 
+<div class="drift" aria-hidden="true"><div class="drow"><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b></div><div class="drow r"><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b><span>Unbestimmtheit</span><b>보이지 않는 궤도</b></div></div>
 <section class="sec gut" id="wall"><div class="in">
-  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>이 방에서 생각한 것을 남기고, 친구 글에는 칭찬보다 질문을 하나 남겨 주세요. 긴 글은 노션에 쓰고 링크를 붙이면 됩니다.</p></div>
+  <div class="head"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="12" cy="12" rx="10.5" ry="4.2" transform="rotate(-24 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><h2>우리의 <span class="se">담벼락</span></h2><p>판정과 근거를 남긴다. 친구 글에는 칭찬보다 질문을 하나. 같은 그림을 보고 다른 판정을 내린 친구가 있다면 그 글이 제일 읽을 만할 것 같다.</p></div>
   <div id="board"></div>
 </div></section>
 
 </main>
 <section class="next gut"><div class="in"><a class="big" href="tribunal.html">칸트의 <span class="se">법정</span> →</a><span class="eyebrow" style="color:var(--muted)">Room 03</span></div></section>
-<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><span>걸으며 묻다 · 『부분과 전체』 독서 캠프</span><span>Werner Heisenberg · Der Teil und das Ganze (1969)</span></div></footer>
+<footer class="foot gut"><div class="in"><svg class="stamp" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="sc" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><g class="ring"><text><textPath href="#sc">PHYSICS AND BEYOND · 걸으며 묻다 · 1969 · </textPath></text></g><ellipse cx="50" cy="50" rx="17" ry="7" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 50 50)"/><circle cx="50" cy="50" r="3" fill="currentColor"/></svg><dl class="meta"><div><dt>Camp</dt><dd>걸으며 묻다</dd></div><div><dt>Book</dt><dd>Der Teil und das Ganze, 1969</dd></div><div><dt>Issue</dt><dd>No. 02 · 2026</dd></div></dl><span class="code" aria-hidden="true"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><rect x="6" y="0" width="2" height="30"/><rect x="9" y="0" width="2" height="30"/><rect x="25" y="0" width="3" height="30"/><rect x="29" y="0" width="1" height="30"/><rect x="32" y="0" width="3" height="30"/><rect x="36" y="0" width="1" height="30"/><rect x="38" y="0" width="3" height="30"/><rect x="42" y="0" width="1" height="30"/><rect x="44" y="0" width="1" height="30"/><rect x="46" y="0" width="2" height="30"/><rect x="50" y="0" width="1" height="30"/><rect x="52" y="0" width="1" height="30"/><rect x="58" y="0" width="1" height="30"/><rect x="61" y="0" width="3" height="30"/><rect x="66" y="0" width="2" height="30"/><rect x="70" y="0" width="3" height="30"/><rect x="74" y="0" width="2" height="30"/><rect x="85" y="0" width="3" height="30"/><rect x="89" y="0" width="3" height="30"/><rect x="96" y="0" width="2" height="30"/><rect x="100" y="0" width="2" height="30"/><rect x="103" y="0" width="2" height="30"/><rect x="106" y="0" width="3" height="30"/><rect x="116" y="0" width="1" height="30"/></svg><i>PB—02 · 1969 · 2026</i></span></div></footer>
 <script src="board-config.js"></script>
 <script>
 const PB=(function(){
@@ -757,13 +795,36 @@ if(reduce){['input','click','pointermove'].forEach(ev=>document.addEventListener
 /* 용어 풀이: 접힌 상자 + 화면 구석의 버튼 */
 function gloss(terms){
   const sec=document.createElement('section');sec.className='sec gut glosswrap';sec.id='gloss';
-  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼쳐 보세요 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
+  sec.innerHTML=`<div class="in"><details class="gloss"><summary><span class="se">용어 풀이</span><span class="gn">모르는 말이 나오면 여기를 펼친다 · ${terms.length}개</span></summary><dl>${terms.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></details></div>`;
   const main=document.querySelector('main');main.insertBefore(sec,main.firstChild);
   const b=document.createElement('button');b.type='button';b.className='glossfab';b.textContent='용어';b.setAttribute('aria-label','용어 풀이 열기');
   b.addEventListener('click',()=>{const d=sec.querySelector('details');d.open=true;sec.scrollIntoView({behavior:reduce?'auto':'smooth'});d.querySelector('summary').focus({preventScroll:true});});
   document.body.appendChild(b);
 }
 return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,onFrame,redraw,PHI};
+})();
+
+/* 스크롤 변화: 진행 막대, 나타나기, 방 히어로 시차, 흘러가는 단어 */
+(function(){
+  const root=document.documentElement,reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bar=document.createElement('div');bar.className='prog';const dot=document.createElement('div');dot.className='prog-dot';
+  document.body.append(bar,dot);
+  const hero=document.querySelector('.hero:not(.dive-hero)');
+  const drifts=[...document.querySelectorAll('.drift')];
+  let ticking=false;
+  function upd(){ticking=false;const y=scrollY,max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    root.style.setProperty('--pg',(y/max).toFixed(4));root.style.setProperty('--sy',Math.round(y));
+    if(hero&&!reduceM){const h=hero.offsetHeight;root.style.setProperty('--hp',Math.min(1,Math.max(0,y/h)).toFixed(3));}
+    if(!reduceM)drifts.forEach(d=>{const r=d.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50)return;
+      const p=(innerHeight-r.top)/(innerHeight+r.height);const rows=d.querySelectorAll('.drow');
+      rows[0]&&rows[0].style.setProperty('--dx',(-p*Math.min(900,innerWidth*.7)).toFixed(1)+'px');
+      rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
+  if(reduceM||!('IntersectionObserver' in window))return;
+  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -799,7 +860,7 @@ function split(posts){const top=posts.filter(p=>!p.parent).sort((a,b)=>b.t-a.t);
 function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
-    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 박언민" required></label>
+    <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
     <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
@@ -964,7 +1025,7 @@ function renderDex(){
   const nc=$('nchips');nc.innerHTML='';for(let n=1;n<=4;n++){const b=document.createElement('button');b.type='button';b.textContent='n = '+n;b.setAttribute('aria-pressed',sel.n===n?'true':'false');
     b.addEventListener('click',()=>{sel.n=n;if(sel.l>=n)sel.l=n-1;sel.mi=0;renderDex();});nc.appendChild(b);}
   const lc=$('lchips');lc.innerHTML='';for(let l=0;l<4;l++){const b=document.createElement('button');b.type='button';b.textContent=LN[l]+' 오비탈';b.disabled=l>=sel.n;
-    if(b.disabled){b.style.opacity=.35;b.style.cursor='not-allowed';b.title=`n=${sel.n}에는 ${LN[l]} 오비탈이 없습니다`;}
+    if(b.disabled){b.style.opacity=.35;b.style.cursor='not-allowed';b.title=`n=${sel.n}에는 ${LN[l]} 오비탈이 없다`;}
     b.setAttribute('aria-pressed',sel.l===l?'true':'false');b.addEventListener('click',()=>{if(l<sel.n){sel.l=l;sel.mi=0;renderDex();}});lc.appendChild(b);}
   setOrb();
 }
@@ -1079,13 +1140,13 @@ onFrame(t=>{
 
 BOARD.room(document.getElementById('board'),'r2',["내 판정 (가)/(나)/(다)와 한 줄 근거", "1927년의 하이젠베르크와 내 판정 비교: 누구의 판단이 더 나은가", "눈금 B: 선입견을 없앴는가, 바꿨는가"]);
 
-PB.gloss([["궤도", "행성처럼 정해진 길을 따라 도는 경로입니다. 보어는 전자도 그렇다고 가정했지만, 양자역학은 전자의 궤도를 말하지 않습니다."], ["오비탈 (확률 구름)", "전자가 어디에서 발견될 가능성이 큰지를 나타낸 분포입니다. 전자가 다니는 길이 아니라 측정했을 때 나올 수 있는 자리의 지도입니다."], ["주양자수 n", "오비탈의 크기와 에너지를 정하는 번호입니다. 클수록 크고 핵에서 멉니다."], ["s · p · d · f", "오비탈의 모양을 부르는 이름입니다. s는 공, p는 아령, d와 f는 더 복잡한 꽃잎 모양입니다."], ["전자 배치", "원자의 전자들이 어떤 오비탈에 몇 개씩 들어 있는지 적은 것입니다. 탄소는 1s² 2s² 2p²입니다. 화살표 ↑↓는 전자 한 개씩을 뜻합니다."], ["마디", "전자가 발견될 가능성이 0인 면입니다. 구름에 점이 거의 찍히지 않는 곳입니다."], ["파동함수와 부호 (+, −)", "전자의 상태를 적은 수학적 파동입니다. 발견될 확률은 이 값을 제곱해서 얻고, + 와 − 는 파동의 마루와 골처럼 위상을 나타냅니다."], ["운동량 p", "질량 × 속도입니다. 얼마나 빠르게, 어느 쪽으로 움직이는지를 함께 담습니다."], ["Δx, Δp", "위치와 운동량이 퍼진 정도입니다. Δ(델타)는 '흩어진 폭'이라고 읽으면 됩니다."], ["ħ (에이치 바)", "플랑크 상수를 2π로 나눈 값으로, 소수점 아래로 0이 33개 이어진 뒤에야 1이 나오는 아주 작은 수입니다(J·s 단위). 아주 작아서 일상에서는 불확정성이 눈에 띄지 않습니다."], ["파동묶음", "한 곳에 모여 있는 파동입니다. 좁게 모으려면 여러 파장을 섞어야 해서 운동량이 퍼집니다."], ["안개상자", "수증기가 가득한 상자입니다. 전기를 띤 입자가 지나간 자리에 물방울이 맺혀 흔적이 보입니다."], ["감마선", "파장이 매우 짧고 에너지가 큰 빛입니다."], ["상보성", "보어의 생각입니다. 위치와 운동량처럼 둘 다 필요하지만 한 실험에서 동시에 온전히 쓸 수 없는 두 개념이 서로를 보완한다는 뜻입니다."]]);
+PB.gloss([["궤도", "행성처럼 정해진 길을 따라 도는 경로이다. 보어는 전자도 그렇다고 가정했지만, 양자역학은 전자의 궤도를 말하지 않는다."], ["오비탈 (확률 구름)", "전자가 어디에서 발견될 가능성이 큰지를 나타낸 분포이다. 전자가 다니는 길이 아니라 측정했을 때 나올 수 있는 자리의 지도이다."], ["주양자수 n", "오비탈의 크기와 에너지를 정하는 번호이다. 클수록 크고 핵에서 멀다."], ["s · p · d · f", "오비탈의 모양을 부르는 이름이다. s는 공, p는 아령, d와 f는 더 복잡한 꽃잎 모양이다."], ["전자 배치", "원자의 전자들이 어떤 오비탈에 몇 개씩 들어 있는지 적은 것이다. 탄소는 1s² 2s² 2p²이다. 화살표 ↑↓는 전자 한 개씩을 뜻한다."], ["마디", "전자가 발견될 가능성이 0인 면이다. 구름에 점이 거의 찍히지 않는 곳이다."], ["파동함수와 부호 (+, −)", "전자의 상태를 적은 수학적 파동이다. 발견될 확률은 이 값을 제곱해서 얻고, + 와 − 는 파동의 마루와 골처럼 위상을 나타낸다."], ["운동량 p", "질량 × 속도이다. 얼마나 빠르게, 어느 쪽으로 움직이는지를 함께 담는다."], ["Δx, Δp", "위치와 운동량이 퍼진 정도이다. Δ(델타)는 '흩어진 폭'이라고 읽으면 된다."], ["ħ (에이치 바)", "플랑크 상수를 2π로 나눈 값으로, 소수점 아래로 0이 33개 이어진 뒤에야 1이 나오는 아주 작은 수이다(J·s 단위). 아주 작아서 일상에서는 불확정성이 눈에 띄지 않는다."], ["파동묶음", "한 곳에 모여 있는 파동이다. 좁게 모으려면 여러 파장을 섞어야 해서 운동량이 퍼진다."], ["안개상자", "수증기가 가득한 상자이다. 전기를 띤 입자가 지나간 자리에 물방울이 맺혀 흔적이 보인다."], ["감마선", "파장이 매우 짧고 에너지가 큰 빛이다."], ["상보성", "보어의 생각이다. 위치와 운동량처럼 둘 다 필요하지만 한 실험에서 동시에 온전히 쓸 수 없는 두 개념이 서로를 보완한다는 뜻이다."]]);
 
 /* 멈춤 질문 */
 (function(){const A=[
- '<p><b>이것이 설명 (가)에 가까운 생각입니다.</b> 전자는 늘 어딘가 한 자리에 있고, 우리가 그 자리를 모를 뿐이라는 것이지요. 이렇게 측정 결과를 미리 정해 두는 숨은 원인이 있다고 보는 생각을 \'숨은 변수\'라고 부릅니다.</p><p>그렇다면 03번 파동묶음에서, 도구도 빛도 없는데 바닥 ħ/2가 생기는 까닭은 무엇일까요? 이 질문을 들고 아래로 내려가 보세요.</p>',
- '<p><b>이것이 설명 (다)에 가까운 생각입니다.</b> 재기 전의 전자는 여러 자리에 걸친 파동이고, 재는 순간 한 자리가 나온다는 것입니다. 하이젠베르크와 보어의 코펜하겐 해석이 이쪽입니다.</p><p>그렇다면 \'재는 순간\'에는 무슨 일이 일어날까요? 이 질문은 지금도 물리학자들 사이에서 답이 갈립니다.</p>',
- '<p><b>정직한 대답입니다.</b> 이 질문은 1920년대부터 지금까지 물리학자들 사이에서도 답이 하나로 모이지 않았습니다. 아인슈타인은 \'그렇다\' 쪽에, 보어는 \'아니다\' 쪽에 가까웠습니다.</p><p>아래의 그림 세 개를 지나고 나서, 맨 아래 판정 칸에서 다시 골라 보세요. 처음 고른 것과 같은지 비교하면 됩니다.</p>'];
+ '<p><b>설명 (가)에 가까운 생각이다.</b> 전자는 늘 어딘가 한 자리에 있고, 우리가 그 자리를 모를 뿐이라는 것. 이렇게 측정 결과를 미리 정해 두는 숨은 원인이 있다고 보는 생각을 \'숨은 변수\'라고 부른다.</p><p>그렇다면 03번 파동묶음에서는 도구도 빛도 없는데 왜 바닥 ħ/2가 생길까. 이 질문을 들고 아래로 내려가 본다.</p>',
+ '<p><b>설명 (다)에 가까운 생각이다.</b> 재기 전의 전자는 여러 자리에 걸친 파동이고, 재는 순간 한 자리가 나온다는 것. 하이젠베르크와 보어의 코펜하겐 해석이 이쪽이다.</p><p>그럼 \'재는 순간\'에는 무슨 일이 일어나는 걸까. 이 질문은 지금도 물리학자들 사이에서 답이 갈린다.</p>',
+ '<p><b>가장 정직한 대답일지도 모른다.</b> 이 질문은 1920년대부터 지금까지 물리학자들 사이에서도 답이 하나로 모이지 않았다. 아인슈타인은 \'그렇다\' 쪽에, 보어는 \'아니다\' 쪽에 가까웠다.</p><p>아래 그림 세 개를 지나고 나서 맨 아래 판정 칸에서 다시 골라 본다. 처음 고른 것과 같은지만 봐도 충분하다.</p>'];
  PB.chips('pchoice',i=>{const p=PB.$('pans');p.hidden=false;p.innerHTML=A[i]+'<p><a href="#verdict">판정 칸으로 가기 ↓</a></p>';});})();
 
 </script>
