@@ -506,7 +506,7 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
 .prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
 
 /* 나타나기: 아래에서 천천히 */
-html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
 html.rv .rv-i.seen{opacity:1;transform:none}
 .head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
 
@@ -514,6 +514,9 @@ html.rv .rv-i.seen{opacity:1;transform:none}
 .hero:not(.dive-hero) .giant{transform:translate3d(0,calc(var(--hp,0) * 70px),0) scale(calc(1 - var(--hp,0) * .08));opacity:calc(1 - var(--hp,0) * .55);letter-spacing:calc(-.05em + var(--hp,0) * .06em)}
 .hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
 .hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
+
+/* 좁은 화면: 모서리 문구가 큰 글자와 겹치지 않게 */
+@media (max-width:900px){.hud .tr{display:none}.hud .tl{top:0}.stage{padding-top:22px}}
 
 </style>
 </head>
@@ -709,10 +712,14 @@ return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,on
       rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
   addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
   if(reduceM||!('IntersectionObserver' in window))return;
-  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  /* 큰 실험 블록은 숨기지 않는다: 버튼으로 건너뛰었을 때 빈 화면이 보이지 않도록 */
+  const sel='main .head,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .sheet,main .route > li';
   const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  const jump=()=>els.forEach(el=>{const r=el.getBoundingClientRect();if(r.top<innerHeight*1.2){el.style.transitionDelay='0ms';el.classList.add('seen');}});
+  addEventListener('hashchange',()=>setTimeout(jump,30));document.addEventListener('click',ev=>{const a=ev.target.closest&&ev.target.closest('a[href^="#"]');if(a)setTimeout(jump,60);setTimeout(jump,700);});
   els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
+  if(location.hash)setTimeout(jump,80);
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -732,8 +739,8 @@ const MINE=getSet('pb-mine'),SEEN=getSet('pb-seen');
 function addMine(id){MINE.add(id);putSet('pb-mine',MINE);}
 function inbox(posts){const mineTop=posts.filter(p=>!p.parent&&MINE.has(p.id));const ids=new Set(mineTop.map(p=>p.id));
   const got=posts.filter(p=>p.parent&&ids.has(p.parent)&&!MINE.has(p.id));return {mineTop,got,fresh:got.filter(p=>!SEEN.has(p.id))};}
-async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했습니다');return j.posts;}
-async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했습니다');return j;}
+async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했다');return j.posts;}
+async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했다');return j;}
 
 function cardHTML(p,replies,full,hl){
   const lk=safeLink(p.link);
@@ -749,7 +756,7 @@ function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
     <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
-    <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
+    <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 내 말로 적는다." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
    <div class="wlist"><div class="wbar"><span class="count">불러오는 중…</span><span class="wtools"><button type="button" class="minebtn" aria-pressed="false" hidden>내 글 · 받은 질문</button><button type="button" class="refresh">새로 고침</button></span></div><div class="wcards"></div></div></div>`;
@@ -764,24 +771,24 @@ function room(el,room,prompt){
     const list=mineOnly?top.filter(p=>MINE.has(p.id)):top;
     count.textContent=mineOnly?`내 글 ${list.length}개`:`글 ${top.length}개`;
     cards.innerHTML=list.map(p=>cardHTML(p,rep[p.id]||[],true,hl)).join('');
-    if(!list.length)cards.innerHTML=mineOnly?`<div class="wempty"><b>이 기기에서 쓴 글이 아직 없습니다</b><span>다른 기기에서 썼다면 그 기기에서 확인해 주세요.</span></div>`:`<div class="wempty"><b>아직 올라온 글이 없습니다</b><span>왼쪽에 첫 번째 생각을 남겨 주세요.</span></div>`;}
+    if(!list.length)cards.innerHTML=mineOnly?`<div class="wempty"><b>이 기기에서 쓴 글이 아직 없다</b><span>다른 기기에서 썼다면 그 기기에서 볼 수 있다.</span></div>`:`<div class="wempty"><b>아직 올라온 글이 없다</b><span>첫 번째 생각을 남겨 본다. 처음 쓰는 글이 제일 용감하다.</span></div>`;}
   mb.addEventListener('click',()=>{mineOnly=!mineOnly;if(!mineOnly)hl=new Set();render();});
-  async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 나타납니다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
-    try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했습니다. 잠시 뒤 새로 고침을 눌러 주세요.';}}
+  async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 뜬다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
+    try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했다. 잠시 뒤 새로 고침을 누른다.';}}
   el.querySelector('.refresh').addEventListener('click',refresh);
   f.addEventListener('submit',async e=>{e.preventDefault();const d={room,name:F['name'].value.trim(),body:F['body'].value.trim(),link:F['link'].value.trim()};
-    if(!d.name){msg.className='msg err';msg.textContent='이름을 적어 주세요.';F['name'].focus();return;}
-    if(!d.body){msg.className='msg err';msg.textContent='내용을 적어 주세요.';F['body'].focus();return;}
-    if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 합니다.';F['link'].focus();return;}
+    if(!d.name){msg.className='msg err';msg.textContent='이름을 적어야 한다.';F['name'].focus();return;}
+    if(!d.body){msg.className='msg err';msg.textContent='내용을 적어야 올라간다.';F['body'].focus();return;}
+    if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 한다.';F['link'].focus();return;}
     const b=f.querySelector('.btn');b.disabled=true;msg.className='msg';msg.textContent='올리는 중…';
-    try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸습니다.';}
-    catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 주세요.';}
+    try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸다.';}
+    catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 본다.';}
     b.disabled=false;});
   cards.addEventListener('click',e=>{const ask=e.target.closest('[data-ask]');if(!ask)return;const card=ask.closest('.wcard');if(card.querySelector('form'))return;
-    const fm=document.createElement('form');fm.innerHTML=`<input name="name" maxlength="20" placeholder="내 이름" value="${esc(myName)}"><textarea name="body" maxlength="600" placeholder="칭찬보다 질문 하나를 남겨 주세요."></textarea><div class="row"><button class="btn" type="submit">질문 올리기</button><span class="msg"></span></div>`;
+    const fm=document.createElement('form');fm.innerHTML=`<input name="name" maxlength="20" placeholder="내 이름" value="${esc(myName)}"><textarea name="body" maxlength="600" placeholder="칭찬보다 질문 하나."></textarea><div class="row"><button class="btn" type="submit">질문 올리기</button><span class="msg"></span></div>`;
     ask.before(fm);const E=fm.elements;E['body'].focus();
     fm.addEventListener('submit',async ev=>{ev.preventDefault();const m=fm.querySelector('.msg');const d={room,name:E['name'].value.trim(),body:E['body'].value.trim(),parent:card.dataset.id};
-      if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어 주세요.';return;}
+      if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어야 한다.';return;}
       fm.querySelector('.btn').disabled=true;m.textContent='올리는 중…';
       try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:'',parent:d.parent});render();}
       catch(err){m.textContent=err.message;fm.querySelector('.btn').disabled=false;}});});
@@ -796,10 +803,10 @@ function overview(el){
   if(!URL_){el.querySelectorAll('.none').forEach(n=>n.textContent='담벼락 연결 준비 중');return;}
   load('all').then(posts=>{const box=inbox(posts);const ib=el.querySelector('.winbox');
     if(box.fresh.length){const by={};box.fresh.forEach(p=>by[p.room]=(by[p.room]||0)+1);ib.hidden=false;
-      ib.innerHTML=`<b>내 글에 새 질문이 ${box.fresh.length}개 달렸습니다.</b>`+Object.keys(by).map(r=>`<a href="${PAGES[r]}#mine">${ROOMS[r]} · ${by[r]}개 →</a>`).join('');}
+      ib.innerHTML=`<b>내 글에 새 질문이 ${box.fresh.length}개 달렸다.</b>`+Object.keys(by).map(r=>`<a href="${PAGES[r]}#mine">${ROOMS[r]} · ${by[r]}개 →</a>`).join('');}
     cols.forEach(r=>{const {top,rep}=split(posts.filter(p=>p.room===r));const box=el.querySelector(`[data-room="${r}"]`);
-    box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없습니다.</div>');});})
-   .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했습니다.'));
+    box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없다.</div>');});})
+   .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했다.'));
 }
 return {room,overview,connected:!!URL_};
 })();
@@ -875,9 +882,9 @@ onFrame(()=>{const {g,w,h}=fit($('cvm'));g.clearRect(0,0,w,h);const pad=16,lx=pa
     g.fillStyle=sel?C.ink:C.muted;g.font=ep(sel?12:11,sel?700:500);g.textAlign='right';g.fillText(c[0],lx-8,y+4);});
 });
 /* 첫날 고른 문장 */
-const S={A:['문장 A','지각은 개별적 인상을 \'이해할 수 있는 것\'으로 바꾸는 활동이다. 캠프를 지나며 \'바꾸는 틀\'은 고정된 것이었나요, 고쳐진 것이었나요?'],
- B:['문장 B','아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능할 거야. 하이젠베르크는 선입견을 없앴나요, 바꿨나요? 나는요?'],
- C:['문장 C','부분적 질서들은 중심으로 가는 길을 찾지 못한다. 이 책의 원에서 중심은 발견되었나요, 구성되었나요?']};
+const S={A:['문장 A','지각은 개별적 인상을 \'이해할 수 있는 것\'으로 바꾸는 활동이다. 캠프를 지나오는 동안 \'바꾸는 틀\'은 그대로였을까, 조금이라도 고쳐졌을까.'],
+ B:['문장 B','아무런 선입견 없이, 철저하게 연구할 때만이 진정한 이해가 가능할 거야. 하이젠베르크는 선입견을 없앴을까, 바꿨을까. 그리고 나는?'],
+ C:['문장 C','부분적 질서들은 중심으로 가는 길을 찾지 못한다. 이 책의 원에서 중심은 발견된 걸까, 지어진 걸까.']};
 let k=null;try{k=localStorage.getItem('pb-first-sentence');}catch(e){}
 if(k&&S[k]){$('fp-h').textContent=S[k][0];$('fp-p').textContent=S[k][1];}
 })();

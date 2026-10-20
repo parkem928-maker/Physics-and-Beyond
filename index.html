@@ -314,6 +314,14 @@ body{word-break:keep-all;overflow-wrap:break-word}
 .join h2{margin:8px 0 0;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.035em;line-height:1.15}
 .join ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15.5px}
 .join .btn{grid-column:1/-1;justify-self:start}
+.dive{height:460vh}
+.skip{position:absolute;z-index:5;right:max(16px,calc((100% - 1180px)/2));bottom:112px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--mint);text-decoration:none;border:1px solid var(--rule-l);border-radius:999px;padding:7px 13px;background:rgba(5,12,6,.4);opacity:0;pointer-events:none;transition:opacity .4s}
+.skip.on{opacity:1;pointer-events:auto}
+.skip:hover{background:var(--mint);color:var(--forest)}
+@media (max-width:760px){.skip{bottom:56px}}
+@media (prefers-reduced-motion:reduce){.skip{display:none}}
+.dive-hero{transition:none}
+.dive-hero canvas.wp{z-index:4}
 
 /* Theme v2 — 책 표지의 녹색은 그대로. 히어로는 별가루·궤도 빛줄기·관측 격자(HUD)가 있는 흑백 우주 사진처럼,
    본문은 둥근 카드 대신 각진 면과 가는 선(편집 디자인), 경계는 물결과 찢긴 종이, 곡선은 아치에만 */
@@ -589,7 +597,7 @@ canvas.wp{position:absolute;left:0;width:100%;height:90px;pointer-events:none;z-
 .prog-dot{position:fixed;top:-3px;left:0;width:8px;height:8px;border-radius:50%;z-index:61;pointer-events:none;background:var(--mint);box-shadow:0 0 10px 2px rgba(224,245,198,.8),0 0 0 1px var(--olive);transform:translateX(calc(var(--pg,0) * (100vw - 8px)))}
 
 /* 나타나기: 아래에서 천천히 */
-html.rv .rv-i{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.rv .rv-i{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
 html.rv .rv-i.seen{opacity:1;transform:none}
 .head .spark{transform:rotate(calc(var(--sy,0) * .08deg))}
 
@@ -598,6 +606,9 @@ html.rv .rv-i.seen{opacity:1;transform:none}
 .hero:not(.dive-hero) .obj{transform:translate(-50%,calc(-50% - var(--hp,0) * 46px)) scale(calc(1 + var(--hp,0) * .14))}
 .hero:not(.dive-hero) .hud{opacity:calc(1 - var(--hp,0) * 1.2)}
 
+/* 좁은 화면: 모서리 문구가 큰 글자와 겹치지 않게 */
+@media (max-width:900px){.hud .tr{display:none}.hud .tl{top:0}.stage{padding-top:22px}}
+
 </style>
 </head>
 <body class="p-index">
@@ -605,7 +616,7 @@ html.rv .rv-i.seen{opacity:1;transform:none}
 <div class="bar"><a class="logo" href="index.html">Physics <span class="it">&amp;</span> Beyond</a><nav aria-label="네 개의 방"><a href="index.html" aria-current="page">처음</a><a href="map.html">안내도</a><a href="first-walk.html">첫 번째 산책</a><a href="invisible-orbit.html">보이지 않는 궤도</a><a href="tribunal.html">칸트의 법정</a><a href="part-and-whole.html">부분과 전체</a></nav></div>
 <div class="stage" style="--len:6"><div class="hud" aria-hidden="true"><span class="tl">Werner Heisenberg · 1901–1976</span><span class="tr">Physics and Beyond · 1971</span><span class="bl">48.14°N 11.58°E · München</span><span class="br">Observation · 00</span></div><p class="giant" aria-hidden="true">Beyond</p><canvas class="obj grab" id="hero-obj" aria-hidden="true"></canvas></div>
 <div class="hrow"><div><span class="tag">『부분과 전체』 독서 캠프 · 걸으며 묻다</span><h1>물리학에서 시작해<br><span class="se">그 너머로</span> 걷기</h1></div><div class="cue"><div class="btns"><a class="btn mint" href="map.html">처음이라면, 안내도 보기</a><a class="btn ghost" href="first-walk.html">첫 번째 산책 시작</a></div><p class="dive-cue"><span class="ar">↓</span> 천천히 내려 보면 원자 속으로, 그보다 더 안으로 들어간다.</p></div></div>
-</div><ol class="plates" aria-hidden="true"><li class="plate" data-i="0"><span class="pn">01</span><b>플라톤의 입체</b><span>열여덟 살의 하이젠베르크는 가장 작은 것이 알갱이가 아니라 수학의 모양일지 모른다고 생각했다. 그 안으로 내려가 본다.</span></li><li class="plate" data-i="1"><span class="pn">02</span><b>보어의 궤도</b><span>전자가 원자핵 둘레를 돈다. 우리가 배운 원자 그림은 대개 여기서 멈춘 것 같다.</span></li><li class="plate" data-i="2"><span class="pn">03</span><b>확률의 구름</b><span>그런데 그 궤도를 실제로 본 사람은 없다. 하이젠베르크는 그림을 버리고 볼 수 있는 것만 남겼다.</span></li><li class="plate" data-i="3"><span class="pn">04</span><b>파동이자 입자</b><span>더 가까이 가면 구름은 파동이 된다. 그리고 보는 순간, 점 하나가 된다.</span></li><li class="plate" data-i="4"><span class="pn">—</span><b>다시, 이해</b><span>점을 보았다고 해서 이해한 것일까. 이해는 본 것을 '이해할 수 있는 것'으로 바꾸는 일인 듯하다.</span></li></ol><div class="depth" aria-hidden="true"><span>Depth</span><b id="depthno">00</b><i><u></u></i></div></header></div>
+</div><ol class="plates" aria-hidden="true"><li class="plate" data-i="0"><span class="pn">01</span><b>플라톤의 입체</b><span>열여덟 살의 하이젠베르크는 가장 작은 것이 알갱이가 아니라 수학의 모양일지 모른다고 생각했다. 그 안으로 내려가 본다.</span></li><li class="plate" data-i="1"><span class="pn">02</span><b>보어의 궤도</b><span>빛나는 고리를 따라 전자가 돈다. 우리가 배운 원자 그림은 대개 여기서 멈춘 것 같다.</span></li><li class="plate" data-i="2"><span class="pn">03</span><b>확률의 구름</b><span>궤도를 지나 안으로 들어가면 선은 없고 점만 있다. 전자를 한 번씩 잰 자리들이다.</span></li><li class="plate" data-i="3"><span class="pn">04</span><b>그릴 수 없는 길</b><span>점과 점을 이어 길을 그려 보면 실이 엉킨다. 하이젠베르크는 이 길을 그리려는 일을 그만두었다.</span></li><li class="plate" data-i="4"><span class="pn">05</span><b>파동이자 입자</b><span>더 들어가면 구름은 떨리는 파동이 된다. 그리고 보는 순간, 점 하나가 된다.</span></li><li class="plate" data-i="5"><span class="pn">—</span><b>다시, 이해</b><span>점을 보았다고 해서 이해한 것일까. 이해는 본 것을 '이해할 수 있는 것'으로 바꾸는 일인 듯하다.</span></li></ol><div class="depth" aria-hidden="true"><span>Depth</span><b id="depthno">00</b><i><u></u></i></div><a class="skip" href="#intro">건너뛰기 ↓</a></header></div>
 <main>
 <section class="sec gut" id="intro"><div class="in sheet">
   <dl class="meta">
@@ -832,10 +843,14 @@ return {gloss,$,reduce,C,fit,ko,ep,it,gauss,chips,solid,rot,drawSolid,dragger,on
       rows[1]&&rows[1].style.setProperty('--dx',(-Math.min(900,innerWidth*.7)*(1-p)-40).toFixed(1)+'px');});}
   addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
   if(reduceM||!('IntersectionObserver' in window))return;
-  const sel='main .head,main .lab,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .join,main .walk,main .sheet,main .verdict section,main .pause,main .notes-grid section,main .bridge > *,main .route > li';
+  /* 큰 실험 블록은 숨기지 않는다: 버튼으로 건너뛰었을 때 빈 화면이 보이지 않도록 */
+  const sel='main .head,main .rcard,main .arch,main .stop,main .chcard,main .tstep,main .howto > div,main .sheet,main .route > li';
   const els=[...document.querySelectorAll(sel)];root.classList.add('rv');
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+  const jump=()=>els.forEach(el=>{const r=el.getBoundingClientRect();if(r.top<innerHeight*1.2){el.style.transitionDelay='0ms';el.classList.add('seen');}});
+  addEventListener('hashchange',()=>setTimeout(jump,30));document.addEventListener('click',ev=>{const a=ev.target.closest&&ev.target.closest('a[href^="#"]');if(a)setTimeout(jump,60);setTimeout(jump,700);});
   els.forEach((el,i)=>{el.classList.add('rv-i');const sib=el.parentElement?[...el.parentElement.children].indexOf(el):0;el.style.transitionDelay=Math.min(3,sib)*90+'ms';io.observe(el);});
+  if(location.hash)setTimeout(jump,80);
 })();
 
 /* 우리의 담벼락: 구글 시트(Apps Script)에 글을 쌓는 게시판 */
@@ -855,8 +870,8 @@ const MINE=getSet('pb-mine'),SEEN=getSet('pb-seen');
 function addMine(id){MINE.add(id);putSet('pb-mine',MINE);}
 function inbox(posts){const mineTop=posts.filter(p=>!p.parent&&MINE.has(p.id));const ids=new Set(mineTop.map(p=>p.id));
   const got=posts.filter(p=>p.parent&&ids.has(p.parent)&&!MINE.has(p.id));return {mineTop,got,fresh:got.filter(p=>!SEEN.has(p.id))};}
-async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했습니다');return j.posts;}
-async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했습니다');return j;}
+async function load(room){const r=await fetch(URL_+'?room='+encodeURIComponent(room)+'&_='+Date.now());const j=await r.json();if(!j.ok)throw new Error(j.error||'불러오지 못했다');return j.posts;}
+async function send(d){const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});const j=await r.json();if(!j.ok)throw new Error(j.error||'올리지 못했다');return j;}
 
 function cardHTML(p,replies,full,hl){
   const lk=safeLink(p.link);
@@ -872,7 +887,7 @@ function room(el,room,prompt){
   el.innerHTML=`<div class="wall">
    <form class="wform" novalidate><h3>${ROOMS[room]}</h3><ol>${prompt.map(x=>`<li>${x}</li>`).join('')}</ol>
     <label>내 이름<input name="name" maxlength="20" autocomplete="name" placeholder="예: 김하늘" required></label>
-    <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 적어 주세요." required></textarea></label>
+    <label>내 생각<textarea name="body" maxlength="1500" placeholder="위의 항목을 보고 내 말로 적는다." required></textarea></label>
     <label>링크 (선택) · 내 노션 페이지, 글, 그림<input name="link" type="url" maxlength="300" placeholder="https://"></label>
     <button class="btn" type="submit">담벼락에 올리기</button><div class="msg" role="status"></div></form>
    <div class="wlist"><div class="wbar"><span class="count">불러오는 중…</span><span class="wtools"><button type="button" class="minebtn" aria-pressed="false" hidden>내 글 · 받은 질문</button><button type="button" class="refresh">새로 고침</button></span></div><div class="wcards"></div></div></div>`;
@@ -887,24 +902,24 @@ function room(el,room,prompt){
     const list=mineOnly?top.filter(p=>MINE.has(p.id)):top;
     count.textContent=mineOnly?`내 글 ${list.length}개`:`글 ${top.length}개`;
     cards.innerHTML=list.map(p=>cardHTML(p,rep[p.id]||[],true,hl)).join('');
-    if(!list.length)cards.innerHTML=mineOnly?`<div class="wempty"><b>이 기기에서 쓴 글이 아직 없습니다</b><span>다른 기기에서 썼다면 그 기기에서 확인해 주세요.</span></div>`:`<div class="wempty"><b>아직 올라온 글이 없습니다</b><span>왼쪽에 첫 번째 생각을 남겨 주세요.</span></div>`;}
+    if(!list.length)cards.innerHTML=mineOnly?`<div class="wempty"><b>이 기기에서 쓴 글이 아직 없다</b><span>다른 기기에서 썼다면 그 기기에서 볼 수 있다.</span></div>`:`<div class="wempty"><b>아직 올라온 글이 없다</b><span>첫 번째 생각을 남겨 본다. 처음 쓰는 글이 제일 용감하다.</span></div>`;}
   mb.addEventListener('click',()=>{mineOnly=!mineOnly;if(!mineOnly)hl=new Set();render();});
-  async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 나타납니다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
-    try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했습니다. 잠시 뒤 새로 고침을 눌러 주세요.';}}
+  async function refresh(){if(!URL_){count.textContent='';cards.innerHTML=`<div class="wempty"><b>담벼락 연결 준비 중</b><span>선생님이 연결을 마치면 여기에 친구들의 글이 뜬다.</span></div>`;f.querySelector('.btn').disabled=true;return;}
+    try{posts=await load(room);render();}catch(e){count.textContent='글을 불러오지 못했다. 잠시 뒤 새로 고침을 누른다.';}}
   el.querySelector('.refresh').addEventListener('click',refresh);
   f.addEventListener('submit',async e=>{e.preventDefault();const d={room,name:F['name'].value.trim(),body:F['body'].value.trim(),link:F['link'].value.trim()};
-    if(!d.name){msg.className='msg err';msg.textContent='이름을 적어 주세요.';F['name'].focus();return;}
-    if(!d.body){msg.className='msg err';msg.textContent='내용을 적어 주세요.';F['body'].focus();return;}
-    if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 합니다.';F['link'].focus();return;}
+    if(!d.name){msg.className='msg err';msg.textContent='이름을 적어야 한다.';F['name'].focus();return;}
+    if(!d.body){msg.className='msg err';msg.textContent='내용을 적어야 올라간다.';F['body'].focus();return;}
+    if(d.link&&!safeLink(d.link)){msg.className='msg err';msg.textContent='링크는 https://로 시작해야 한다.';F['link'].focus();return;}
     const b=f.querySelector('.btn');b.disabled=true;msg.className='msg';msg.textContent='올리는 중…';
-    try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸습니다.';}
-    catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 주세요.';}
+    try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:d.link,parent:''});render();F['body'].value='';F['link'].value='';msg.textContent='올렸다.';}
+    catch(err){msg.className='msg err';msg.textContent=err.message+' 잠시 뒤 다시 눌러 본다.';}
     b.disabled=false;});
   cards.addEventListener('click',e=>{const ask=e.target.closest('[data-ask]');if(!ask)return;const card=ask.closest('.wcard');if(card.querySelector('form'))return;
-    const fm=document.createElement('form');fm.innerHTML=`<input name="name" maxlength="20" placeholder="내 이름" value="${esc(myName)}"><textarea name="body" maxlength="600" placeholder="칭찬보다 질문 하나를 남겨 주세요."></textarea><div class="row"><button class="btn" type="submit">질문 올리기</button><span class="msg"></span></div>`;
+    const fm=document.createElement('form');fm.innerHTML=`<input name="name" maxlength="20" placeholder="내 이름" value="${esc(myName)}"><textarea name="body" maxlength="600" placeholder="칭찬보다 질문 하나."></textarea><div class="row"><button class="btn" type="submit">질문 올리기</button><span class="msg"></span></div>`;
     ask.before(fm);const E=fm.elements;E['body'].focus();
     fm.addEventListener('submit',async ev=>{ev.preventDefault();const m=fm.querySelector('.msg');const d={room,name:E['name'].value.trim(),body:E['body'].value.trim(),parent:card.dataset.id};
-      if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어 주세요.';return;}
+      if(!d.name||!d.body){m.textContent='이름과 질문을 모두 적어야 한다.';return;}
       fm.querySelector('.btn').disabled=true;m.textContent='올리는 중…';
       try{const r=await send(d);keepName(d.name);addMine(r.id);posts.push({id:r.id,t:Date.now(),room,name:d.name,body:d.body,link:'',parent:d.parent});render();}
       catch(err){m.textContent=err.message;fm.querySelector('.btn').disabled=false;}});});
@@ -919,10 +934,10 @@ function overview(el){
   if(!URL_){el.querySelectorAll('.none').forEach(n=>n.textContent='담벼락 연결 준비 중');return;}
   load('all').then(posts=>{const box=inbox(posts);const ib=el.querySelector('.winbox');
     if(box.fresh.length){const by={};box.fresh.forEach(p=>by[p.room]=(by[p.room]||0)+1);ib.hidden=false;
-      ib.innerHTML=`<b>내 글에 새 질문이 ${box.fresh.length}개 달렸습니다.</b>`+Object.keys(by).map(r=>`<a href="${PAGES[r]}#mine">${ROOMS[r]} · ${by[r]}개 →</a>`).join('');}
+      ib.innerHTML=`<b>내 글에 새 질문이 ${box.fresh.length}개 달렸다.</b>`+Object.keys(by).map(r=>`<a href="${PAGES[r]}#mine">${ROOMS[r]} · ${by[r]}개 →</a>`).join('');}
     cols.forEach(r=>{const {top,rep}=split(posts.filter(p=>p.room===r));const box=el.querySelector(`[data-room="${r}"]`);
-    box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없습니다.</div>');});})
-   .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했습니다.'));
+    box.querySelector('.none').remove();box.insertAdjacentHTML('beforeend',top.length?top.slice(0,5).map(p=>cardHTML(p,rep[p.id]||[],false)).join('')+(top.length>5?`<div class="none">그 밖에 ${top.length-5}개 더</div>`:''):'<div class="none">아직 글이 없다.</div>');});})
+   .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했다.'));
 }
 return {room,overview,connected:!!URL_};
 })();
@@ -931,129 +946,134 @@ return {room,overview,connected:!!URL_};
 <script>
 (function(){
 const {$,reduce,C,solid,rot,dragger,onFrame}=PB;
-/* 양자 속으로: 스크롤하면 정십이면체(플라톤) → 보어의 궤도 → 확률 구름 → 파동묶음 → 점 하나(관측)로 계속 줌인한다.
-   점 하나하나는 단계마다 자기 자리를 갖고, 단계 사이에서 다음 자리로 옮겨 간다. 카메라는 멈추지 않고 안으로 들어간다. */
+/* 원자 속으로: 진짜 3D 카메라가 원자 한가운데를 향해 다가간다.
+   플라톤의 입체 → 빛나는 궤도(통과) → 점으로 된 확률의 껍질(통과) → 엉킨 길 → 떨리는 파동 껍질 → 점 하나 */
 const wrap=$('dive'),hero=wrap&&wrap.querySelector('.hero'),cv=$('qd'),obj=$('hero-obj');
 if(!wrap||!cv)return;
-const giant=hero.querySelector('.giant'),hud=hero.querySelector('.hud'),hrow=hero.querySelector('.hrow'),sky=$('sky');
-const plates=[...hero.querySelectorAll('.plate')],dno=$('depthno'),dbar=hero.querySelector('.depth u');
+const giant=hero.querySelector('.giant'),hud=hero.querySelector('.hud'),hrow=hero.querySelector('.hrow'),sky=$('sky'),skip=hero.querySelector('.skip');
+const plates=[...hero.querySelectorAll('.plate')],dno=$('depthno'),dbar=hero.querySelector('.depth u'),depth=hero.querySelector('.depth');
 const st={ax:.4,ay:.2,hold:false};dragger(obj,st);
-const S=solid('dodeca');
-const R=Math.random,G=PB.gauss;
-const small=innerWidth<700,N=small?1100:2200;
-/* 3d_z² 오비탈: 반지름 분포 r⁶e^(−2r/3) = 감마(7, 1.5), 각도는 (3cos²θ−1)²로 거른다. 부호는 위상 */
-function cloudPt(){let c;for(;;){c=R()*2-1;const a=3*c*c-1;if(R()*4<a*a)break;}
-  let r=0;for(let k=0;k<7;k++)r-=1.5*Math.log(R()||1e-9);const s=Math.sqrt(1-c*c),ph=R()*Math.PI*2;
-  return {x:r*s*Math.cos(ph),y:r*c,z:r*s*Math.sin(ph),sg:3*c*c-1>0?1:-1};}
-const P=[];
-for(let i=0;i<N;i++){
-  const [a,b]=S.e[i%S.e.length],t=R();const A=S.v[a],B=S.v[b];
-  const cl=cloudPt();
-  P.push({e:[A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t,A[2]+(B[2]-A[2])*t],
-    k:i%3,u:R()*Math.PI*2,ow:(R()-.5)*.05,cl,wx:G(),wy:G(),d:R(),tw:R()*6.28,sz:R()<.08?1.8:1.1});
-}
-/* 관측되는 하나: 파동묶음 가운데 근처의 점 */
-let j0=0,best=9;P.forEach((p,i)=>{const v=Math.abs(p.wx-.35)+Math.abs(p.wy)*.5;if(v<best){best=v;j0=i;}});
-const ORB=[{rot:-.42,sp:.00055},{rot:.62,sp:-.00042},{rot:1.62,sp:.00048}];
-/* 떨어지는 느낌: 터널 안을 지나치는 먼지 */
-const dust=[];for(let i=0;i<(small?70:140);i++)dust.push({x:G(),y:G(),z:R()*4+.2});
+const R=Math.random,G=PB.gauss,TAU=Math.PI*2,small=innerWidth<700;
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),sm=x=>{x=clamp(x);return x*x*(3-2*x);},band=(e,a,b,c,d)=>sm((e-a)/(b-a))*(1-sm((e-c)/(d-c)));
+/* 카메라와 원점 사이 거리(로그로 보간). 머무는 구간에서는 천천히, 통과하는 구간에서는 빠르게 */
+const DK=[[0,3],[.12,2.35],[.3,1.8],[.42,.6],[.56,.5],[.64,.072],[.77,.06],[.87,.021],[1,.018]];
+function camD(e){e=clamp(e);for(let i=1;i<DK.length;i++)if(e<=DK[i][0]){const [a,da]=DK[i-1],[b,db]=DK[i];return Math.exp(Math.log(da)+(Math.log(db)-Math.log(da))*(e-a)/(b-a));}return DK[DK.length-1][1];}
+/* 구조물 */
+const S=solid('dodeca'),RD=.55;
+const ORB=[{t:1.12,r:-.42,sp:.00055,ph:0},{t:1.12,r:.62,sp:-.00045,ph:2.1},{t:1.12,r:1.62,sp:.0005,ph:4.2}];
+function ringPt(o,u){let x=Math.cos(u),y=Math.sin(u),z=0;const ct=Math.cos(o.t),stt=Math.sin(o.t);[y,z]=[y*ct,y*stt];const cr=Math.cos(o.r),sr=Math.sin(o.r);return [x*cr-y*sr,x*sr+y*cr,z];}
+function dir(){const c=R()*2-1,s=Math.sqrt(1-c*c),f=R()*TAU;return [s*Math.cos(f),c,s*Math.sin(f)];}
+const NS=small?1500:2800,SHELL=[];for(let i=0;i<NS;i++){const d=dir(),r=.25+G()*.007;SHELL.push([d[0]*r,d[1]*r,d[2]*r,R()]);}
+const NK=small?26:38,NODE=[];for(let i=0;i<NK;i++){const d=dir(),r=.035*(.62+.38*Math.sqrt(R()));NODE.push([d[0]*r,d[1]*r,d[2]*r]);}
+const NEAR=NODE.map((a,i)=>NODE.map((b,j)=>[j,Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])]).filter(x=>x[0]!==i).sort((p,q)=>p[1]-q[1]).slice(0,5).map(x=>x[0]));
+const NM=small?50:90,HL=small?40:60,WALK=[];
+for(let i=0;i<NM;i++){const k=Math.floor(R()*NK);WALK.push({p:NODE[k].slice(),v:[0,0,0],to:NEAR[k][Math.floor(R()*5)],h:[]});}
+const NV=small?1500:2600,WAV=[],RK=[.0046,.0092,.0092];
+for(let i=0;i<NV;i++){const c=R()*2-1,f=R()*TAU;const k=R()<.28?0:2;WAV.push({th:Math.acos(c),ph:f,k,n:G()*.007,in:R()<.06?R():0});}
+for(let n=0;n<400;n++)for(const w of WALK){const T=NODE[w.to];for(let d=0;d<3;d++){w.v[d]=(w.v[d]+(T[d]-w.p[d])*.012+G()*.00009)*.9;w.p[d]+=w.v[d];}if(Math.hypot(T[0]-w.p[0],T[1]-w.p[1],T[2]-w.p[2])<.003)w.to=NEAR[w.to][Math.floor(R()*5)];w.h.push(w.p.slice());if(w.h.length>HL)w.h.shift();}
+const dust=[];for(let i=0;i<(small?70:140);i++)dust.push({x:G(),y:G(),z:R()*4+.2});
 function prog(){const r=wrap.getBoundingClientRect(),span=r.height-innerHeight;return span>0?clamp(-r.top/span):0;}
-let sp=0,last=0,vel=0,lastT=0;
-/* 카메라 줌(로그): 단계마다 잠깐 머물고(느리게) 사이에서 빠르게 들어간다. CK는 각 단계가 제 크기로 보이는 시점 */
-const ZK=[[0,0],[.14,.25],[.34,1.45],[.45,1.65],[.6,2.75],[.69,2.95],[.85,3.95],[1,4.05]],CK=[0,.39,.645,.92];
-function zoom(e){e=clamp(e);for(let i=1;i<ZK.length;i++)if(e<=ZK[i][0]){const [a,la]=ZK[i-1],[b,lb]=ZK[i];return Math.exp(la+(lb-la)*(e-a)/(b-a));}return Math.exp(4.05);}
+let sp=0,last=0,vel=0,lastT=0,j0=0;
+function glow(g,X,Y,r,a,warm){const gr=g.createRadialGradient(X,Y,0,X,Y,r*5);gr.addColorStop(0,warm?`rgba(255,236,214,${a*.65})`:`rgba(224,245,198,${a*.55})`);gr.addColorStop(1,'rgba(224,245,198,0)');
+  g.fillStyle=gr;g.beginPath();g.arc(X,Y,r*5,0,7);g.fill();g.fillStyle=`rgba(250,246,236,${a})`;g.beginPath();g.arc(X,Y,r,0,7);g.fill();}
 onFrame(t=>{
   const r=cv.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;
-  const d=Math.min(2,devicePixelRatio||1),W=r.width,H=r.height;
-  if(cv.width!==Math.round(W*d)||cv.height!==Math.round(H*d)){cv.width=Math.round(W*d);cv.height=Math.round(H*d);}
-  const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,W,H);
-  const dt=Math.min(60,t-lastT||16);lastT=t;
-  const target=reduce?0:prog();sp+=(target-sp)*.12;if(Math.abs(target-sp)<.0005)sp=target;const e=sp;
+  const dpr=Math.min(2,devicePixelRatio||1),W=r.width,H=r.height;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;g.clearRect(0,0,W,H);
+  const dt=Math.min(60,t-lastT||16);lastT=t;const tt=reduce?0:t;
+  const target=reduce?0:prog();sp+=(target-sp)*.12;if(Math.abs(target-sp)<.0004)sp=target;const e=sp;
   vel+=((Math.abs(e-last)/Math.max(dt,1))*1000-vel)*.1;last=e;
   if(!st.hold&&!reduce){st.ay+=.004;st.ax+=.0015;}
-  /* 처음 자리: 히어로 그림 위치에서 화면 가운데로 */
-  const o=obj.getBoundingClientRect();const m0=o.width;
-  const k0=sm(e/.2),cx=(o.left-r.left+o.width/2)*(1-k0)+W/2*k0,cy=(o.top-r.top+o.height/2)*(1-k0)+H*.5*k0;
-  const Z=zoom(e),mm=Math.min(W,H);
-  /* 각 단계의 '세계 크기' = 화면에 보일 크기 / 그 시점의 줌 */
-  const sD=m0*.27,sO=mm*.3/zoom(CK[1]),sC=mm*.021/zoom(CK[2]),sW=Math.min(W*(small?.62:.42),560)/zoom(CK[3]);
-  const sOuter=m0*.48;
-  /* 장면 문구, 깊이 표시, 글자 */
-  const stage=e<.03?-1:e<.22?0:e<.46?1:e<.68?2:e<.92?3:4;
-  plates.forEach((p,i)=>p.classList.toggle('on',i===stage+0&&stage>=0));
-  if(dno)dno.textContent=String(Math.min(4,Math.max(0,stage+1))).padStart(2,'0');
-  if(dbar){dbar.parentNode.parentNode.style.opacity=String(sm(e/.04));}
-  if(dbar)dbar.style.transform=`scaleY(${e.toFixed(3)})`;
-  const f=sm(e/.16);
-  giant.style.transform=f>0?`scale(${1+f*.9})`:'';giant.style.opacity=String(1-f);giant.style.filter=f>.02?`blur(${f*6}px)`:'';
+  /* 화면 위 중심: 처음엔 히어로 그림 자리, 곧 화면 가운데 */
+  const o=obj.getBoundingClientRect(),m0=Math.max(180,o.width),k0=sm(e/.18);
+  const cx=(o.left-r.left+o.width/2)*(1-k0)+W/2*k0,cy=(o.top-r.top+o.height/2)*(1-k0)+H*.48*k0;
+  const D=camD(e),F=1.47*m0,mm=Math.min(W,H);
+  const spin=tt*.00006,cs=Math.cos(spin),sn=Math.sin(spin);
+  /* 투영: 카메라는 +z 쪽에서 원점을 본다. 카메라 가까이 온 점은 흐려지며 지나간다 */
+  const P=(x,y,z,rotOn)=>{if(rotOn){const X=x*cs+z*sn;z=-x*sn+z*cs;x=X;}const dz=D-z;if(dz<D*.035)return null;const s=F/dz;return [cx+x*s,cy-y*s,s,clamp(dz/(D*.4))];};
+  /* 배경을 더 깊게 */
+  const dark=sm((e-.03)/.22);hero.style.backgroundColor=dark>0?`rgb(${Math.round(20-14*dark)},${Math.round(38-26*dark)},${Math.round(20-13*dark)})`:'';
+  /* 단계 표시, 글자 */
+  const stage=e<.03?-1:e<.14?0:e<.4?1:e<.6?2:e<.78?3:e<.92?4:5;
+  plates.forEach((p,i)=>p.classList.toggle('on',i===stage));
+  if(dno)dno.textContent=String(Math.min(5,Math.max(0,stage+1))).padStart(2,'0');
+  if(depth)depth.style.opacity=String(sm(e/.04));if(dbar)dbar.style.transform=`scaleY(${e.toFixed(3)})`;
+  if(skip)skip.classList.toggle('on',e>.03&&e<.97);
+  const f=sm(e/.16);giant.style.transform=f>0?`scale(${1+f*.9})`:'';giant.style.opacity=String(1-f);giant.style.filter=f>.02?`blur(${f*6}px)`:'';
   hrow.style.opacity=String(1-sm(e/.1));hrow.style.pointerEvents=e>.08?'none':'';hud.style.opacity=String(1-sm(e/.12));
-  if(sky)sky.style.opacity=String(1-.7*sm(e/.3));
-  /* 격자도 같이 커진다(끝없이 되풀이) */
-  const lz=Math.log2(Z),gz=Math.pow(2,lz-Math.floor(lz));
-  hero.style.backgroundSize=`100% ${25*gz}%,${12.5*gz}% 100%`;
-  /* 바깥 궤도: 첫 화면의 장식. 줌이 시작되면 화면 밖으로 지나간다 */
-  const tt=reduce?0:t;
-  const ell=(rx,ry,rr,u)=>{const x=rx*Math.cos(u),y=ry*Math.sin(u);return [x*Math.cos(rr)-y*Math.sin(rr),x*Math.sin(rr)+y*Math.cos(rr)];};
-  const aOuter=1-sm(e/.14);
-  if(aOuter>0){g.lineWidth=1.1;ORB.forEach((q,i)=>{g.strokeStyle=`rgba(224,245,198,${.38*aOuter})`;g.beginPath();
-    for(let k=0;k<=96;k++){const [x,y]=ell(sOuter*Z,sOuter*.31*Z,q.rot,k/96*Math.PI*2);k?g.lineTo(cx+x,cy+y):g.moveTo(cx+x,cy+y);}g.stroke();
-    const [x,y]=ell(sOuter*Z,sOuter*.31*Z,q.rot,i*2.1+tt*q.sp);glow(g,cx+x,cy+y,3,aOuter);});}
-  /* 정십이면체 모서리 선 */
-  const aEdge=1-sm((e-.05)/.12);
-  if(aEdge>0){const V=S.v.map(p=>rot(p,st.ax,st.ay));g.strokeStyle=C.mint;
+  if(sky)sky.style.opacity=String(1-.85*sm(e/.3));
+  const lz=Math.log2(3/D),gz=Math.pow(2,lz-Math.floor(lz));hero.style.backgroundSize=`100% ${25*gz}%,${12.5*gz}% 100%`;
+  /* 1. 플라톤의 입체 */
+  const aEdge=1-sm((e-.04)/.1);
+  if(aEdge>0){const V=S.v.map(p=>rot(p,st.ax,st.ay));
     const E2=S.e.map(([i,j])=>({a:V[i],b:V[j],z:(V[i][2]+V[j][2])/2})).sort((p,q)=>p.z-q.z);
-    for(const {a,b,z} of E2){const ff=(z+1)/2;g.globalAlpha=aEdge*ff;g.strokeStyle=C.forest;g.lineWidth=1.5*(.6+.6*ff)+3;g.beginPath();g.moveTo(cx+a[0]*sD*Z,cy-a[1]*sD*Z);g.lineTo(cx+b[0]*sD*Z,cy-b[1]*sD*Z);g.stroke();g.strokeStyle=C.mint;g.globalAlpha=aEdge*(.25+.75*ff);g.lineWidth=1.5*(.6+.6*ff);g.beginPath();g.moveTo(cx+a[0]*sD*Z,cy-a[1]*sD*Z);g.lineTo(cx+b[0]*sD*Z,cy-b[1]*sD*Z);g.stroke();}
+    for(const {a,b,z} of E2){const pa=P(a[0]*RD,a[1]*RD,a[2]*RD),pb=P(b[0]*RD,b[1]*RD,b[2]*RD);if(!pa||!pb)continue;const ff=(z+1)/2;
+      g.globalAlpha=aEdge*ff;g.strokeStyle=C.forest;g.lineWidth=1.5*(.6+.6*ff)+3;g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();
+      g.globalAlpha=aEdge*(.25+.75*ff);g.strokeStyle=C.mint;g.lineWidth=1.5*(.6+.6*ff);g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();}
     g.globalAlpha=1;}
-  /* 보어의 궤도: 가는 선 */
-  const aOrb=band(e,.24,.34,.47,.58);
-  if(aOrb>0){g.lineWidth=1;ORB.forEach(q=>{g.strokeStyle=`rgba(224,245,198,${.3*aOrb})`;g.beginPath();
-    for(let k=0;k<=96;k++){const [x,y]=ell(sO*Z,sO*.34*Z,q.rot,k/96*Math.PI*2);k?g.lineTo(cx+x,cy+y):g.moveTo(cx+x,cy+y);}g.stroke();});
-    const nr=Math.min(9,Math.max(2,sO*Z*.03));glow(g,cx,cy,nr,aOrb);}
-  /* 파동: Re ψ */
-  const aWave=band(e,.74,.86,1.1,1.2),kx=2*Math.PI/(sW*.36),om=tt*.0016;
-  if(aWave>0){g.lineWidth=1.3;g.strokeStyle=`rgba(224,245,198,${.55*aWave})`;g.beginPath();
-    for(let x=-W/2;x<=W/2;x+=3){const X=x/(sW*Z),env=Math.exp(-X*X/(2*.16));const y=-Math.cos(x*kx/Z-om)*env*sW*Z*.16;x>-W/2?g.lineTo(cx+x,cy+y):g.moveTo(cx+x,cy+y);}g.stroke();
-    g.strokeStyle=`rgba(224,245,198,${.16*aWave})`;g.setLineDash([2,5]);g.beginPath();
-    for(let x=-W/2;x<=W/2;x+=4){const X=x/(sW*Z),env=Math.exp(-X*X/(2*.16));const y=-env*sW*Z*.16;x>-W/2?g.lineTo(cx+x,cy+y):g.moveTo(cx+x,cy+y);}g.stroke();g.setLineDash([]);}
-  /* 점들: 단계 사이를 엇갈려 옮겨 간다 */
-  const m1=(e-.14)/(.33-.14),m2=(e-.46)/(.6-.46),m3=(e-.69)/(.84-.69);
-  const aPts=sm((e-.02)/.08),obs=sm((e-.91)/.06);
-  const cs=Math.cos(tt*.00012),sn=Math.sin(tt*.00012);
-  if(aPts>0){
-    for(let i=0;i<N;i++){const p=P[i];
-      const st1=sm(m1*1.5-p.d*.5),st2=sm(m2*1.5-p.d*.5),st3=sm(m3*1.5-p.d*.5);
-      // 십이면체
-      const v=rot(p.e,st.ax,st.ay);let x=v[0]*sD,y=-v[1]*sD;
-      // 궤도: 전자처럼 흐른다
-      if(st1>0){const q=ORB[p.k],u=p.u+tt*q.sp*1.6;const [ox,oy]=ell(sO*(1+p.ow),sO*.34*(1+p.ow),q.rot,u);x+=(ox-x)*st1;y+=(oy-y)*st1;}
-      // 구름: 천천히 돈다
-      if(st2>0){const c=p.cl;const X=c.x*cs+c.z*sn;const cx2=X*sC,cy2=c.y*sC;x+=(cx2-x)*st2;y+=(cy2-y)*st2;}
-      // 파동묶음: |ψ|²대로 흩어진 점
-      let wv=0;
-      if(st3>0){const X=p.wx*Math.sqrt(.16)*sW;const env=Math.exp(-(X/sW)*(X/sW)/(2*.16));const yy=-Math.cos(X*kx-om)*env*sW*.16+p.wy*sW*.035;wv=env;x+=(X-x)*st3;y+=(yy-y)*st3;}
-      const sx=cx+x*Z,sy=cy+y*Z;if(sx<-10||sx>W+10||sy<-10||sy>H+10)continue;
-      let a=aPts*(.55+.45*Math.sin(p.tw+tt*.002));
-      if(st2>.5&&st3<.5)g.fillStyle=p.cl.sg>0?C.mint:'#d8b36a';else g.fillStyle=C.mint;
-      if(obs>0&&i!==j0)a*=1-.8*obs;
-      g.globalAlpha=Math.max(0,Math.min(1,a));const s=p.sz*(1+.6*st2*(1-st3));g.fillRect(sx-s/2,sy-s/2,s,s);}
+  /* 2. 빛나는 궤도: 고리를 따라 혜성처럼 빛이 흐르고, 카메라가 고리를 지나쳐 안으로 들어간다 */
+  const aO=1-sm((e-.4)/.08),gl=sm((e-.05)/.12);
+  if(aO>0){g.globalCompositeOperation='lighter';g.lineCap='round';
+    const nuc=P(0,0,0);if(nuc){const nr=Math.min(mm*.5,.06*nuc[2]);const na=aO*gl;if(na>0){const gr=g.createRadialGradient(nuc[0],nuc[1],0,nuc[0],nuc[1],nr*4);
+      gr.addColorStop(0,`rgba(255,244,232,${.95*na})`);gr.addColorStop(.18,`rgba(240,226,214,${.55*na})`);gr.addColorStop(.5,`rgba(196,203,148,${.16*na})`);gr.addColorStop(1,'rgba(196,203,148,0)');
+      g.fillStyle=gr;g.beginPath();g.arc(nuc[0],nuc[1],nr*4,0,7);g.fill();}}
+    for(const q of ORB){
+      for(const [lw,al] of [[1+5*gl,.07*gl],[1,.3+.3*gl]]){g.lineWidth=lw;g.strokeStyle=`rgba(240,236,226,${al*aO})`;g.beginPath();let pen=false;
+      for(let k=0;k<=120;k++){const w=ringPt(q,k/120*TAU),p=P(w[0],w[1],w[2],true);if(!p){pen=false;continue;}pen?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);pen=true;}g.stroke();}
+      const ue=q.ph+tt*q.sp*(1+gl*1.6);const N=28,L=1.1+gl*.9;let prev=null;
+      for(let k=0;k<=N;k++){const u=ue-Math.sign(q.sp)*L*(1-k/N),w=ringPt(q,u),p=P(w[0],w[1],w[2],true);if(!p){prev=null;continue;}
+        if(prev){const fr=k/N,a=aO*fr*fr*(.25+.75*gl)*p[3];g.strokeStyle=`rgba(250,244,236,${a*.18})`;g.lineWidth=(2+6*fr)*Math.min(3,p[2]/F*3);g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();
+          g.strokeStyle=`rgba(250,246,238,${a*.9})`;g.lineWidth=(.6+2*fr)*Math.min(3,p[2]/F*3);g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();}
+        prev=p;}
+      if(prev)glow(g,prev[0],prev[1],2.4*Math.min(3,prev[2]/F*3),aO*(.5+.5*gl)*prev[3],true);}
+    g.globalCompositeOperation='source-over';}
+  /* 3. 확률의 껍질: 점으로 된 구. 들어가면 점들이 곁을 스쳐 지나간다 */
+  const aS=band(e,.3,.42,.6,.67);
+  if(aS>0){g.globalCompositeOperation='lighter';g.fillStyle=C.cream;
+    for(const q of SHELL){const p=P(q[0],q[1],q[2],true);if(!p)continue;if(p[0]<-8||p[0]>W+8||p[1]<-8||p[1]>H+8)continue;
+      const sz=Math.min(4,.7+.9*Math.sqrt(p[2]/F)*1.3);g.globalAlpha=aS*p[3]*(.35+.55*q[3]);g.fillRect(p[0]-sz/2,p[1]-sz/2,sz,sz);}
+    g.globalAlpha=1;g.globalCompositeOperation='source-over';}
+  /* 4. 그릴 수 없는 길: 점에서 점으로 헤매는 궤적이 엉킨다 */
+  const aW=band(e,.57,.66,.79,.86);
+  if(aW>0){if(!reduce){const s=Math.min(2.5,dt/16);
+      for(const w of WALK){const T=NODE[w.to];const ax=(T[0]-w.p[0])*.012+G()*.00009,ay=(T[1]-w.p[1])*.012+G()*.00009,az=(T[2]-w.p[2])*.012+G()*.00009;
+        w.v[0]=(w.v[0]+ax*s)*.9;w.v[1]=(w.v[1]+ay*s)*.9;w.v[2]=(w.v[2]+az*s)*.9;w.p[0]+=w.v[0]*s;w.p[1]+=w.v[1]*s;w.p[2]+=w.v[2]*s;
+        if(Math.hypot(T[0]-w.p[0],T[1]-w.p[1],T[2]-w.p[2])<.003)w.to=NEAR[w.to][Math.floor(R()*5)];
+        w.h.push(w.p.slice());if(w.h.length>HL)w.h.shift();}}
+    if(!WALK.warm){WALK.warm=1;}
+    g.globalCompositeOperation='lighter';g.lineCap='round';
+    for(const w of WALK){let prev=null;for(let k=0;k<w.h.length;k++){const q=w.h[k],p=P(q[0],q[1],q[2],true);if(!p){prev=null;continue;}
+      if(prev){g.strokeStyle=`rgba(243,239,227,${aW*.5*(k/w.h.length)*p[3]})`;g.lineWidth=.8;g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();}prev=p;}}
+    for(const n of NODE){const p=P(n[0],n[1],n[2],true);if(!p)continue;g.globalAlpha=aW*p[3];g.fillStyle=C.cream;g.beginPath();g.arc(p[0],p[1],1.6,0,7);g.fill();}
+    g.globalAlpha=1;g.globalCompositeOperation='source-over';}
+  /* 5. 떨리는 파동 껍질 → 관측 */
+  const aV=band(e,.76,.85,1.2,1.3),obs=sm((e-.92)/.05);
+  if(aV>0){g.globalCompositeOperation='lighter';g.fillStyle=C.mint;
+    const ph=tt*.0009;let best=1e9,bp=null;
+    WAV.forEach((q,i)=>{const rk=RK[q.k];const def=.16*Math.sin(5*q.ph+ph+q.k*1.7)*Math.sin(3*q.th+q.k);const rr=q.in?q.in*RK[2]:rk*(1+def+q.n);
+      const x=rr*Math.sin(q.th)*Math.cos(q.ph),y=rr*Math.cos(q.th),z=rr*Math.sin(q.th)*Math.sin(q.ph);const p=P(x,y,z,true);if(!p)return;
+      let a=aV*p[3]*(.45+.55*Math.abs(def)*6);if(obs>0){a*=1-.85*obs;const d=Math.abs(p[0]-(cx+mm*.06))+Math.abs(p[1]-cy);if(d<best){best=d;bp=p;}}
+      g.globalAlpha=clamp(a);const sz=Math.min(3,.8+.5*Math.sqrt(p[2]/F));g.fillRect(p[0]-sz/2,p[1]-sz/2,sz,sz);});
     g.globalAlpha=1;
-    if(obs>0){const p=P[j0];const X=p.wx*Math.sqrt(.16)*sW;const env=Math.exp(-(X/sW)*(X/sW)/(2*.16));const yy=-Math.cos(X*kx-om)*env*sW*.16+p.wy*sW*.035;
-      const sx=cx+X*Z,sy=cy+yy*Z;glow(g,sx,sy,4,obs);
-      g.strokeStyle=`rgba(224,245,198,${.6*obs})`;g.lineWidth=1;const rr=10+((tt*.02)%26);g.globalAlpha=obs*(1-rr/36);g.beginPath();g.arc(sx,sy,rr,0,7);g.stroke();g.globalAlpha=1;
-      g.setLineDash([3,4]);g.strokeStyle=`rgba(224,245,198,${.45*obs})`;g.beginPath();g.moveTo(sx-28,sy);g.lineTo(sx-8,sy);g.moveTo(sx+8,sy);g.lineTo(sx+28,sy);g.moveTo(sx,sy-28);g.lineTo(sx,sy-8);g.moveTo(sx,sy+8);g.lineTo(sx,sy+28);g.stroke();g.setLineDash([]);}
-  }
-  /* 지나치는 먼지: 스크롤이 빠를수록 빨리 */
+    if(obs>0){const amp=mm*.12,kx=TAU/(mm*.28),om=tt*.0016;
+      g.lineWidth=1.3;g.strokeStyle=`rgba(224,245,198,${.6*obs})`;g.beginPath();
+      for(let x=0;x<=W;x+=3){const X=(x-cx)/(mm*.42),env=Math.exp(-X*X*2.4);const y=cy-Math.cos((x-cx)*kx-om)*env*amp;x?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();
+      const px=cx+mm*.06,X=(px-cx)/(mm*.42),py=cy-Math.cos((px-cx)*kx-om)*Math.exp(-X*X*2.4)*amp;
+      glow(g,px,py,4,obs,true);g.globalCompositeOperation='source-over';
+      const rr=10+((tt*.02)%26);g.strokeStyle=`rgba(224,245,198,${.6*obs*(1-rr/36)})`;g.lineWidth=1;g.beginPath();g.arc(px,py,rr,0,7);g.stroke();
+      g.setLineDash([3,4]);g.strokeStyle=`rgba(224,245,198,${.45*obs})`;g.beginPath();g.moveTo(px-28,py);g.lineTo(px-8,py);g.moveTo(px+8,py);g.lineTo(px+28,py);g.moveTo(px,py-28);g.lineTo(px,py-8);g.moveTo(px,py+8);g.lineTo(px,py+28);g.stroke();g.setLineDash([]);}
+    g.globalCompositeOperation='source-over';}
+  /* 지나치는 먼지: 스크롤이 빠를수록 빛줄기가 된다 */
   const aD=sm(e/.05)*(1-sm((e-.9)/.1));
-  if(aD>0&&!reduce){const v=dt*(.00025+vel*.004);g.fillStyle=C.cream;
+  if(aD>0&&!reduce){const v=dt*(.00025+vel*.005);g.fillStyle=C.cream;g.strokeStyle=C.cream;
     for(const q of dust){q.z-=v;if(q.z<.15){q.z=4+R();q.x=G();q.y=G();}
       const sx=W/2+q.x/q.z*mm*.5,sy=H/2+q.y/q.z*mm*.5;if(sx<0||sx>W||sy<0||sy>H)continue;
       const s=Math.min(2.6,.5+.7/q.z);g.globalAlpha=aD*Math.min(1,(4.2-q.z)/1.5)*.7;g.fillRect(sx,sy,s,s);
-      if(vel>.15){g.globalAlpha*=.4;g.strokeStyle=C.cream;g.lineWidth=s*.6;g.beginPath();g.moveTo(sx,sy);g.lineTo(sx-(sx-W/2)*vel*.08,sy-(sy-H/2)*vel*.08);g.stroke();}}
+      if(vel>.12){g.globalAlpha*=.45;g.lineWidth=s*.6;g.beginPath();g.moveTo(sx,sy);g.lineTo(sx-(sx-W/2)*Math.min(.5,vel*.1),sy-(sy-H/2)*Math.min(.5,vel*.1));g.stroke();}}
     g.globalAlpha=1;}
 });
-function glow(g,X,Y,r,a){const gr=g.createRadialGradient(X,Y,0,X,Y,r*5);gr.addColorStop(0,`rgba(224,245,198,${a*.55})`);gr.addColorStop(1,'rgba(224,245,198,0)');
-  g.fillStyle=gr;g.beginPath();g.arc(X,Y,r*5,0,7);g.fill();g.fillStyle=`rgba(243,239,227,${a})`;g.beginPath();g.arc(X,Y,r,0,7);g.fill();}
+if(skip)skip.addEventListener('click',ev=>{const t=document.getElementById('intro');if(t){ev.preventDefault();t.scrollIntoView({behavior:reduce?'auto':'smooth'});}});
 })();
 
 /* 방 카드: 화면에 들어올수록 물체가 액자 밖으로 올라오고, 그림자는 길어진다 */
