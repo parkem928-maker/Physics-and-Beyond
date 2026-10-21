@@ -956,13 +956,15 @@ const st={ax:.4,ay:.2,hold:false};dragger(obj,st);
 const R=Math.random,G=PB.gauss,TAU=Math.PI*2,small=innerWidth<700;
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),sm=x=>{x=clamp(x);return x*x*(3-2*x);},band=(e,a,b,c,d)=>sm((e-a)/(b-a))*(1-sm((e-c)/(d-c)));
 /* 카메라와 원점 사이 거리(로그로 보간). 머무는 구간에서는 천천히, 통과하는 구간에서는 빠르게 */
-const DK=[[0,3],[.12,2.35],[.3,1.8],[.42,.6],[.56,.5],[.64,.072],[.77,.06],[.87,.021],[1,.018]];
+const DK=[[0,3],[.18,2.6],[.3,1.85],[.42,.6],[.56,.5],[.64,.072],[.77,.06],[.87,.021],[1,.018]];
 function camD(e){e=clamp(e);for(let i=1;i<DK.length;i++)if(e<=DK[i][0]){const [a,da]=DK[i-1],[b,db]=DK[i];return Math.exp(Math.log(da)+(Math.log(db)-Math.log(da))*(e-a)/(b-a));}return DK[DK.length-1][1];}
 /* 구조물 */
 const S=solid('dodeca'),RD=.55;
 /* 세 궤도는 60°씩 고르게 돌려 놓는다(대칭). 전자는 같은 빠르기로, 위상만 120°씩 어긋나게 */
 const ORB=[0,1,2].map(k=>({t:1.18,r:k*Math.PI/3+Math.PI/2,sp:.0005,ph:k*TAU/3,u:k*TAU/3}));
-function ringPt(o,u){let x=Math.cos(u),y=Math.sin(u),z=0;const ct=Math.cos(o.t),stt=Math.sin(o.t);[y,z]=[y*ct,y*stt];const cr=Math.cos(o.r),sr=Math.sin(o.r);return [x*cr-y*sr,x*sr+y*cr,z];}
+/* 원자 전체가 화면 안에서 시계 방향(오른쪽)으로 천천히 돈다. 세 고리를 함께 돌리므로 대칭은 그대로 */
+let zr=0;
+function ringPt(o,u){let x=Math.cos(u),y=Math.sin(u),z=0;const ct=Math.cos(o.t),stt=Math.sin(o.t);[y,z]=[y*ct,y*stt];const cr=Math.cos(o.r+zr),sr=Math.sin(o.r+zr);return [x*cr-y*sr,x*sr+y*cr,z];}
 function dir(){const c=R()*2-1,s=Math.sqrt(1-c*c),f=R()*TAU;return [s*Math.cos(f),c,s*Math.sin(f)];}
 const NS=small?1500:2800,SHELL=[];for(let i=0;i<NS;i++){const d=dir(),r=.25+G()*.007;SHELL.push([d[0]*r,d[1]*r,d[2]*r,R()]);}
 const NK=small?26:38,NODE=[];for(let i=0;i<NK;i++){const d=dir(),r=.035*(.62+.38*Math.sqrt(R()));NODE.push([d[0]*r,d[1]*r,d[2]*r]);}
@@ -987,7 +989,7 @@ onFrame(t=>{
   vel+=((Math.abs(e-last)/Math.max(dt,1))*1000-vel)*.1;last=e;
   if(!st.hold&&!reduce){st.ay+=.004;st.ax+=.0015;}
   /* 화면 위 중심: 처음엔 히어로 그림 자리, 곧 화면 가운데 */
-  const o=obj.getBoundingClientRect(),m0=Math.max(180,o.width),k0=sm(e/.18);
+  const o=obj.getBoundingClientRect(),m0=Math.max(180,o.width),k0=sm(e/.1);
   const cx=(o.left-r.left+o.width/2)*(1-k0)+W/2*k0,cy=(o.top-r.top+o.height/2)*(1-k0)+H*.48*k0;
   const D=camD(e),F=1.47*m0,mm=Math.min(W,H);
   const spin=tt*.00006,cs=Math.cos(spin),sn=Math.sin(spin);
@@ -996,38 +998,42 @@ onFrame(t=>{
   /* 배경을 더 깊게 */
   const dark=sm((e-.03)/.22);hero.style.backgroundColor=dark>0?`rgb(${Math.round(20-14*dark)},${Math.round(38-26*dark)},${Math.round(20-13*dark)})`:'';
   /* 단계 표시, 글자 */
-  const stage=e<.03?-1:e<.14?0:e<.4?1:e<.6?2:e<.78?3:e<.92?4:5;
+  const stage=e<.06?-1:e<.22?0:e<.4?1:e<.6?2:e<.78?3:e<.92?4:5;
   plates.forEach((p,i)=>p.classList.toggle('on',i===stage));
   if(dno)dno.textContent=String(Math.min(5,Math.max(0,stage+1))).padStart(2,'0');
   if(depth)depth.style.opacity=String(sm(e/.04));if(dbar)dbar.style.transform=`scaleY(${e.toFixed(3)})`;
   if(skip)skip.classList.toggle('on',e>.03&&e<.97);
-  const f=sm(e/.16);giant.style.transform=f>0?`scale(${1+f*.9})`:'';giant.style.opacity=String(1-f);giant.style.filter=f>.02?`blur(${f*6}px)`:'';
-  hrow.style.opacity=String(1-sm(e/.1));hrow.style.pointerEvents=e>.08?'none':'';hud.style.opacity=String(1-sm(e/.12));
+  const f=sm(e/.07);giant.style.transform=f>0?`scale(${1+f*.9})`:'';giant.style.opacity=String(1-f);giant.style.filter=f>.02?`blur(${f*6}px)`:'';
+  hrow.style.opacity=String(1-sm(e/.06));hrow.style.pointerEvents=e>.05?'none':'';hud.style.opacity=String(1-sm(e/.12));
   if(sky)sky.style.opacity=String(1-.85*sm(e/.3));
   const lz=Math.log2(3/D),gz=Math.pow(2,lz-Math.floor(lz));hero.style.backgroundSize=`100% ${25*gz}%,${12.5*gz}% 100%`;
   /* 1. 플라톤의 입체 */
-  const aEdge=1-sm((e-.04)/.1);
+  /* 혼자 또렷하게: 커지며 가운데로 왔다가(0.03–0.18), 원자핵으로 접혀 들어간다(0.18–0.27) */
+  const aEdge=1-sm((e-.22)/.05),rd=RD*(1+.85*sm(e/.12))*(1-.94*sm((e-.18)/.09)),solo=sm(e/.06)*(1-sm((e-.18)/.06));
   if(aEdge>0){const V=S.v.map(p=>rot(p,st.ax,st.ay));
     const E2=S.e.map(([i,j])=>({a:V[i],b:V[j],z:(V[i][2]+V[j][2])/2})).sort((p,q)=>p.z-q.z);
-    for(const {a,b,z} of E2){const pa=P(a[0]*RD,a[1]*RD,a[2]*RD),pb=P(b[0]*RD,b[1]*RD,b[2]*RD);if(!pa||!pb)continue;const ff=(z+1)/2;
+    for(const {a,b,z} of E2){const pa=P(a[0]*rd,a[1]*rd,a[2]*rd),pb=P(b[0]*rd,b[1]*rd,b[2]*rd);if(!pa||!pb)continue;const ff=(z+1)/2;
+      if(solo>0){g.globalCompositeOperation='lighter';g.globalAlpha=solo*.22*ff;g.strokeStyle=C.mint;g.lineWidth=7;g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();g.globalCompositeOperation='source-over';}
       g.globalAlpha=aEdge*ff;g.strokeStyle=C.forest;g.lineWidth=1.5*(.6+.6*ff)+3;g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();
-      g.globalAlpha=aEdge*(.25+.75*ff);g.strokeStyle=C.mint;g.lineWidth=1.5*(.6+.6*ff);g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();}
+      g.globalAlpha=aEdge*(.25+.75*ff);g.strokeStyle=C.mint;g.lineWidth=(1.5+solo)*(.6+.6*ff);g.beginPath();g.moveTo(pa[0],pa[1]);g.lineTo(pb[0],pb[1]);g.stroke();}
+    if(solo>0){g.fillStyle=C.cream;for(const v of V){const p=P(v[0]*rd,v[1]*rd,v[2]*rd);if(!p)continue;g.globalAlpha=solo*(.35+.65*(v[2]+1)/2);g.beginPath();g.arc(p[0],p[1],2.6,0,7);g.fill();}}
     g.globalAlpha=1;}
   /* 2. 빛나는 궤도: 고리를 따라 혜성처럼 빛이 흐르고, 카메라가 고리를 지나쳐 안으로 들어간다 */
-  const aO=1-sm((e-.4)/.08),gl=sm((e-.05)/.12);
+  const aO=1-sm((e-.4)/.08),gl=sm((e-.2)/.1),aR=aO*Math.max(1-sm(e/.04),sm((e-.2)/.07));
+  if(!reduce)zr=(zr-dt*.00009*(.4+.6*gl))%TAU;
   if(aO>0){g.globalCompositeOperation='lighter';g.lineCap='round';
-    const nuc=P(0,0,0);if(nuc){const nr=Math.min(mm*.5,.06*nuc[2]);const na=aO*gl;if(na>0){const gr=g.createRadialGradient(nuc[0],nuc[1],0,nuc[0],nuc[1],nr*4);
+    const nuc=P(0,0,0);if(nuc){const nr=Math.min(mm*.5,.06*nuc[2]);const na=aO*sm((e-.19)/.08);if(na>0){const gr=g.createRadialGradient(nuc[0],nuc[1],0,nuc[0],nuc[1],nr*4);
       gr.addColorStop(0,`rgba(255,244,232,${.95*na})`);gr.addColorStop(.18,`rgba(240,226,214,${.55*na})`);gr.addColorStop(.5,`rgba(196,203,148,${.16*na})`);gr.addColorStop(1,'rgba(196,203,148,0)');
       g.fillStyle=gr;g.beginPath();g.arc(nuc[0],nuc[1],nr*4,0,7);g.fill();}}
     for(const q of ORB){
-      for(const [lw,al] of [[1+5*gl,.07*gl],[1,.3+.3*gl]]){g.lineWidth=lw;g.strokeStyle=`rgba(240,236,226,${al*aO})`;g.beginPath();let pen=false;
+      for(const [lw,al] of [[1+5*gl,.07*gl],[1,.3+.3*gl]]){g.lineWidth=lw;g.strokeStyle=`rgba(240,236,226,${al*aR})`;g.beginPath();let pen=false;
       for(let k=0;k<=120;k++){const w=ringPt(q,k/120*TAU),p=P(w[0],w[1],w[2],false);if(!p){pen=false;continue;}pen?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);pen=true;}g.stroke();}
       if(!reduce)q.u=(q.u+dt*q.sp*(1+gl*1.2))%TAU;const ue=q.u;const N=28,L=1.1+gl*.9;let prev=null;
       for(let k=0;k<=N;k++){const u=ue-Math.sign(q.sp)*L*(1-k/N),w=ringPt(q,u),p=P(w[0],w[1],w[2],false);if(!p){prev=null;continue;}
-        if(prev){const fr=k/N,a=aO*fr*fr*(.25+.75*gl)*p[3];g.strokeStyle=`rgba(250,244,236,${a*.18})`;g.lineWidth=(2+6*fr)*Math.min(3,p[2]/F*3);g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();
+        if(prev){const fr=k/N,a=aR*fr*fr*(.25+.75*gl)*p[3];g.strokeStyle=`rgba(250,244,236,${a*.18})`;g.lineWidth=(2+6*fr)*Math.min(3,p[2]/F*3);g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();
           g.strokeStyle=`rgba(250,246,238,${a*.9})`;g.lineWidth=(.6+2*fr)*Math.min(3,p[2]/F*3);g.beginPath();g.moveTo(prev[0],prev[1]);g.lineTo(p[0],p[1]);g.stroke();}
         prev=p;}
-      if(prev)glow(g,prev[0],prev[1],2.4*Math.min(3,prev[2]/F*3),aO*(.5+.5*gl)*prev[3],true);}
+      if(prev)glow(g,prev[0],prev[1],2.4*Math.min(3,prev[2]/F*3),aR*(.5+.5*gl)*prev[3],true);}
     g.globalCompositeOperation='source-over';}
   /* 3. 확률의 껍질: 점으로 된 구. 들어가면 점들이 곁을 스쳐 지나간다 */
   const aS=band(e,.3,.42,.6,.67);
