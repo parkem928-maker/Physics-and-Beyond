@@ -529,6 +529,13 @@ html.rv .rv-i.seen{opacity:1;transform:none}
 /* 좁은 화면: 모서리 문구가 큰 글자와 겹치지 않게 */
 @media (max-width:900px){.hud .tr{display:none}.hud .tl{top:0}.stage{padding-top:22px}}
 
+/* 방마다 다른 스크롤 변화(motion.js) */
+.morph{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+body.mx .hero:not(.dive-hero) .giant{transform:none!important;letter-spacing:-.05em!important}
+.p-tribunal #hero-obj{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.morph,.bgfx{display:none}}
+
 </style>
 </head>
 <body class="p-tribunal">
@@ -821,6 +828,206 @@ function overview(el){
    .catch(()=>el.querySelectorAll('.none').forEach(n=>n.textContent='글을 불러오지 못했다.'));
 }
 return {room,overview,connected:!!URL_};
+})();
+
+
+/* 방마다 다른 스크롤 변화.
+   제목 글자를 점으로 바꾼 뒤, 내리는 만큼 방의 상징으로 모양을 바꾼다(첫 화면).
+   그리고 본문 뒤(바탕)에는 그 상징의 흔적이 스크롤을 따라 이어진다.
+   첫 번째 산책: 발자국 / 보이지 않는 궤도: 펑, 그리고 원자 구름 / 칸트의 법정: 천칭 / 부분과 전체: 흩어졌다 이어지는 부분들 */
+(function(){
+const kind=(document.body.className.match(/p-([\w-]+)/)||[])[1];
+if(!['first-walk','invisible-orbit','tribunal','part-and-whole'].includes(kind))return;
+const hero=document.querySelector('.hero'),giant=hero&&hero.querySelector('.giant'),obj=document.getElementById('hero-obj');
+if(!hero||!giant)return;
+const reduce=PB.reduce,R=Math.random,G=PB.gauss,TAU=Math.PI*2;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),sm=x=>{x=clamp(x);return x*x*(3-2*x);},band=(e,a,b,c,d)=>sm((e-a)/(b-a))*(1-sm((e-c)/(d-c)));
+document.body.classList.add('mx');
+const hc=document.createElement('canvas');hc.className='morph';hc.setAttribute('aria-hidden','true');hero.appendChild(hc);
+const bc=document.createElement('canvas');bc.className='bgfx';bc.setAttribute('aria-hidden','true');document.body.insertBefore(bc,document.body.firstChild);
+const OL='91,106,55',CR='243,239,227';
+let pts=[],T={cx:0,cy:0,fs:100,w:0,h:0,step:4},ready=false;
+
+/* 제목 글자를 점으로 */
+function sample(){
+  const hr=hero.getBoundingClientRect(),gr=giant.getBoundingClientRect(),cs=getComputedStyle(giant);
+  const W=Math.round(hr.width),H=Math.round(hero.offsetHeight);if(W<10)return;
+  const fs=parseFloat(cs.fontSize),off=document.createElement('canvas');off.width=W;off.height=H;const g=off.getContext('2d');
+  g.font=`${cs.fontWeight} ${fs}px ${cs.fontFamily}`;try{g.letterSpacing=cs.letterSpacing;}catch(e){}
+  g.textAlign='center';g.textBaseline='alphabetic';g.fillStyle='#fff';
+  const m=g.measureText(giant.textContent),fA=m.fontBoundingBoxAscent||fs*.9,fD=m.fontBoundingBoxDescent||fs*.25;
+  const pt=parseFloat(cs.paddingTop)||0,pl=parseFloat(cs.paddingLeft)||0,pr=parseFloat(cs.paddingRight)||0,lh=parseFloat(cs.lineHeight)||fs;
+  const ls=parseFloat(cs.letterSpacing)||0;
+  const x=gr.left-hr.left+pl+(gr.width-pl-pr)/2+ls/2,base=gr.top-hr.top+pt+(lh-(fA+fD))/2+fA;
+  g.fillText(giant.textContent,x,base);
+  const d=g.getImageData(0,0,W,H).data;let step=Math.max(3,Math.round(fs/34));let out=[];
+  for(;;){out=[];for(let y=0;y<H;y+=step)for(let xx=0;xx<W;xx+=step)if(d[(y*W+xx)*4+3]>140)out.push([xx,y]);if(out.length<=2400||step>12)break;step++;}
+  let sx=0,sy=0,minx=1e9,maxx=-1e9;out.forEach(p=>{sx+=p[0];sy+=p[1];minx=Math.min(minx,p[0]);maxx=Math.max(maxx,p[0]);});
+  T={cx:sx/out.length,cy:sy/out.length,fs,w:W,h:H,step,minx,maxx,top:gr.top-hr.top};
+  pts=out.map(([x,y])=>({hx:x,hy:y,r:R(),d:R(),a:R()*TAU,v:.4+R()*.8,j:G(),k:0,u:R(),n:G()}));
+  setup[kind]&&setup[kind]();ready=pts.length>0;
+}
+const heroP=()=>clamp(scrollY/(hero.offsetHeight*.8));
+const setup={},drawH={},drawB={};
+
+/* ---------- 첫 번째 산책: 발자국 ---------- */
+function footShape(){ // 발 하나(길이 1, 앞쪽이 -y)의 안쪽 점 하나
+  for(;;){const x=(R()-.5)*.46,y=-.56+R()*1.04;
+    if(((x-.01)/.165)**2+((y+.06)/.3)**2<1)return [x,y];
+    if((x/.13)**2+((y-.33)/.14)**2<1)return [x,y];
+    const T5=[[-.12,-.44,.05],[-.055,-.5,.052],[.012,-.52,.056],[.08,-.5,.058],[.135,-.43,.062]];
+    for(const [tx,ty,tr] of T5)if((x-tx)**2+(y-ty)**2<tr*tr)return [x,y];}
+}
+function drawFoot(g,x,y,th,L,side,a){ // th: 걷는 방향, side: 왼발 -1 오른발 1
+  g.save();g.translate(x,y);g.rotate(th+Math.PI/2);g.scale(L*side,L);g.globalAlpha=a;g.beginPath();
+  g.ellipse(.01,-.06,.165,.3,0,0,TAU);g.moveTo(.13,.33);g.ellipse(0,.33,.13,.14,0,0,TAU);
+  for(const [tx,ty,tr] of [[-.12,-.44,.05],[-.055,-.5,.052],[.012,-.52,.056],[.08,-.5,.058],[.135,-.43,.062]]){g.moveTo(tx+tr,ty);g.arc(tx,ty,tr,0,TAU);}
+  g.fill();g.restore();}
+const FW={prints:[],path:[],docH:0};
+setup['first-walk']=()=>{
+  const L=clamp(T.fs*.42,34,70),n=6,stride=L*1.2;let x=T.cx,y=T.cy-L*.2,th=Math.PI/2+.35;FW.prints=[];
+  for(let i=0;i<n;i++){const side=i%2?1:-1;th=Math.PI/2+.55*Math.sin(i*.9+.6);const px=x+side*L*.3*-Math.sin(th),py=y+side*L*.3*Math.cos(th);
+    FW.prints.push({x:px,y:py,th,side,L});x+=Math.cos(th)*stride;y+=Math.sin(th)*stride;}
+  const span=(T.maxx-T.minx+1)||1;pts.forEach(p=>{p.k=Math.min(n-1,Math.floor((p.hx-T.minx)/span*n));const [fx,fy]=footShape();const P=FW.prints[p.k],c=Math.cos(P.th+Math.PI/2),s=Math.sin(P.th+Math.PI/2);
+    const X=fx*P.L*P.side,Y=fy*P.L;p.tx=P.x+X*c-Y*s;p.ty=P.y+X*s+Y*c;});
+  buildPath();
+};
+function buildPath(){ // 본문 뒤로 이어지는 산책길(문서 좌표). 아래로 가되 좌우로 자유롭게 헤맨다
+  const W=innerWidth,Lb=W<700?24:32,stride=Lb*1.45,y0=hero.offsetTop+hero.offsetHeight-30,docH=document.documentElement.scrollHeight;
+  let x=W*.5,y=y0,s=0,i=0;FW.path=[];FW.docH=docH;FW.Lb=Lb;
+  while(y<docH-60&&i<4000){let th=Math.PI/2+1.05*Math.sin(s/540+.7)+.42*Math.sin(s/165+2.1);
+    if(x<W*.07)th=Math.min(th,Math.PI/2-.7);if(x>W*.93)th=Math.max(th,Math.PI/2+.7);th=clamp(th,Math.PI/2-1.25,Math.PI/2+1.25);
+    const side=i%2?1:-1;FW.path.push({x:x-side*Lb*.32*Math.sin(th),y:y+side*Lb*.32*Math.cos(th),th,side});
+    x+=Math.cos(th)*stride;y+=Math.sin(th)*stride;s+=stride;i++;}
+}
+drawH['first-walk']=(g,hp,t)=>{
+  /* 걷는 사람의 발끝 = 화면 아래쪽 62% 지점. 그 지점이 지나간 자리에 발자국이 찍힌다 */
+  const head=scrollY+innerHeight*.62-(hero.getBoundingClientRect().top+scrollY);g.fillStyle=`rgb(${CR})`;
+  for(const p of pts){const P=FW.prints[p.k];const lead=head-(P.y-T.h*.05)-innerHeight*.12;const u=reduce?0:sm((lead-p.u*60)/150);const fade=1-sm((lead-760)/260);
+    const bend=Math.sin(Math.PI*u)*18*p.j;const x=p.hx+(p.tx-p.hx)*u+bend,y=p.hy+(p.ty-p.hy)*u-Math.sin(Math.PI*u)*10;
+    g.globalAlpha=fade;const s=T.step*(.85-.3*u);g.fillRect(x-s/2,y-s/2,s,s);}
+  g.globalAlpha=1;
+};
+drawB['first-walk']=(g,W,H,hp,t)=>{
+  if(Math.abs(document.documentElement.scrollHeight-FW.docH)>40)buildPath();
+  const head=scrollY+H*.74;g.fillStyle=`rgb(${OL})`;
+  for(const p of FW.path){if(p.y>head)break;const vy=p.y-scrollY;if(vy<-60||vy>H+60)continue;const d=head-p.y;
+    const a=.2*clamp(d/70)*Math.max(.25,Math.exp(-d/1600));drawFoot(g,p.x,vy,p.th,FW.Lb,p.side,a);}
+  g.globalAlpha=1;
+};
+
+/* ---------- 보이지 않는 궤도: 살짝 '펑', 그리고 원자 구름 ---------- */
+setup['invisible-orbit']=()=>{pts.forEach(p=>{let dx=p.hx-T.cx,dy=p.hy-T.cy;const m=Math.hypot(dx,dy)||1;dx/=m;dy/=m;
+  const a=Math.atan2(dy,dx)+G()*.5;p.dx=Math.cos(a);p.dy=Math.sin(a);p.dist=30+R()*120+m*.25;});};
+const CL={c:[],last:0};
+function orb(type){ // 단위 크기 오비탈 모양에서 점 하나
+  if(type==='s'){const r=Math.abs(G())*.42,a=R()*TAU;return [r*Math.cos(a),r*Math.sin(a)];}
+  if(type==='p'){const sg=R()<.5?-1:1;return [G()*.2,sg*(.42+Math.abs(G())*.22)];}
+  const k=Math.floor(R()*4),a=k*Math.PI/2+Math.PI/4,r=.4+Math.abs(G())*.2,w=G()*.13;return [r*Math.cos(a)-w*Math.sin(a),r*Math.sin(a)+w*Math.cos(a)];}
+function initClouds(){const small=innerWidth<700,N=small?170:300;
+  CL.c=[{type:'p',x:.11,y:.3,s:.2,rot:.3},{type:'d',x:.89,y:.62,s:.22,rot:0},{type:'s',x:.2,y:.88,s:.15,rot:0}].map(c=>({...c,p:Array.from({length:N},()=>({q:orb(c.type),f:R()*TAU}))}));}
+drawH['invisible-orbit']=(g,hp,t)=>{
+  const u=sm((hp-.03)/.34),fade=1-sm((hp-.06)/.3);
+  const ring=sm((hp-.02)/.3);if(ring>0&&ring<1){g.strokeStyle=`rgba(${CR},${.28*(1-ring)})`;g.lineWidth=1.2;g.beginPath();g.arc(T.cx,T.cy,20+ring*T.fs*2.2,0,TAU);g.stroke();
+    g.strokeStyle=`rgba(${CR},${.14*(1-ring)})`;g.beginPath();g.arc(T.cx,T.cy,10+ring*T.fs*1.4,0,TAU);g.stroke();}
+  const fl=band(hp,.02,.07,.09,.22);if(fl>0){const gr=g.createRadialGradient(T.cx,T.cy,0,T.cx,T.cy,T.fs*1.6);gr.addColorStop(0,`rgba(224,245,198,${.2*fl})`);gr.addColorStop(1,'rgba(224,245,198,0)');g.fillStyle=gr;g.fillRect(0,0,T.w,T.h);}
+  if(fade<=0)return;g.fillStyle=`rgb(${CR})`;
+  for(const p of pts){const e=Math.pow(u,.6)*p.dist;const x=p.hx+p.dx*e,y=p.hy+p.dy*e+u*u*14;g.globalAlpha=fade*(1-u*.4*p.r);const s=T.step*(.85-.45*u);g.fillRect(x-s/2,y-s/2,s,s);}
+  g.globalAlpha=1;
+};
+drawB['invisible-orbit']=(g,W,H,hp,t)=>{
+  if(!CL.c.length)initClouds();const bgA=sm((hp-.25)/.5);if(bgA<=0)return;
+  const max=Math.max(1,document.documentElement.scrollHeight-H),q=clamp(scrollY/max),mm=Math.min(W,H);
+  g.fillStyle=`rgb(${OL})`;
+  CL.c.forEach((c,i)=>{const sc=mm*c.s*(.75+1.1*q),cx=W*c.x,cy=H*c.y+Math.sin(scrollY/520+i*2)*30,rot=c.rot+scrollY/2400+(reduce?0:t*.00003);
+    const cs=Math.cos(rot),sn=Math.sin(rot);
+    for(const p of c.p){if(!reduce&&R()<.012)p.q=orb(c.type);const x=p.q[0]*(1+q*.5),y=p.q[1]*(1+q*.5);
+      g.globalAlpha=bgA*(.2+.2*(.5+.5*Math.sin(p.f+t*.002)));g.fillRect(cx+(x*cs-y*sn)*sc-1.1,cy+(x*sn+y*cs)*sc-1.1,2.2,2.2);}});
+  g.globalAlpha=1;
+};
+
+/* ---------- 칸트의 법정: 글자가 천칭이 되고, 내리는 동안 양쪽 접시가 오르내린다 ---------- */
+const BAL={parts:[['post',.12],['base',.07],['beam',.25],['sL',.07],['sL2',.07],['sR',.07],['sR2',.07],['pL',.14],['pR',.14]]};
+function balPt(part,u,L,a,cx,cy){ // 천칭 위의 점(받침점 기준)
+  const px=cx,py=cy-L*.42,ex=L*.88;const lx=px-ex*Math.cos(a),ly=py-ex*Math.sin(a),rx=px+ex*Math.cos(a),ry=py+ex*Math.sin(a);
+  const pan=(x,y,v)=>{const X=x+(v-.5)*L*.62,Y=y+L*.55+Math.sin(Math.PI*v)*L*.15;return [X,Y];};
+  switch(part){case 'post':return [px,py+u*L*.98];case 'base':return [px+(u-.5)*L*.62,py+L*.98];
+    case 'beam':return [lx+(rx-lx)*u,ly+(ry-ly)*u];
+    case 'sL':return [lx+(-.31*L)*u,ly+L*.55*u];case 'sL2':return [lx+(.31*L)*u,ly+L*.55*u];
+    case 'sR':return [rx+(-.31*L)*u,ry+L*.55*u];case 'sR2':return [rx+(.31*L)*u,ry+L*.55*u];
+    case 'pL':return pan(lx,ly,u);case 'pR':return pan(rx,ry,u);}}
+setup['tribunal']=()=>{let acc=0;const cum=BAL.parts.map(([n,w])=>(acc+=w,[n,acc]));pts.forEach(p=>{const z=p.r*acc;p.part=cum.find(c=>z<=c[1])[0];});};
+const tilt=()=>.17*Math.sin(scrollY/230);
+drawH['tribunal']=(g,hp,t)=>{
+  const L=Math.min(T.w*.2,T.fs*1.3,200),cx=T.cx,cy=T.cy+L*.2,form=sm((hp-.04)/.38),a=tilt()*sm((hp-.3)/.25);g.fillStyle=`rgb(${CR})`;
+  const pv=balPt('post',0,L,a,cx,cy);
+  for(const p of pts){const u=sm((form*1.35-p.d*.35));const [bx,by]=balPt(p.part,p.u,L,a,cx,cy);const x=p.hx+(bx+p.n*1.1-p.hx)*u,y=p.hy+(by+p.j*1.1-p.hy)*u;
+    g.globalAlpha=1;const s=T.step*(.85-.25*u);g.fillRect(x-s/2,y-s/2,s,s);}
+  if(form>.6){g.globalAlpha=(form-.6)/.4;g.beginPath();g.arc(pv[0],pv[1],T.step*1.6,0,TAU);g.fill();}
+  g.globalAlpha=1;
+};
+drawB['tribunal']=(g,W,H,hp,t)=>{
+  const bgA=sm((hp-.55)/.4);if(bgA<=0)return;const L=Math.min(W,H)*.3,cx=W*.5,cy=H*.46,a=tilt();
+  g.strokeStyle=`rgba(${OL},${.16*bgA})`;g.lineWidth=2;g.lineCap='round';
+  const seg=(n)=>{g.beginPath();for(let i=0;i<=24;i++){const [x,y]=balPt(n,i/24,L,a,cx,cy);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();};
+  ['post','base','beam'].forEach(seg);g.lineWidth=1;['sL','sL2','sR','sR2'].forEach(seg);g.lineWidth=2.2;['pL','pR'].forEach(seg);
+  const [px,py]=balPt('post',0,L,a,cx,cy);g.fillStyle=`rgba(${OL},${.2*bgA})`;g.beginPath();g.arc(px,py,5,0,TAU);g.fill();
+};
+
+/* ---------- 부분과 전체: 글자가 조각으로 흩어지고, 선으로 이어지다가, 하나의 원이 된다 ---------- */
+const PW={n:9,cl:[]};
+setup['part-and-whole']=()=>{const n=PW.n,w=(T.maxx-T.minx+1)/n;PW.cl=Array.from({length:n},(_,k)=>{const a=(k/n-.5)*Math.PI*.9+G()*.3,m=T.fs*(.18+R()*.3);
+    return {vx:Math.sin(a)*m*1.1,vy:G()*T.fs*.3,r:G()*.4,cx:0,cy:0,n:0};});
+  pts.forEach(p=>{p.k=Math.min(n-1,Math.floor((p.hx-T.minx)/w));const c=PW.cl[p.k];c.cx+=p.hx;c.cy+=p.hy;c.n++;});
+  PW.cl.forEach(c=>{if(c.n){c.cx/=c.n;c.cy/=c.n;}});
+  const Rr=Math.min(T.w*.3,T.fs*1.25,190);PW.Rr=Rr;PW.rc=[T.cx,T.cy+T.fs*.15];
+  pts.forEach(p=>{const c=PW.cl[p.k],lo=Math.max(0,c.cx-w/2),rel=clamp((p.hx-(c.cx-w/2))/w);p.ang=-Math.PI/2+(p.k+.08+rel*.84)/n*TAU;p.rad=(p.hy-c.cy)/T.fs*10;});};
+drawH['part-and-whole']=(g,hp,t)=>{
+  const s1=sm((hp-.03)/.16),lk=band(hp,.1,.2,.44,.58),ga=sm((hp-.34)/.28),n=PW.n,[rx,ry]=PW.rc,Rr=PW.Rr;
+  const cur=PW.cl.map(c=>({x:c.cx+c.vx*s1,y:c.cy+c.vy*s1}));
+  // 조각을 잇는 선(유기적으로 휘어진다)
+  if(lk>0){g.lineWidth=1.1;for(let k=0;k<n;k++)for(const j of [k+1,k+2,k+4]){if(j>=n)continue;const a=cur[k],b=cur[j],mx=(a.x+b.x)/2,my=(a.y+b.y)/2-30*Math.sin(k+j+(reduce?0:t*.0012));
+      g.lineWidth=j===k+1?1.5:1;g.strokeStyle=`rgba(224,245,198,${lk*(j===k+1?.85:.45)})`;g.beginPath();g.moveTo(a.x,a.y);g.quadraticCurveTo(mx,my,b.x,b.y);g.stroke();
+      const f=((reduce?0:t*.0004)+k*.13)%1,qx=(1-f)*(1-f)*a.x+2*(1-f)*f*mx+f*f*b.x,qy=(1-f)*(1-f)*a.y+2*(1-f)*f*my+f*f*b.y;g.fillStyle=`rgba(224,245,198,${lk})`;g.beginPath();g.arc(qx,qy,2,0,TAU);g.fill();}}
+  // 하나의 원
+  if(ga>.5){g.strokeStyle=`rgba(224,245,198,${(ga-.5)*.7})`;g.lineWidth=1.2;g.beginPath();g.arc(rx,ry,Rr,0,TAU);g.stroke();}
+  g.fillStyle=`rgb(${CR})`;
+  for(const p of pts){const c=PW.cl[p.k],cr=Math.cos(c.r*s1),sr=Math.sin(c.r*s1),dx=p.hx-c.cx,dy=p.hy-c.cy;
+    const x1=c.cx+c.vx*s1+dx*cr-dy*sr,y1=c.cy+c.vy*s1+dx*sr+dy*cr;const u=sm(ga*1.3-p.d*.3);
+    const tr=Rr+p.rad,tx=rx+tr*Math.cos(p.ang+(reduce?0:t*.00005)),ty=ry+tr*Math.sin(p.ang+(reduce?0:t*.00005));
+    const x=x1+(tx-x1)*u,y=y1+(ty-y1)*u;g.globalAlpha=1;const s=T.step*(.85-.3*u);g.fillRect(x-s/2,y-s/2,s,s);}
+  g.globalAlpha=1;
+};
+const BL={b:[]};
+function initBlobs(){const small=innerWidth<700,pos=small?[[.1,.2],[.9,.42],[.12,.66],[.88,.86]]:[[.07,.18],[.93,.3],[.06,.52],[.94,.66],[.08,.86],[.92,.92],[.5,.08]];
+  BL.b=pos.map(([x,y],i)=>({x,y,frag:[0,1,2].map(f=>({a:f/3*TAU+i,p:Array.from({length:small?14:20},()=>[G()*5,G()*5])}))}));}
+drawB['part-and-whole']=(g,W,H,hp,t)=>{
+  if(!BL.b.length)initBlobs();const bgA=sm((hp-.5)/.4);if(bgA<=0)return;
+  const ph=scrollY/620,sA=(1-Math.cos(ph))/2,spin=reduce?0:t*.00008;
+  const C2=BL.b.map((b,i)=>[b.x*W+Math.sin(ph*.5+i)*12,b.y*H+Math.cos(ph*.4+i)*12]);
+  g.strokeStyle=`rgba(${OL},${.22*bgA*(1-sA)})`;g.lineWidth=1;
+  for(let i=0;i<C2.length;i++){const j=(i+1)%C2.length;g.beginPath();g.moveTo(...C2[i]);g.quadraticCurveTo((C2[i][0]+C2[j][0])/2+Math.sin(ph+i)*40,(C2[i][1]+C2[j][1])/2,...C2[j]);g.stroke();}
+  g.fillStyle=`rgb(${OL})`;
+  BL.b.forEach((b,i)=>{const [cx,cy]=C2[i];b.frag.forEach(f=>{const a=f.a+spin,ox=Math.cos(a)*sA*34,oy=Math.sin(a)*sA*34;
+    for(const q of f.p){g.globalAlpha=bgA*.34;g.fillRect(cx+ox+q[0]-1,cy+oy+q[1]-1,2,2);}});
+    if(sA<.4){g.globalAlpha=bgA*.18*(1-sA/.4);g.strokeStyle=`rgb(${OL})`;g.beginPath();g.arc(cx,cy,16,0,TAU);g.stroke();}});
+  g.globalAlpha=1;
+};
+
+/* ---------- 공통 루프 ---------- */
+let rs=null;addEventListener('resize',()=>{clearTimeout(rs);rs=setTimeout(()=>{sample();if(kind==='invisible-orbit')initClouds();if(kind==='part-and-whole')initBlobs();},200);});
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(sample,60));
+function fitC(c,W,H){const d=Math.min(1.5,devicePixelRatio||1);if(c.width!==Math.round(W*d)||c.height!==Math.round(H*d)){c.width=Math.round(W*d);c.height=Math.round(H*d);}const g=c.getContext('2d');g.setTransform(d,0,0,d,0,0);return g;}
+PB.onFrame(t=>{
+  if(!ready)return;const hp=reduce?0:heroP();
+  const pa=sm((hp-.008)/.05);giant.style.opacity=String(1-pa);
+  if(obj)obj.style.opacity=kind==='tribunal'?'0':String(1-sm(hp/.25));
+  const hr=hero.getBoundingClientRect();
+  if(hr.bottom>0){const g=fitC(hc,T.w,T.h);g.clearRect(0,0,T.w,T.h);
+    /* 첫 화면이 올라가는 동안에도 모양이 화면 안에 조금 더 머물도록 아래로 밀어 준다 */
+    const oy=kind==='first-walk'?0:Math.min(scrollY,hero.offsetHeight*.55)*(kind==='tribunal'?.45:.72);g.translate(0,oy);if(pa>0)drawH[kind](g,hp,t);g.globalAlpha=1;}
+  const W=innerWidth,H=innerHeight,g2=fitC(bc,W,H);g2.clearRect(0,0,W,H);drawB[kind](g2,W,H,hp,t);g2.globalAlpha=1;
+});
 })();
 
 </script>

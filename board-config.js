@@ -1,1 +1,2 @@
-window.PB_BOARD_URL = 'https://script.google.com/macros/s/AKfycbxCIIE389Nq970DRewEyr7jocyOq9G_frFpOxxwGj-DTUGGa_wWUx2USHN4pLOk0-1n/exec';
+/* 우리의 담벼락 연결 주소: Apps Script 웹 앱 URL을 따옴표 안에 넣으세요 */
+window.PB_BOARD_URL = '';
